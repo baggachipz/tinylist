@@ -15,7 +15,7 @@
 
     <draggable v-model="items" class="items-list items-list--3 column" @change="reindexItems">
       <div v-for="item in items" :key="item._id" class="items-list-item">
-        <grid-item :value="item.value" :_id="item._id" :_rev="item._rev" :type="item.type" @input="onEdited" @delete="deleteItem" />
+        <grid-item :value="item" @input="onEdited" @delete="deleteItem" @change="onEdited" />
       </div>
     </draggable>
 
@@ -81,9 +81,11 @@ export default {
       item.sort = 0
       this.items.unshift(item)
       await this.db.put(item)
+      await this.loadItems()
       this.reindexItems()
     },
-    async onEdited (item) {
+    async onEdited (id) {
+      const item = this.items.find(item => item._id === id)
       await this.db.put(item)
       this.loadItems()
     },
