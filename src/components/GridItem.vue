@@ -18,8 +18,9 @@ export default {
     }
   },
   methods: {
-    deleteItem () {
+    deleteItem (e) {
       this.$emit('delete', this.value._id)
+      e.stopPropagation()
     },
     onChange (id) {
       this.$emit('change', id)

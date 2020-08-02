@@ -72,8 +72,8 @@ export default {
         component: EditDialog,
         parent: this,
         value: {
-          type: type,
-          _id: uuidv4()
+          _id: uuidv4(),
+          type: type
         }
       }).onOk(component.onCreated)
     },
@@ -91,7 +91,6 @@ export default {
       this.items.unshift(item)
       await this.db.put(item)
       await this.loadItems()
-      this.reindexItems()
     },
     async onEdited (doc) {
       const item = this.items.find(item => item._id === doc._id)

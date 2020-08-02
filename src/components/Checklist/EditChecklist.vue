@@ -33,9 +33,8 @@ export default {
   components: { draggable, EditChecklistItem },
   props: {
     value: {
-      default: {
-        title: null,
-        items: []
+      _id: {
+        required: true
       }
     }
   },
@@ -58,6 +57,14 @@ export default {
     },
     deleteItem (id) {
       this.value.value.items = this.value.value.items.filter(item => item._id !== id)
+    }
+  },
+  created () {
+    if (!this.value.value) {
+      this.$set(this.value, 'value', {
+        title: null,
+        items: []
+      })
     }
   }
 }
