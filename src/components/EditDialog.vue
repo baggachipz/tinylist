@@ -1,14 +1,16 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <component v-bind:is="editType" v-model="value" />
-      <q-card-actions>
-        <div class="action-buttons">
-          <q-btn flat round icon="delete" @click="deleteItem" />
-        </div>
-        <q-space />
-        <q-btn color="primary" label="Close" @click="onCloseClick" />
-      </q-card-actions>
+      <component v-bind:is="editType" v-model="value">
+        <template v-slot:bottom-toolbar-left>
+          <div class="action-buttons">
+            <q-btn flat round icon="delete" @click="deleteItem" />
+          </div>
+        </template>
+        <template v-slot:bottom-toolbar-right>
+          <q-btn color="primary" label="Close" @click="onCloseClick" />
+        </template>
+      </component>
     </q-card>
   </q-dialog>
 </template>

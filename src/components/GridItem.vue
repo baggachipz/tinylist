@@ -1,9 +1,10 @@
 <template>
   <q-card dense bordered class="q-pa-xs" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
-    <component v-bind:is="viewType" v-model="value" @change="onChange" />
-    <q-card-actions v-if="active" class="active-buttons">
-      <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active" />
-    </q-card-actions>
+    <component v-bind:is="viewType" v-model="value" @change="onChange" :active="active">
+      <template v-slot:bottom-toolbar>
+        <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active" />
+      </template>
+    </component>
   </q-card>
 </template>
 <script>

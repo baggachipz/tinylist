@@ -12,6 +12,10 @@
         </q-item>
       </q-list>
     </q-card-section>
+    <q-card-actions v-if="active" class="active-buttons">
+      <slot name="bottom-toolbar"></slot>
+      <q-btn dense flat round icon="delete_sweep" @click="deleteCheckedItems" v-if="active && checkedItems.length" />
+    </q-card-actions>
   </div>
 </template>
 <script>
@@ -23,10 +27,18 @@ export default {
         title: null,
         items: []
       }
+    },
+    active: {
+      default: false
     }
   },
   methods: {
     onInput (val, evt) {
+      this.$emit('change', this.value._id)
+    },
+    deleteCheckedItems (e) {
+      e.preventDefault()
+      this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
       this.$emit('change', this.value._id)
     }
   },

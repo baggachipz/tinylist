@@ -20,14 +20,17 @@
           <q-input borderless dense v-model="newItem" deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" />
         </q-item-section>
       </q-item>
-      <q-expansion-item v-model="checkedExpanded" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
+      <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
           <q-checkbox v-model="item.value.checked" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-expansion-item>
     </q-card-section>
     <q-card-actions>
-      <slot name="bottom-toolbar"></slot>
+      <slot name="bottom-toolbar-left"></slot>
+      <q-btn flat round icon="delete_sweep" class="action-button" @click="deleteCheckedItems" v-if="checkedItems.length" tooltip="Delete checked items" />
+      <q-space />
+      <slot name="bottom-toolbar-right"></slot>
     </q-card-actions>
   </div>
 </template>
@@ -65,6 +68,9 @@ export default {
     },
     deleteItem (id) {
       this.value.value.items = this.value.value.items.filter(item => item._id !== id)
+    },
+    deleteCheckedItems () {
+      this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
     }
   },
   computed: {
@@ -94,5 +100,9 @@ export default {
   .checked-item
     color: $grey-7
     text-decoration: line-through
+  .action-button
+    color: $grey-7
+    &:hover
+      color: black
 
 </style>

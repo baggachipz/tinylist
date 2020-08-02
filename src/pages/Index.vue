@@ -15,7 +15,7 @@
 
     <draggable v-model="items" class="items-list items-list--3 column" @change="reindexItems">
       <div v-for="item in items" :key="item._id" class="items-list-item">
-        <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" />
+        <grid-item :value="item" @delete="deleteItem" @delete-checked="deleteCheckedItems" @change="onEdited" @click="editItem(item)" />
       </div>
     </draggable>
 
@@ -103,6 +103,14 @@ export default {
       const doc = this.items.find(item => item._id === id)
       if (doc) {
         await this.db.remove(doc)
+        this.loadItems()
+      }
+    },
+    async deleteCheckedItems (id) {
+      const doc = this.items.find(item => item._id === id)
+      if (doc && doc.type === 'Checklist' && doc.value.items && Array.isArray(doc.value.items)) {
+        doc.value.items = doc.value.items.filter(item => !item.value.checked)
+        await this.db.put(doc)
         this.loadItems()
       }
     },
