@@ -6,18 +6,25 @@
     <q-card-section>
       <q-list dense ref="ChecklistItems">
         <draggable>
-          <edit-checklist-item v-for="item in value.value.items" :key="item._id" :_id="item._id" v-model="item.value" @delete="deleteItem" />
+          <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" @delete="deleteItem" />
         </draggable>
       </q-list>
-      <q-item>
+      <q-item dense class="q-pa-none">
         <q-item-section side>
-          <q-btn flat round dense icon="add" @click="createNewItem" />
-          <q-icon name="plus" />
+          <div class="side-icons">
+            <q-btn flat round dense icon="add" size="sm" @click="createNewItem" />
+            <q-checkbox dense size="sm" :value="false" class="on-right" disabled />
+          </div>
         </q-item-section>
-        <q-item-label>
-          <q-input borderless dense v-model="newItem" deboune="500" placeholder="List item" @keyup.enter="createNewItem" />
-        </q-item-label>
+        <q-item-section>
+          <q-input borderless dense v-model="newItem" deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" />
+        </q-item-section>
       </q-item>
+      <q-expansion-item v-model="checkedExpanded" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
+        <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
+          <q-checkbox v-model="item.value.checked" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
+        </q-item>
+      </q-expansion-item>
     </q-card-section>
     <q-card-actions>
       <slot name="bottom-toolbar"></slot>
@@ -40,7 +47,8 @@ export default {
   },
   data () {
     return {
-      newItem: ''
+      newItem: '',
+      checkedExpanded: false
     }
   },
   methods: {
@@ -59,6 +67,17 @@ export default {
       this.value.value.items = this.value.value.items.filter(item => item._id !== id)
     }
   },
+  computed: {
+    uncheckedItems () {
+      return this.value.value.items.filter(item => !item.value.checked)
+    },
+    checkedItems () {
+      return this.value.value.items.filter(item => item.value.checked)
+    },
+    completedItemsLabel () {
+      return `${this.checkedItems.length} Completed items`
+    }
+  },
   created () {
     if (!this.value.value) {
       this.$set(this.value, 'value', {
@@ -69,3 +88,11 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+  .side-icons
+    display: inline-block
+  .checked-item
+    color: $grey-7
+    text-decoration: line-through
+
+</style>

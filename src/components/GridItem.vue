@@ -1,7 +1,7 @@
 <template>
   <q-card dense bordered class="q-pa-xs" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
     <component v-bind:is="viewType" v-model="value" @change="onChange" />
-    <q-card-actions v-if="active">
+    <q-card-actions v-if="active" class="active-buttons">
       <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active" />
     </q-card-actions>
   </q-card>
@@ -36,3 +36,10 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+  .active-buttons
+    color: $grey-7
+    button
+      &:hover
+        color: black
+</style>

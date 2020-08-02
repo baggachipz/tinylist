@@ -2,7 +2,11 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <component v-bind:is="editType" v-model="value" />
-      <q-card-actions align="right">
+      <q-card-actions>
+        <div class="action-buttons">
+          <q-btn flat round icon="delete" @click="deleteItem" />
+        </div>
+        <q-space />
         <q-btn color="primary" label="Close" @click="onCloseClick" />
       </q-card-actions>
     </q-card>
@@ -32,6 +36,10 @@ export default {
     onCloseClick () {
       this.$emit('ok', this.value)
       this.hide()
+    },
+    deleteItem () {
+      this.$emit('delete', this.value._id)
+      this.hide()
     }
   },
   computed: {
@@ -41,3 +49,10 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+  .action-buttons
+    color: $grey-7
+    button
+      &:hover
+        color: black
+</style>

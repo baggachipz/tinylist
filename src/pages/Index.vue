@@ -112,6 +112,7 @@ export default {
         doc.sort = idx
         return doc
       }))
+      this.loadItems()
     },
     async debugData () {
       console.debug(await this.db.find({ selector: {} }))

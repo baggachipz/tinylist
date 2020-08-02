@@ -8,7 +8,7 @@
         </q-item>
         <q-separator v-if="checkedItems.length && uncheckedItems.length" />
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
-          <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" class="checked-item" />
+          <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-list>
     </q-card-section>

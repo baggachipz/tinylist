@@ -1,16 +1,16 @@
 <template>
-  <q-item dense>
+  <q-item dense @mouseenter="active=true" @mouseleave="active=false" class="q-pa-none">
     <q-item-section side>
-      <q-icon dense name="drag_indicator" />
+      <div class="side-icons">
+        <q-icon dense name="drag_indicator" size="sm" :class="active ? 'drag-active' : 'drag-inactive'" />
+        <q-checkbox :value="checked" dense size="sm" @input="changeChecked" class="on-right" />
+      </div>
+    </q-item-section>
+    <q-item-section>
+      <q-input borderless dense size="xs" :value="label" placeholder="List item" debounce="500" @input="changeLabel" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
-      <q-checkbox :value="checked" dense @input="changeChecked" />
-    </q-item-section>
-    <q-item-label>
-      <q-input borderless dense autogrow :value="label" placeholder="List item" debounce="500" @input="changeLabel" ref="input" />
-    </q-item-label>
-    <q-item-section side>
-      <q-btn flat round dense icon="clear" @click="deleteItem" />
+      <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
     </q-item-section>
   </q-item>
 </template>
@@ -27,7 +27,8 @@ export default {
     return {
       label: '',
       checked: false,
-      deleted: false
+      deleted: false,
+      active: false
     }
   },
   methods: {
@@ -61,3 +62,16 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+  .side-icons
+    display: inline-block
+  .drag-inactive
+    float: left
+    color: white
+    opacity: 0
+  .drag-active
+    cursor: move
+    float: left
+    color: $grey-5
+    opacity: 1
+</style>
