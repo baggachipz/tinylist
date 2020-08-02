@@ -15,7 +15,7 @@
 
     <draggable v-model="items" class="items-list items-list--3 column" @change="reindexItems">
       <div v-for="item in items" :key="item._id" class="items-list-item">
-        <grid-item :value="item" @input="onEdited" @delete="deleteItem" @change="onEdited" />
+        <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" />
       </div>
     </draggable>
 
@@ -71,10 +71,19 @@ export default {
       component.$q.dialog({
         component: EditDialog,
         parent: this,
-        type: type,
-        _id: uuidv4(),
-        value: {}
+        value: {
+          type: type,
+          _id: uuidv4()
+        }
       }).onOk(component.onCreated)
+    },
+    editItem (item) {
+      const component = this
+      component.$q.dialog({
+        component: EditDialog,
+        parent: this,
+        value: item
+      }).onOk(component.onEdited)
     },
     async onCreated (item) {
       // add item to the front of the list
@@ -84,15 +93,19 @@ export default {
       await this.loadItems()
       this.reindexItems()
     },
-    async onEdited (id) {
-      const item = this.items.find(item => item._id === id)
-      await this.db.put(item)
-      this.loadItems()
+    async onEdited (doc) {
+      const item = this.items.find(item => item._id === doc._id)
+      if (item) {
+        await this.db.put(item)
+        this.loadItems()
+      }
     },
     async deleteItem (id) {
       const doc = this.items.find(item => item._id === id)
-      await this.db.remove(doc)
-      this.loadItems()
+      if (doc) {
+        await this.db.remove(doc)
+        this.loadItems()
+      }
     },
     async reindexItems () {
       // bulk-insert the documents after updating their sort properties

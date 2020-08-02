@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <component v-bind:is="editType" v-model="innerValue" :_id="_id" />
+      <component v-bind:is="editType" v-model="value" />
       <q-card-actions align="right">
         <q-btn color="primary" label="Close" @click="onCloseClick" />
       </q-card-actions>
@@ -14,12 +14,7 @@ import EditChecklist from './Checklist/EditChecklist'
 export default {
   name: 'EditDialog',
   components: { EditChecklist },
-  props: ['value', 'type', '_id'],
-  data () {
-    return {
-      innerValue: this.value
-    }
-  },
+  props: ['value'],
   methods: {
     show () {
       // required by name for QDialog plugin
@@ -35,13 +30,13 @@ export default {
       this.$emit('hide')
     },
     onCloseClick () {
-      this.$emit('ok', this.innerValue)
+      this.$emit('ok', this.value)
       this.hide()
     }
   },
   computed: {
     editType () {
-      return `Edit${this.type}`
+      return `Edit${this.value.type}`
     }
   }
 }
