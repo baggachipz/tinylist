@@ -37,7 +37,7 @@
 <script>
 import draggable from 'vuedraggable'
 import EditChecklistItem from './EditChecklistItem'
-import { v4 as uuidv4 } from 'uuid'
+import { uid } from 'quasar'
 export default {
   name: 'EditChecklist',
   components: { draggable, EditChecklistItem },
@@ -57,7 +57,7 @@ export default {
   methods: {
     createNewItem (idx) {
       const newItem = {
-        _id: uuidv4(),
+        _id: uid(),
         value: {
           label: this.newItem,
           checked: false,
