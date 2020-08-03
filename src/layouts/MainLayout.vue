@@ -10,10 +10,9 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
+        <q-space />
 
-        <q-toolbar-title>
-          TinyList
-        </q-toolbar-title>
+        <img src="~/assets/tinylist.svg" class="logo" alt="tinylist" />
 
       </q-toolbar>
     </q-header>
@@ -40,8 +39,6 @@
 </template>
 
 <script>
-
-import { v4 as uuidv4 } from 'uuid'
 
 export default {
   name: 'MainLayout',
@@ -70,12 +67,7 @@ export default {
       return dbUrl
     },
     uuid () {
-      let uuid = localStorage.getItem('uuid')
-      if (!uuid) {
-        uuid = uuidv4()
-        localStorage.setItem('uuid', uuid)
-      }
-      return uuid
+      return localStorage.getItem('uuid')
     }
   },
   created () {
@@ -83,3 +75,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+  .logo
+    height: 40px
+</style>

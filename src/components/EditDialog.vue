@@ -8,7 +8,7 @@
           </div>
         </template>
         <template v-slot:bottom-toolbar-right>
-          <q-btn color="primary" label="Close" @click="onCloseClick" />
+          <q-btn color="primary" label="Save" @click="onSaveClick" />
         </template>
       </component>
     </q-card>
@@ -35,7 +35,7 @@ export default {
       // when QDialog emits "hide" event
       this.$emit('hide')
     },
-    onCloseClick () {
+    onSaveClick () {
       this.$emit('ok', this.value)
       this.hide()
     },

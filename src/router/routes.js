@@ -2,11 +2,14 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => { return localStorage.getItem('uuid') ? import('layouts/MainLayout.vue') : import('pages/Intro.vue') },
     children: [
-      { path: '', name: 'index', component: () => import('pages/Index.vue') },
-      { path: '/checklists', name: 'checklists', component: () => import('pages/Index.vue'), props: { type: 'Checklist' } }
+      { path: '', name: 'list', component: () => import('pages/List.vue') }
     ]
+  },
+  {
+    path: '/get-started',
+    component: () => import('../Start.vue')
   },
 
   // Always leave this as last one,
