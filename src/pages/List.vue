@@ -25,7 +25,7 @@
 <script>
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
-import { v4 as uuidv4 } from 'uuid'
+import { uid } from 'quasar'
 import draggable from 'vuedraggable'
 import GridItem from '../components/GridItem'
 import EditDialog from '../components/EditDialog'
@@ -72,7 +72,7 @@ export default {
         component: EditDialog,
         parent: this,
         value: {
-          _id: uuidv4(),
+          _id: uid(),
           type: type
         }
       }).onOk(component.onCreated)
