@@ -6,7 +6,7 @@
     <q-card-section>
       <q-list dense ref="ChecklistItems">
         <draggable>
-          <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" @delete="deleteItem" />
+          <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" :set-focus="item.setFocus" @delete="deleteItem" @enter-pressed="insertNewItemAfter" />
         </draggable>
       </q-list>
       <q-item dense class="q-pa-none">
@@ -55,16 +55,27 @@ export default {
     }
   },
   methods: {
-    createNewItem () {
-      this.value.value.items.push({
+    createNewItem (idx) {
+      const newItem = {
         _id: uuidv4(),
         value: {
           label: this.newItem,
           checked: false,
           deleted: false
         }
-      })
+      }
+      if (idx >= 0) {
+        newItem.setFocus = true
+        this.value.value.items.splice(idx, 0, newItem)
+      } else {
+        this.value.value.items.push(newItem)
+      }
       this.newItem = ''
+    },
+    insertNewItemAfter (id) {
+      this.newItem = ''
+      const idx = this.value.value.items.findIndex(item => item._id === id)
+      this.createNewItem(idx + 1)
     },
     deleteItem (id) {
       this.value.value.items = this.value.value.items.filter(item => item._id !== id)

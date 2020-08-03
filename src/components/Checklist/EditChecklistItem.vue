@@ -7,7 +7,7 @@
       </div>
     </q-item-section>
     <q-item-section>
-      <q-input borderless dense size="xs" :value="label" placeholder="List item" debounce="500" @input="changeLabel" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
+      <q-input borderless dense size="xs" :value="label" placeholder="List item" @input="changeLabel" @keyup.enter="enterPressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
       <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
@@ -21,7 +21,10 @@ export default {
     _id: {
       required: true
     },
-    value: {}
+    value: {},
+    setFocus: {
+      default: false
+    }
   },
   data () {
     return {
@@ -50,6 +53,9 @@ export default {
         deleted: this.deleted
       })
     },
+    enterPressed () {
+      this.$emit('enter-pressed', this._id)
+    },
     deleteItem () {
       this.$emit('delete', this._id)
     }
@@ -59,6 +65,9 @@ export default {
     this.checked = !!this.value.checked
     this.deleted = !!this.value.deleted
     this.onChange()
+  },
+  mounted () {
+    if (this.setFocus) this.focus()
   }
 }
 </script>
