@@ -17,7 +17,7 @@
           </div>
         </q-item-section>
         <q-item-section>
-          <q-input borderless dense v-model="newItem" deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" />
+          <q-input borderless dense v-model="newItem" deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" ref="new-item-input" />
         </q-item-section>
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
@@ -102,6 +102,9 @@ export default {
         items: []
       })
     }
+  },
+  mounted () {
+    this.$refs['new-item-input'].focus()
   }
 }
 </script>
