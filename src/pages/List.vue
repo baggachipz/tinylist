@@ -1,23 +1,18 @@
 <template>
   <q-page class="q-pa-md">
-    <q-btn-dropdown color="primary" label="Create new ...">
-      <q-list>
-        <q-item clickable v-close-popup @click="createNew('Checklist')">
-          <q-item-section side>
-            <q-icon name="fact_check" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Checklist</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-btn-dropdown>
 
     <draggable v-model="items" class="items-list scroll-y items-list--3 column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
       <div v-for="item in items" :key="item._id" class="items-list-item">
         <grid-item :value="item" @delete="deleteItem" @delete-checked="deleteCheckedItems" @change="onEdited" @click="editItem(item)" />
       </div>
     </draggable>
+
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-fab icon="edit" color="primary" direction="up" vertical-actions-align="right">
+        <q-fab-action label-position="left" icon="sticky_note_2" label="Note" />
+        <q-fab-action label-position="left" icon="fact_check" label="Checklist" @click="createNew('Checklist')" />
+      </q-fab>
+    </q-page-sticky>
 
   </q-page>
 </template>
@@ -133,7 +128,18 @@ export default {
   },
   computed: {
     numberOfColumns () {
-      return 3
+      switch (this.$q.screen.name) {
+        case 'xs':
+          return 2
+        case 'sm':
+        case 'md':
+          return 3
+        case 'lg':
+        case 'xl':
+          return 4
+        default:
+          return 3
+      }
     }
   },
   mounted () {
@@ -155,10 +161,15 @@ export default {
 <style lang="sass" scoped>
 
   // Masonry layout
+  .items-list-item
+    padding: 5px
+
   .items-list
     flex-flow: column wrap
     height: 1000px
-    &--2
+
+  .items-list
+    @media (max-width: $breakpoint-xs-max)
       > div
         &:nth-child(2n + 1)
           order: 1
@@ -170,7 +181,8 @@ export default {
         flex: 1 0 100% !important
         width: 0 !important
         order: 1
-    &--3
+
+    @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
       > div
         &:nth-child(3n + 1)
           order: 1
@@ -186,8 +198,39 @@ export default {
         width: 0 !important
         order: 2
 
+    @media (min-width: $breakpoint-lg-min)
+      > div
+        &:nth-child(3n + 1)
+          order: 1
+        &:nth-child(3n + 2)
+          order: 2
+        &:nth-child(3n + 3)
+          order: 3
+        &:nth-child(3n)
+          order: 4
+
+      &:before,
+      &:after
+        content: ''
+        flex: 1 0 100% !important
+        width: 0 !important
+        order: 3
+
     .items-list-item
-      width: 33.33%
-      padding: 5px
+      @media (max-width: $breakpoint-xs-max)
+        width: 50%
+      @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
+        width: 33.33%
+      @media (min-width: $breakpoint-lg-min)
+        width: 25%
+
+  .quick-entry-form
+    margin: 0 auto
+    @media (max-width: $breakpoint-sm-max)
+      width: 66%
+    @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max)
+      width: 33%
+    @media (min-width: $breakpoint-lg-min)
+      width: 25%
 
 </style>
