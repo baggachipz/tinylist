@@ -3,7 +3,12 @@
     <q-card class="q-dialog-advanced-settings">
       <q-card-section>
         <p>You can change the database your data syncs with -- for example, if you host your own CouchDB instance.</p>
-
+        <q-banner v-if="error" class="bg-negative text-white">
+          <template v-slot:avatar>
+            <q-icon name="warning" color="white" />
+          </template>
+          {{ error }}
+        </q-banner>
         <q-input borderless v-model="val" label="Sync Database URL" />
 
       </q-card-section>
@@ -23,7 +28,8 @@ export default {
   ],
   data () {
     return {
-      val: this.value
+      val: this.value,
+      error: false
     }
   },
   methods: {
@@ -36,14 +42,14 @@ export default {
     onDialogHide () {
       this.$emit('hide')
     },
-    onSaveClick () {
+    async onSaveClick () {
       try {
         const db = new PouchDB(this.dbUrl + '/' + this.uuid)
-        db.info()
+        await db.info()
         this.$emit('ok', this.val)
         this.hide()
       } catch (e) {
-        console.debug(e)
+        this.error = 'There was an error contacting the remote database. Please check your connection information and try again.'
       }
     },
     onCancelClick () {
