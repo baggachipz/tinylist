@@ -7,7 +7,7 @@ export default {
   name: 'Start',
   mounted () {
     if (!localStorage.getItem('uuid')) {
-      localStorage.setItem('uuid', uid())
+      localStorage.setItem('uuid', 'tl' + uid())
     }
     return this.$router.replace({ name: 'list' })
   }

@@ -9,6 +9,7 @@ const routes = [
   },
   {
     path: '/get-started',
+    name: 'get-started',
     component: () => import('../Start.vue')
   },
 

@@ -87,8 +87,8 @@ export default {
       await this.db.put(item)
       await this.loadItems()
     },
-    async onEdited (doc) {
-      const item = this.items.find(item => item._id === doc._id)
+    async onEdited (id) {
+      const item = this.items.find(item => item._id === id)
       if (item) {
         await this.db.put(item)
         this.loadItems()
@@ -117,13 +117,36 @@ export default {
       }))
       this.loadItems()
     },
+    initDbSync () {
+      if (this.db && this.dbUrl) {
+        this.db.sync(`${this.dbUrl}/${this.uuid}`, {
+          live: true,
+          retry: true
+        }).on('active', () => {
+          this.$emit('sync', 'active')
+        }).on('change', () => {
+          this.loadItems()
+          this.$emit('sync', 'done')
+        }).on('error', (e) => {
+          console.error(e)
+          this.$emit('sync', 'error')
+        }).on('pause', () => {
+          this.$emit('sync', 'done')
+        }).on('complete', () => {
+          this.loadItems()
+          this.$emit('sync', 'done')
+        })
+      } else {
+        console.log('did not start sync')
+      }
+    },
     resizeViewport () {
       const heights = new Array(this.numberOfColumns).fill(0)
       this.$refs.viewport.$children.forEach((child, idx) => {
         const height = getComputedStyle(child.$el).getPropertyValue('height')
-        heights[idx % this.numberOfColumns] += (parseFloat(height) + 40)
+        heights[idx % this.numberOfColumns] += (parseFloat(height) + 10)
       })
-      this.viewportHeight = Math.max(...heights) + 'px'
+      this.viewportHeight = Math.max(...heights) + 50 + 'px'
     }
   },
   computed: {
@@ -142,18 +165,31 @@ export default {
       }
     }
   },
-  mounted () {
+  async mounted () {
     this.db = new PouchDB(this.uuid)
-    if (this.dbUrl) this.db.sync(this.dbUrl)
-    this.db.createIndex({
+    await this.db.createIndex({
       index: {
         fields: ['sort']
       }
     })
+    this.initDbSync()
     this.loadItems()
   },
   updated () {
     this.resizeViewport()
+  },
+  watch: {
+    dbUrl: function () {
+      this.initDbSync()
+    },
+    uuid: function () {
+      console.debug('uuid changed')
+      this.db = new PouchDB(this.uuid)
+      this.db.replicate.from(`${this.dbUrl}/${this.uuid}`).on('complete', () => {
+        this.loadItems()
+        this.initDbSync()
+      })
+    }
   }
 }
 </script>
