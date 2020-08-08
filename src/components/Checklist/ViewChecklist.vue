@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     onInput (val, evt) {
-      this.$emit('change', this.value._id)
+      this.$emit('change', this.value)
     },
     deleteCheckedItems (e) {
       e.preventDefault()

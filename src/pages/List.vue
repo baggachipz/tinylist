@@ -87,8 +87,8 @@ export default {
       await this.db.put(item)
       await this.loadItems()
     },
-    async onEdited (id) {
-      const item = this.items.find(item => item._id === id)
+    async onEdited (doc) {
+      const item = this.items.find(item => item._id === doc._id)
       if (item) {
         await this.db.put(item)
         this.loadItems()
