@@ -3,11 +3,11 @@
     <q-card-section class="content">
       <p class="text-h6">{{ value.value.title }}</p>
       <q-list dense>
-        <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id">
+        <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" />
         </q-item>
         <q-separator v-if="checkedItems.length && uncheckedItems.length" />
-        <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
+        <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-list>
@@ -57,4 +57,8 @@ export default {
   .checked-item
     color: $grey-7
     text-decoration: line-through
+  .content
+    padding: 3px
+    .checklist-item
+      padding: 0
 </style>
