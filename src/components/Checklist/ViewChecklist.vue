@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-card-section>
+    <q-card-section class="content">
       <p class="text-h6">{{ value.value.title }}</p>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id">

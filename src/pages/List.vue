@@ -9,7 +9,7 @@
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-fab icon="edit" color="primary" direction="up" vertical-actions-align="right">
-        <q-fab-action label-position="left" icon="sticky_note_2" label="Note" />
+        <q-fab-action label-position="left" icon="sticky_note_2" label="Note" @click="createNew('Note')" />
         <q-fab-action label-position="left" icon="fact_check" label="Checklist" @click="createNew('Checklist')" />
       </q-fab>
     </q-page-sticky>

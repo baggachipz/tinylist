@@ -16,10 +16,11 @@
 </template>
 <script>
 import EditChecklist from './Checklist/EditChecklist'
+import EditNote from './Note/EditNote'
 
 export default {
   name: 'EditDialog',
-  components: { EditChecklist },
+  components: { EditChecklist, EditNote },
   props: ['value'],
   methods: {
     show () {

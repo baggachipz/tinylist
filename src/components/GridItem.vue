@@ -9,9 +9,10 @@
 </template>
 <script>
 import ViewChecklist from './Checklist/ViewChecklist'
+import ViewNote from './Note/ViewNote'
 export default {
   name: 'GridItem',
-  components: { ViewChecklist },
+  components: { ViewChecklist, ViewNote },
   props: ['value'],
   data () {
     return {
