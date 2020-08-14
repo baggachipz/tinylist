@@ -14,7 +14,9 @@
     </q-card-section>
     <q-card-actions v-if="active" class="active-buttons">
       <slot name="bottom-toolbar"></slot>
-      <q-btn dense flat round icon="delete_sweep" @click="deleteCheckedItems" v-if="active && checkedItems.length" />
+      <q-btn dense flat round icon="delete_sweep" @click="deleteCheckedItems" v-if="active && checkedItems.length">
+        <q-tooltip>Delete checked items</q-tooltip>
+      </q-btn>
     </q-card-actions>
   </div>
 </template>

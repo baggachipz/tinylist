@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
 
-    <draggable v-model="items" class="items-list scroll-y items-list--3 column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
+    <draggable v-model="items" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
       <div v-for="item in items" :key="item._id" class="items-list-item">
         <grid-item :value="item" @delete="deleteItem" @delete-checked="deleteCheckedItems" @change="onEdited" @click="editItem(item)" />
       </div>

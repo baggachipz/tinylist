@@ -4,7 +4,9 @@
       <component v-bind:is="editType" v-model="value">
         <template v-slot:bottom-toolbar-left>
           <div class="action-buttons">
-            <q-btn flat round icon="delete" @click="deleteItem" />
+            <q-btn flat round icon="delete" @click="deleteItem">
+              <q-tooltip>Delete</q-tooltip>
+            </q-btn>
           </div>
         </template>
         <template v-slot:bottom-toolbar-right>
