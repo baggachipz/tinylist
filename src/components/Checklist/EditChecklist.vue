@@ -5,7 +5,7 @@
     </q-card-section>
     <q-card-section>
       <q-list dense ref="ChecklistItems">
-        <draggable>
+        <draggable v-model="uncheckedItems">
           <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" :set-focus="item.setFocus" @delete="deleteItem" @enter-pressed="insertNewItemAfter" />
         </draggable>
       </q-list>
@@ -17,7 +17,7 @@
           </div>
         </q-item-section>
         <q-item-section>
-          <q-input borderless dense v-model="newItem" deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" autofocus />
+          <q-input v-model="newItem" borderless dense deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" autofocus />
         </q-item-section>
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
@@ -28,7 +28,9 @@
     </q-card-section>
     <q-card-actions>
       <slot name="bottom-toolbar-left"></slot>
-      <q-btn flat round icon="delete_sweep" class="action-button" @click="deleteCheckedItems" v-if="checkedItems.length" tooltip="Delete checked items" />
+      <q-btn flat round icon="delete_sweep" class="action-button" @click="deleteCheckedItems" v-if="checkedItems.length" tooltip="Delete checked items">
+        <q-tooltip>Delete checked items</q-tooltip>
+      </q-btn>
       <q-space />
       <slot name="bottom-toolbar-right"></slot>
     </q-card-actions>
@@ -85,14 +87,19 @@ export default {
     }
   },
   computed: {
-    uncheckedItems () {
-      return this.value.value.items.filter(item => !item.value.checked)
+    uncheckedItems: {
+      get: function () {
+        return this.value.value.items.filter(item => !item.value.checked)
+      },
+      set: function (val) {
+        this.$set(this.value.value, 'items', val.concat(this.checkedItems))
+      }
     },
     checkedItems () {
       return this.value.value.items.filter(item => item.value.checked)
     },
     completedItemsLabel () {
-      return `${this.checkedItems.length} Completed items`
+      return `${this.checkedItems.length} checked items`
     }
   },
   created () {
