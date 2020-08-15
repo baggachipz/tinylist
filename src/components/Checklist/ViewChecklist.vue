@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-card-section class="content">
+    <q-card-section class="content" :style="contentStyle">
       <p class="text-h6">{{ value.value.title }}</p>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
@@ -11,6 +11,7 @@
           <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-list>
+      <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
     <q-card-actions v-if="active" class="active-buttons">
       <slot name="bottom-toolbar"></slot>
@@ -31,6 +32,12 @@ export default {
       }
     },
     active: {
+      default: false
+    },
+    contentStyle: {
+      default: ''
+    },
+    clipped: {
       default: false
     }
   },
@@ -60,7 +67,19 @@ export default {
     color: $grey-7
     text-decoration: line-through
   .content
-    padding: 3px
+    padding: 0
+    position: relative
     .checklist-item
       padding: 0
+    .clipped
+      position: absolute
+      width: 100%
+      bottom: 0
+      height: 2.1em
+      padding-top: 1em
+      font-weight: 900
+      font-size: 1.5em
+      padding-left: 3px
+      color: $grey
+      background: linear-gradient(rgba(255,255,255,0), 20%, rgba(255,255,255,1))
 </style>

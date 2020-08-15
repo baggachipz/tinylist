@@ -1,6 +1,6 @@
 <template>
   <q-card dense bordered class="q-pa-xs" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
-    <component v-bind:is="viewType" v-model="value" @change="onChange" :active="active">
+    <component v-bind:is="viewType" v-model="value" @change="onChange" :active="active" ref="view" :content-style="contentStyle" :clipped="clipped">
       <template v-slot:bottom-toolbar>
         <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
           <q-tooltip>Delete</q-tooltip>
@@ -18,7 +18,8 @@ export default {
   props: ['value'],
   data () {
     return {
-      active: false
+      active: false,
+      maxHeight: 300
     }
   },
   methods: {
@@ -31,12 +32,24 @@ export default {
     },
     onClick () {
       this.$emit('click')
+    },
+    isClipped () {
+      this.clipped = this.$refs.view.$el.offsetHeight >= this.maxHeight
+    },
+    onResize () {
+      console.log('resize')
     }
   },
   computed: {
     viewType () {
       return `View${this.value.type}`
+    },
+    contentStyle () {
+      return `overflow: hidden; max-height: ${this.maxHeight}px;`
     }
+  },
+  mounted () {
+    this.isClipped()
   }
 }
 </script>
