@@ -147,7 +147,7 @@ export default {
       const heights = new Array(this.numberOfColumns).fill(0)
       this.$refs.viewport.$children.forEach((child, idx) => {
         const height = getComputedStyle(child.$el).getPropertyValue('height')
-        heights[idx % this.numberOfColumns] += (parseFloat(height) + 10)
+        heights[idx % this.numberOfColumns] += (parseFloat(height) + 20)
       })
       this.viewportHeight = Math.max(...heights) + 50 + 'px'
     }
