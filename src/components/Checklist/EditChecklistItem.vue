@@ -73,8 +73,8 @@ export default {
     display: inline-block
   .drag-inactive
     float: left
-    color: white
-    opacity: 0
+    color: $grey-5
+    opacity: 0.5
   .drag-active
     cursor: move
     float: left

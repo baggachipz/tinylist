@@ -79,6 +79,9 @@ export default {
         parent: this,
         value: item
       }).onOk(component.onEdited)
+        .onCancel(() => {
+          this.deleteItem(item._id)
+        })
     },
     async onCreated (item) {
       // add item to the front of the list

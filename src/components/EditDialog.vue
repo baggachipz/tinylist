@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <component v-bind:is="editType" v-model="value">
+      <component v-bind:is="editType" v-model="value" ref="edit-component">
         <template v-slot:bottom-toolbar-left>
           <div class="action-buttons">
             <q-btn flat round icon="delete" @click="deleteItem">
@@ -39,11 +39,14 @@ export default {
       this.$emit('hide')
     },
     onCloseClick () {
+      // if new item box has a value in it, add as an item before close
+      if (this.$refs['edit-component'].createNewItem) this.$refs['edit-component'].createNewItem()
       this.$emit('ok', this.value)
       this.hide()
     },
     deleteItem () {
-      this.$emit('delete', this.value._id)
+      // commandeer the cancel function to use for deletion
+      this.$emit('cancel', this.value._id)
       this.hide()
     }
   },

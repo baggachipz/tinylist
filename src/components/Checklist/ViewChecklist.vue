@@ -15,7 +15,7 @@
     </q-card-section>
     <q-card-actions v-if="active" class="active-buttons">
       <slot name="bottom-toolbar"></slot>
-      <q-btn dense flat round icon="delete_sweep" @click="deleteCheckedItems" v-if="active && checkedItems.length">
+      <q-btn dense flat round icon="delete_sweep" @click.prevent="deleteCheckedItems" v-if="active && checkedItems.length">
         <q-tooltip>Delete checked items</q-tooltip>
       </q-btn>
     </q-card-actions>
@@ -46,7 +46,7 @@ export default {
       this.$emit('change', this.value)
     },
     deleteCheckedItems (e) {
-      e.preventDefault()
+      e.stopPropagation()
       this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
       this.$emit('change', this.value._id)
     }

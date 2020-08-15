@@ -1,9 +1,9 @@
 <template>
   <div>
-    <q-card-section>
+    <q-card-section class="section">
       <q-input borderless v-model="value.value.title" class="text-h6" placeholder="Title" debounce="500" />
     </q-card-section>
-    <q-card-section>
+    <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">
         <draggable v-model="uncheckedItems">
           <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" :set-focus="item.setFocus" @delete="deleteItem" @enter-pressed="insertNewItemAfter" />
@@ -58,21 +58,23 @@ export default {
   },
   methods: {
     createNewItem (idx) {
-      const newItem = {
-        _id: uid(),
-        value: {
-          label: this.newItem,
-          checked: false,
-          deleted: false
+      if (this.newItem && this.newItem.trim().length) {
+        const newItem = {
+          _id: uid(),
+          value: {
+            label: this.newItem,
+            checked: false,
+            deleted: false
+          }
         }
+        if (idx >= 0) {
+          newItem.setFocus = true
+          this.value.value.items.splice(idx, 0, newItem)
+        } else {
+          this.value.value.items.push(newItem)
+        }
+        this.newItem = ''
       }
-      if (idx >= 0) {
-        newItem.setFocus = true
-        this.value.value.items.splice(idx, 0, newItem)
-      } else {
-        this.value.value.items.push(newItem)
-      }
-      this.newItem = ''
     },
     insertNewItemAfter (id) {
       this.newItem = ''
@@ -113,6 +115,12 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
+  .section
+    padding-top: 0
+    padding-bottom: 0
+  .input-area
+    max-height: calc(100vh - 200px);
+    overflow: auto
   .side-icons
     display: inline-block
   .checked-item
