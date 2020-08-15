@@ -19,7 +19,8 @@ export default {
   data () {
     return {
       active: false,
-      maxHeight: 300
+      maxHeight: 300,
+      clipped: false
     }
   },
   methods: {
@@ -50,6 +51,11 @@ export default {
   },
   mounted () {
     this.isClipped()
+  },
+  watch: {
+    value () {
+      this.isClipped()
+    }
   }
 }
 </script>
