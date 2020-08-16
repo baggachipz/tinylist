@@ -127,7 +127,6 @@ export default {
             }
           ]
         }).onOk(action => {
-          console.log(action)
           switch (action.id) {
             case 'copy':
               copyToClipboard(link).then(() => {

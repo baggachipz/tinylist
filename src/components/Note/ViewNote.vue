@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-card-section class="content" :style="contentStyle">
-      <p class="text-h6">{{ value.value.title }}</p>
+      <p class="q-px-sm text-h6">{{ value.value.title }}</p>
       <pre>{{ value.value.data }}</pre>
       <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
@@ -21,7 +21,7 @@ export default {
     padding: 0
     position: relative
     pre
-      padding: 3px
+      padding: 0 8px
       font-family: "Roboto"
       overflow-x: auto;
       white-space: pre-wrap;

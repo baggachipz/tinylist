@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-card-section class="content" :style="contentStyle">
-      <p class="text-h6">{{ value.value.title }}</p>
+      <p class="q-px-sm text-h6">{{ value.value.title }}</p>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" />
