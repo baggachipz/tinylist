@@ -6,7 +6,7 @@
           <template v-slot:avatar>
             <q-icon name="warning" color="white" />
           </template>
-          Only change your unique key if you want to have the same data as another device. You will lose all current data on this device. Only change this if you know what you\'re doing!
+          Only change your unique key if you want to have the same data as another device. You will lose all current data on this device. Only change this if you know what you're doing!
         </q-banner>
 
         <q-input borderless v-model="val" label="My Unique ID" />
