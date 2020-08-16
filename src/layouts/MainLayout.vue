@@ -28,6 +28,14 @@
           class="text-grey-8"
         >
         </q-item-label>
+        <q-item clickable @click="linkUuid">
+          <q-item-section avatar>
+            <q-icon name="share" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Link a device</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-expansion-item icon="settings" label="Advanced Settings" switch-toggle-side>
           <q-card>
             <q-card-section>
@@ -48,6 +56,7 @@
 <script>
 import ChangeUuidDialog from '../components/ChangeUuidDialog'
 import ChangeDburlDialog from '../components/ChangeDburlDialog'
+import { copyToClipboard } from 'quasar'
 
 export default {
   name: 'MainLayout',
@@ -87,6 +96,50 @@ export default {
         this.dbUrl = dbUrl
         localStorage.setItem('dbUrl', this.dbUrl)
       })
+    },
+    linkUuid () {
+      const link = window.location.origin + this.$router.resolve({
+        name: 'linkuuid',
+        params: {
+          uuid: this.uuid
+        }
+      }).href
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'My TinyList',
+          url: link
+        })
+      } else {
+        this.$q.bottomSheet({
+          title: 'Link a Device',
+          message: 'Send a link to your other device(s) via email, text, etc. When you click it, your devices will be in sync.',
+          actions: [
+            {
+              id: 'copy',
+              icon: 'content_copy',
+              label: 'Copy to clipboard'
+            },
+            {
+              id: 'email',
+              icon: 'mail',
+              label: 'Send an email'
+            }
+          ]
+        }).onOk(action => {
+          console.log(action)
+          switch (action.id) {
+            case 'copy':
+              copyToClipboard(link).then(() => {
+                this.$q.notify('Copied to clipboard.')
+              })
+              break
+            case 'email':
+              window.location.href = `mailto:?subject=${encodeURIComponent('tinylist: link a device')}&body=${encodeURIComponent('Click here to link your device:\n\n' + link)}`
+              break
+          }
+        })
+      }
     }
   },
   created () {

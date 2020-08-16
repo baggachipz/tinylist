@@ -12,6 +12,12 @@ const routes = [
     name: 'get-started',
     component: () => import('../Start.vue')
   },
+  {
+    path: '/link/:uuid',
+    name: 'linkuuid',
+    props: true,
+    component: () => import('../Start.vue')
+  },
 
   // Always leave this as last one,
   // but you can also remove it
