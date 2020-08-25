@@ -86,6 +86,7 @@ export default {
     },
     deleteCheckedItems () {
       this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
+      this.$emit('change', this.value)
     }
   },
   computed: {

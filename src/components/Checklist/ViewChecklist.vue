@@ -53,7 +53,7 @@ export default {
     deleteCheckedItems (e) {
       e.stopPropagation()
       this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
-      this.$emit('change', this.value._id)
+      this.$emit('change', this.value)
     }
   },
   computed: {

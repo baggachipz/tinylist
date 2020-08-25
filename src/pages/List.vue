@@ -3,7 +3,7 @@
 
     <draggable v-model="items" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
       <div v-for="(item, idx) in gridItems" :key="idx" class="items-list-item">
-        <grid-item :value="item" @delete="deleteItem" @delete-checked="deleteCheckedItems" @change="onEdited" @click="editItem(item)" @share="onShare" />
+        <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
       </div>
     </draggable>
 
@@ -105,7 +105,9 @@ export default {
         value: {
           _id: uid(),
           type: type,
-          new: true
+          new: true,
+          created: Date.now(),
+          modified: Date.now()
         }
       }).onOk(component.onCreated)
     },
@@ -126,6 +128,9 @@ export default {
       // remove 'new' flag since it's not new anymore
       delete item.new
 
+      // set modified
+      item.modified = Date.now()
+
       // put item into list in first position
       this.items.unshift(item)
 
@@ -138,10 +143,12 @@ export default {
     async onEdited (doc) {
       if (doc.share) {
         delete doc.share
+        doc.modified = Date.now()
         await this.shareDbs[doc._id].put(doc)
       } else {
         const item = this.items.find(item => item._id === doc._id)
         if (item) {
+          item.modified = Date.now()
           await this.db.put(item)
         }
       }
@@ -152,14 +159,6 @@ export default {
       const doc = this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
       if (doc) {
         await this.db.remove(doc)
-        this.loadItems()
-      }
-    },
-    async deleteCheckedItems (id) {
-      const doc = this.items.find(item => item._id === id)
-      if (doc && doc.type === 'Checklist' && doc.value.items && Array.isArray(doc.value.items)) {
-        doc.value.items = doc.value.items.filter(item => !item.value.checked)
-        await this.db.put(doc)
         this.loadItems()
       }
     },
