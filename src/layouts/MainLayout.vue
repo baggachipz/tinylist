@@ -30,13 +30,14 @@
         </q-item-label>
         <q-item clickable @click="linkUuid">
           <q-item-section avatar>
-            <q-icon name="share" />
+            <q-icon name="phonelink" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Link a device</q-item-label>
+            <q-item-label>Link a Device</q-item-label>
           </q-item-section>
         </q-item>
-        <q-expansion-item icon="settings" label="Advanced Settings" caption="Here there be dragons" switch-toggle-side>
+        <q-separator />
+        <q-expansion-item icon="settings" label="Advanced Settings" caption="Here there be dragons">
           <q-card>
             <q-card-section>
               <q-input dense readonly :value="this.uuid" label="My Unique ID" @click="editUuid" />
