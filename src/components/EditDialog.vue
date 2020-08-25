@@ -10,6 +10,11 @@
           </div>
         </template>
         <template v-slot:bottom-toolbar-right>
+          <div class="action-buttons">
+            <q-btn v-if="!value.new" flat round icon="share" @click.prevent="shareItem">
+              <q-tooltip>Share</q-tooltip>
+            </q-btn>
+          </div>
           <q-btn color="primary" label="Close" @click="onCloseClick" />
         </template>
       </component>
@@ -45,8 +50,11 @@ export default {
       this.hide()
     },
     deleteItem () {
-      // commandeer the cancel function to use for deletion
-      this.$emit('cancel', this.value._id)
+      this.$parent.$parent.deleteItem(this.value._id)
+      this.hide()
+    },
+    shareItem () {
+      this.$parent.$parent.onShare(this.value)
       this.hide()
     }
   },

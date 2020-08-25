@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-card-section class="content" :style="contentStyle">
+      <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       <p class="q-px-sm text-h6">{{ value.value.title }}</p>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
@@ -14,10 +15,14 @@
       <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
     <q-card-actions v-if="active" class="active-buttons">
-      <slot name="bottom-toolbar"></slot>
-      <q-btn dense flat round icon="delete_sweep" @click.prevent="deleteCheckedItems" v-if="active && checkedItems.length">
-        <q-tooltip>Delete checked items</q-tooltip>
-      </q-btn>
+      <slot name="bottom-toolbar-left"></slot>
+      <div class="active-buttons">
+        <q-btn dense flat round icon="delete_sweep" @click.prevent="deleteCheckedItems" v-if="active && checkedItems.length">
+          <q-tooltip>Delete checked items</q-tooltip>
+        </q-btn>
+      </div>
+      <q-space />
+      <slot name="bottom-toolbar-right"></slot>
     </q-card-actions>
   </div>
 </template>
@@ -82,4 +87,13 @@ export default {
       padding-left: 3px
       color: $grey
       background: linear-gradient(rgba(255,255,255,0), 20%, rgba(255,255,255,1))
+    .shared-icon
+      position: absolute
+      top: 0
+      right: 0
+  .active-buttons
+    color: $grey-7
+    button
+      &:hover
+        color: black
 </style>

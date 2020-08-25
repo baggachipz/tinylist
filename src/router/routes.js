@@ -4,7 +4,8 @@ const routes = [
     path: '/',
     component: () => { return localStorage.getItem('uuid') ? import('layouts/MainLayout.vue') : import('pages/Intro.vue') },
     children: [
-      { path: '', name: 'list', component: () => import('pages/List.vue') }
+      { path: '', name: 'list', component: () => import('pages/List.vue') },
+      { path: '/share/:uuid', name: 'shareitem', props: true, component: () => import('../Share.vue') }
     ]
   },
   {

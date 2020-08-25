@@ -1,10 +1,19 @@
 <template>
-  <q-card dense bordered class="q-pa-xs" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
-    <component v-bind:is="viewType" v-model="value" @change="onChange" :active="active" ref="view" :content-style="contentStyle" :clipped="clipped">
-      <template v-slot:bottom-toolbar>
-        <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
-          <q-tooltip>Delete</q-tooltip>
-        </q-btn>
+  <q-card dense bordered :class="cardClass" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
+    <component v-if="value.type" v-bind:is="viewType" v-model="value" @change="onChange" :active="active" ref="view" :content-style="contentStyle" :clipped="clipped">
+      <template v-slot:bottom-toolbar-left>
+        <div class="active-buttons">
+          <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
+            <q-tooltip>Delete</q-tooltip>
+          </q-btn>
+        </div>
+      </template>
+      <template v-slot:bottom-toolbar-right>
+        <div class="active-buttons">
+          <q-btn v-if="!value.new" flat round icon="share" @click.prevent="shareItem">
+            <q-tooltip>Share</q-tooltip>
+          </q-btn>
+        </div>
       </template>
     </component>
   </q-card>
@@ -28,6 +37,10 @@ export default {
       this.$emit('delete', this.value._id)
       e.stopPropagation()
     },
+    shareItem (e) {
+      this.$emit('share', this.value)
+      e.stopPropagation()
+    },
     onChange (id) {
       this.$emit('change', id)
     },
@@ -35,7 +48,7 @@ export default {
       this.$emit('click')
     },
     isClipped () {
-      this.clipped = this.$refs.view.$el.offsetHeight >= this.maxHeight
+      this.clipped = this.$refs.view && this.$refs.view.$el.offsetHeight >= this.maxHeight
     },
     onResize () {
       console.log('resize')
@@ -47,6 +60,9 @@ export default {
     },
     contentStyle () {
       return `overflow: hidden; max-height: ${this.maxHeight}px;`
+    },
+    cardClass () {
+      return this.value.share ? 'shared q-pa-xs' : 'q-pa-xs'
     }
   },
   mounted () {
@@ -65,4 +81,6 @@ export default {
     button
       &:hover
         color: black
+  .shared
+    background: $amber-1
 </style>

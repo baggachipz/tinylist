@@ -48,7 +48,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :uuid="uuid" :dbUrl="dbUrl" @created="createdDoc" />
+      <router-view :uuid="uuid" :dbUrl="dbUrl" @created="createdDoc" @share="share" />
     </q-page-container>
   </q-layout>
 </template>
@@ -104,16 +104,26 @@ export default {
           uuid: this.uuid
         }
       }).href
+      this.share({
+        title: 'Link a Device',
+        url: link,
+        msg: 'Send a link to your other device(s) via email, text, etc. When you click it, your devices will be in sync.'
+      })
+    },
+    share (opts) {
+      if (!opts.url) throw new Error('url parameter is required to share')
+      if (!opts.title) throw new Error('title parameter is required to share')
+      if (!opts.msg) opts.msg = ''
 
       if (navigator.share) {
         navigator.share({
-          title: 'My TinyList',
-          url: link
+          title: opts.title,
+          url: opts.url
         })
       } else {
         this.$q.bottomSheet({
-          title: 'Link a Device',
-          message: 'Send a link to your other device(s) via email, text, etc. When you click it, your devices will be in sync.',
+          title: opts.title,
+          message: opts.msg,
           actions: [
             {
               id: 'copy',
@@ -129,12 +139,12 @@ export default {
         }).onOk(action => {
           switch (action.id) {
             case 'copy':
-              copyToClipboard(link).then(() => {
+              copyToClipboard(opts.url).then(() => {
                 this.$q.notify('Copied to clipboard.')
               })
               break
             case 'email':
-              window.location.href = `mailto:?subject=${encodeURIComponent('tinylist: link a device')}&body=${encodeURIComponent('Click here to link your device:\n\n' + link)}`
+              window.location.href = `mailto:?subject=${encodeURIComponent(`tinylist: ${opts.title}`)}&body=${encodeURIComponent(opts.url)}`
               break
           }
         })
