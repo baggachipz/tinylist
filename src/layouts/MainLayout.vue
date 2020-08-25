@@ -36,7 +36,7 @@
             <q-item-label>Link a device</q-item-label>
           </q-item-section>
         </q-item>
-        <q-expansion-item icon="settings" label="Advanced Settings" switch-toggle-side>
+        <q-expansion-item icon="settings" label="Advanced Settings" caption="Here there be dragons" switch-toggle-side>
           <q-card>
             <q-card-section>
               <q-input dense readonly :value="this.uuid" label="My Unique ID" @click="editUuid" />
@@ -44,6 +44,14 @@
             </q-card-section>
           </q-card>
         </q-expansion-item>
+        <q-item clickable @click="bugReport">
+          <q-item-section avatar>
+            <q-icon name="bug_report" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>File a Bug Report</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -149,6 +157,9 @@ export default {
           }
         })
       }
+    },
+    bugReport () {
+      window.open('https://github.com/baggachipz/tinylist/issues')
     }
   },
   created () {
