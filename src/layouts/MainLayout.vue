@@ -12,7 +12,7 @@
         />
         <q-space />
 
-        <img src="~/assets/tinylist.svg" class="logo" alt="tinylist" />
+        <img src="~/assets/tinylist-white.svg" class="logo" alt="tinylist" />
 
       </q-toolbar>
     </q-header>

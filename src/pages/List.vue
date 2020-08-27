@@ -65,7 +65,6 @@ export default {
       const shareDbs = this.shareDbs
       const sharedItems = this.sharedItems
       const initDbSync = this.initDbSync
-      const dbUrl = this.dbUrl
       const $set = this.$set
 
       // set items from result
@@ -79,16 +78,11 @@ export default {
           if (!shareDbs[item.value]) {
             // intialize the shared item db
             shareDbs[item.value] = new PouchDB(item.value)
-            shareDbs[item.value].replicate.from(`${dbUrl}/${item.value}`).on('complete', async () => {
-              const doc = await shareDbs[item.value].get(item.value)
-              $set(sharedItems, item.value, doc)
-              initDbSync(shareDbs[item.value], item.value)
-            })
-          } else {
-            // grab item from the shared db
-            const doc = await shareDbs[item.value].get(item.value)
-            $set(sharedItems, item.value, doc)
+            initDbSync(shareDbs[item.value], item.value)
           }
+          // grab item from the shared db
+          const doc = await shareDbs[item.value].get(item.value)
+          $set(sharedItems, item.value, doc)
         }
       })
 
@@ -235,6 +229,7 @@ export default {
       }
     },
     initDbSync (db, id) {
+      // if params weren't passed in, use the base-level (top) ones
       if (!db) db = this.db
       if (!id) id = this.uuid
 
@@ -295,11 +290,9 @@ export default {
         fields: ['sort']
       }
     })
+
+    this.initDbSync()
     this.loadItems()
-    this.db.replicate.from(`${this.dbUrl}/${this.uuid}`).on('complete', async () => {
-      this.initDbSync()
-      this.loadItems()
-    })
   },
   updated () {
     this.resizeViewport()
