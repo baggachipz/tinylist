@@ -15,7 +15,6 @@
   </q-card>
 </template>
 <script>
-// import { debounce } from 'quasar'
 export default {
   name: 'QuickAdd',
   data () {
