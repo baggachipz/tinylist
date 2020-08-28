@@ -23,6 +23,11 @@ export default {
       }
     }
   },
+  methods: {
+    hasData () {
+      return this.value && this.value.value && ((this.value.value.title && this.value.value.title.length) || (this.value.value.data && this.value.value.data.length))
+    }
+  },
   created () {
     if (!this.value.value) {
       this.$set(this.value, 'value', {

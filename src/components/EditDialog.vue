@@ -44,9 +44,13 @@ export default {
       this.$emit('hide')
     },
     onCloseClick () {
-      // if new item box has a value in it, add as an item before close
-      if (this.$refs['edit-component'].createNewItem) this.$refs['edit-component'].createNewItem()
-      this.$emit('ok', this.value)
+      if (!this.value.new || this.$refs['edit-component'].hasData()) {
+        // if new item box has a value in it, add as an item before close
+        if (this.$refs['edit-component'].createNewItem) this.$refs['edit-component'].createNewItem()
+        this.$emit('ok', this.value)
+      } else {
+        this.$emit('cancel')
+      }
       this.hide()
     },
     deleteItem () {
