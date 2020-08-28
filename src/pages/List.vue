@@ -1,5 +1,8 @@
 <template>
   <q-page class="q-pa-md">
+    <div v-if="this.$q.screen.name !== 'xs'" class="quick-entry-form q-py-lg">
+      <quick-add @input="createNew" />
+    </div>
 
     <draggable v-model="items" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
       <div v-for="(item, idx) in gridItems" :key="idx" class="items-list-item">
@@ -24,6 +27,7 @@ import { uid, extend } from 'quasar'
 import draggable from 'vuedraggable'
 import GridItem from '../components/GridItem'
 import EditDialog from '../components/EditDialog'
+import QuickAdd from '../components/QuickAdd'
 
 PouchDB.plugin(PouchDBFind)
 
@@ -31,6 +35,7 @@ export default {
   name: 'List',
   components: {
     GridItem,
+    QuickAdd,
     draggable
   },
   props: {
@@ -89,7 +94,9 @@ export default {
       this.resizeViewport()
       return this.items
     },
-    createNew (type) {
+    createNew (...args) {
+      const [type, val] = args
+
       // for use in scope below
       const component = this
 
@@ -99,6 +106,7 @@ export default {
         value: {
           _id: uid(),
           type: type,
+          value: val,
           new: true,
           created: Date.now(),
           modified: Date.now()
