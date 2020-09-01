@@ -10,7 +10,7 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
-        <q-input standout dark dense class="search q-ml-lg" placeholder="Search..." input-class="text-right" debounce="500" v-model="search">
+        <q-input standout dark dense class="search q-ml-md on-left" placeholder="Search..." input-class="text-right" debounce="500" v-model="search">
           <template v-slot:append>
             <q-icon v-if="search === ''" name="search" />
             <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />

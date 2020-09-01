@@ -424,7 +424,8 @@ export default {
 
   .top-focus-area
     margin: 0 auto
-    @media (max-width: $breakpoint-sm-max)
+    width: 100%
+    @media (min-width: $breakpoint-sm-max)
       width: 66%
     @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max)
       width: 33%
