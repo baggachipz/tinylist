@@ -10,6 +10,12 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
+        <q-input standout dark dense class="search q-ml-lg" placeholder="Search..." input-class="text-right" debounce="500" v-model="search">
+          <template v-slot:append>
+            <q-icon v-if="search === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
+          </template>
+        </q-input>
         <q-space />
 
         <img src="~/assets/tinylist-white.svg" class="logo" alt="tinylist" />
@@ -57,7 +63,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :uuid="uuid" :dbUrl="dbUrl" @created="createdDoc" @share="share" />
+      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" @created="createdDoc" @share="share" @clearsearch="search=null" />
     </q-page-container>
   </q-layout>
 </template>
@@ -75,7 +81,8 @@ export default {
       leftDrawerOpen: false,
       createdFirst: false,
       uuid: localStorage.getItem('uuid'),
-      dbUrl: localStorage.getItem('dbUrl')
+      dbUrl: localStorage.getItem('dbUrl'),
+      search: null
     }
   },
   methods: {
@@ -181,4 +188,6 @@ export default {
 <style lang="sass" scoped>
   .logo
     height: 40px
+  .search
+    min-width: 30%
 </style>

@@ -1,10 +1,22 @@
 <template>
   <q-page class="q-pa-md">
-    <div v-if="this.$q.screen.name !== 'xs'" class="quick-entry-form q-py-lg">
-      <quick-add @input="createNew" />
+    <div v-if="searchItems || this.$q.screen.name !== 'xs'" class="top-focus-area q-py-lg">
+      <quick-add v-if="this.$q.screen.name !== 'xs' && !searchItems"  @input="createNew" />
+      <q-banner v-if="searchItems" inline-actions rounded class="text-positive bg-grey-3">
+        <strong>{{ searchItems.length }}</strong> found in search.
+        <template v-slot:action>
+          <q-btn flat label="Clear Search" @click="clearSearch" />
+        </template>
+      </q-banner>
     </div>
 
-    <draggable v-model="items" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
+    <div class="search-results items-list scroll-y column" v-if="searchItems">
+      <div v-for="(item, idx) in searchItems" :key="idx" class="items-list-item">
+        <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
+      </div>
+    </div>
+
+    <draggable v-else v-model="items" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
       <div v-for="(item, idx) in gridItems" :key="idx" class="items-list-item">
         <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
       </div>
@@ -23,6 +35,7 @@
 <script>
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
+import PouchDBSearch from 'pouchdb-quick-search'
 import { uid, extend } from 'quasar'
 import draggable from 'vuedraggable'
 import GridItem from '../components/GridItem'
@@ -30,6 +43,7 @@ import EditDialog from '../components/EditDialog'
 import QuickAdd from '../components/QuickAdd'
 
 PouchDB.plugin(PouchDBFind)
+PouchDB.plugin(PouchDBSearch)
 
 export default {
   name: 'List',
@@ -44,6 +58,9 @@ export default {
     },
     dbUrl: {
       default: false
+    },
+    search: {
+      default: null
     }
   },
   data () {
@@ -263,6 +280,19 @@ export default {
 
       // set the height to the tallest column hight, plus a little extra padding for good measure
       this.viewportHeight = Math.max(...heights) + 100 + 'px'
+    },
+    mapItems (items) {
+      // get local reference handle for use in the callback below
+      const sharedItems = this.sharedItems
+
+      // if a shared item, return the shared doc from the db; otherwise, just return the item
+      return items.map(item => {
+        const doc = sharedItems[item.value] || {}
+        return item.type === 'Share' ? Object.assign(doc, { share: true }) : item
+      })
+    },
+    clearSearch () {
+      this.$emit('clearsearch')
     }
   },
   computed: {
@@ -281,13 +311,19 @@ export default {
       }
     },
     gridItems () {
-      // get local reference handle for use in the callback below
-      const sharedItems = this.sharedItems
-
-      // if a shared item, return the shared doc from the db; otherwise, just return the item
-      return this.items.map(item => {
-        const doc = sharedItems[item.value] || {}
-        return item.type === 'Share' ? Object.assign(doc, { share: true }) : item
+      return this.mapItems(this.items)
+    },
+    searchItems () {
+      const search = this.search && this.search.length > 2 ? new RegExp(this.search, 'i') : false
+      if (!search) return false
+      return this.gridItems.filter(item => {
+        if (search.test(item.value.title)) return true
+        if (item.type === 'Checklist') {
+          return item.value.items.some(val => search.test(val.value.label))
+        }
+        if (item.type === 'Note') {
+          return search.test(item.value.data)
+        }
       })
     }
   },
@@ -386,7 +422,7 @@ export default {
       @media (min-width: $breakpoint-lg-min)
         width: 25%
 
-  .quick-entry-form
+  .top-focus-area
     margin: 0 auto
     @media (max-width: $breakpoint-sm-max)
       width: 66%
