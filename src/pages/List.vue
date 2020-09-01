@@ -170,7 +170,8 @@ export default {
         }
       }
 
-      this.loadItems()
+      await this.loadItems()
+      this.resizeViewport()
     },
     async deleteItem (id) {
       const doc = this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
@@ -273,11 +274,11 @@ export default {
       this.$refs.viewport.$children.forEach((child, idx) => {
         // get the height of that item and add it to the 'column' height
         const height = getComputedStyle(child.$el).getPropertyValue('height')
-        heights[idx % this.numberOfColumns] += (parseFloat(height) + 20)
+        heights[idx % this.numberOfColumns] += (parseFloat(height) + 10)
       })
 
-      // set the height to the tallest column hight, plus a little extra padding for good measure
-      this.viewportHeight = Math.max(...heights) + 100 + 'px'
+      // set the height to the tallest column height
+      this.viewportHeight = Math.max(...heights) + 'px'
     },
     mapItems (items) {
       // get local reference handle for use in the callback below
@@ -362,6 +363,7 @@ export default {
 
   .items-list
     flex-flow: column wrap
+    overflow-y: visible
     height: 1000px
 
   .items-list

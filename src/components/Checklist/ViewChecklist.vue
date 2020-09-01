@@ -2,7 +2,7 @@
   <div>
     <q-card-section class="content" :style="contentStyle">
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
-      <p class="q-px-sm text-h6">{{ value.value.title }}</p>
+      <p class="q-pa-sm text-h6">{{ value.value.title }}</p>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" />
@@ -14,13 +14,14 @@
       </q-list>
       <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
-    <q-card-actions v-if="active" class="active-buttons">
+    <q-card-actions v-if="this.$q.platform.is.desktop" class="active-buttons">
       <slot name="bottom-toolbar-left"></slot>
       <div class="active-buttons">
         <q-btn dense flat round icon="delete_sweep" @click.prevent="deleteCheckedItems" v-if="active && checkedItems.length">
           <q-tooltip>Delete checked items</q-tooltip>
         </q-btn>
       </div>
+      <q-btn flat disabled class="invisible" />
       <q-space />
       <slot name="bottom-toolbar-right"></slot>
     </q-card-actions>
@@ -92,6 +93,7 @@ export default {
       top: 0
       right: 0
   .active-buttons
+    padding: 0
     color: $grey-7
     button
       &:hover

@@ -2,12 +2,13 @@
   <div>
     <q-card-section class="content" :style="contentStyle">
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
-      <p class="q-px-sm text-h6">{{ value.value.title }}</p>
+      <p class="q-pa-sm text-h6">{{ value.value.title }}</p>
       <pre>{{ value.value.data }}</pre>
       <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
-    <q-card-actions v-if="active" class="active-buttons">
+    <q-card-actions v-if="this.$q.platform.is.desktop" class="active-buttons">
       <slot name="bottom-toolbar-left"></slot>
+      <q-btn flat disabled class="invisible" />
       <q-space />
       <slot name="bottom-toolbar-right"></slot>
     </q-card-actions>
@@ -47,4 +48,6 @@ export default {
       position: absolute
       top: 0
       right: 0
+  .active-buttons
+    padding: 0
 </style>

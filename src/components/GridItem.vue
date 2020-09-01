@@ -10,7 +10,7 @@
       </template>
       <template v-slot:bottom-toolbar-right>
         <div class="active-buttons">
-          <q-btn v-if="!value.new" flat round icon="share" @click.prevent="shareItem">
+          <q-btn v-if="!value.new && active" flat round dense icon="share" @click.prevent="shareItem">
             <q-tooltip>Share</q-tooltip>
           </q-btn>
         </div>
