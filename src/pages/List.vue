@@ -35,7 +35,6 @@
 <script>
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
-import PouchDBSearch from 'pouchdb-quick-search'
 import { uid, extend } from 'quasar'
 import draggable from 'vuedraggable'
 import GridItem from '../components/GridItem'
@@ -43,7 +42,6 @@ import EditDialog from '../components/EditDialog'
 import QuickAdd from '../components/QuickAdd'
 
 PouchDB.plugin(PouchDBFind)
-PouchDB.plugin(PouchDBSearch)
 
 export default {
   name: 'List',
