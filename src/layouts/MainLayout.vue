@@ -181,8 +181,7 @@ export default {
       this.$router.replace({ name: 'get-started' })
     }
     if (!this.dbUrl) {
-      // dbUrl = 'https://db.tinylist.app'
-      this.dbUrl = 'http://tinylist:password@localhost:5984'
+      this.dbUrl = process.env.DB || 'http://tinylist:password@localhost:5984'
     }
   }
 }
