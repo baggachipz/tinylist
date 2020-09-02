@@ -9,9 +9,22 @@ const routes = [
     ]
   },
   {
+    path: '/',
+    component: () => import('layouts/PageLayout.vue'),
+    children: [
+      { path: '/privacy', name: 'privacy', component: () => import('../pages/Privacy.vue') },
+      { path: '/terms', name: 'terms', component: () => import('../pages/Terms.vue') }
+    ]
+  },
+  {
     path: '/get-started',
     name: 'get-started',
     component: () => import('../Start.vue')
+  },
+  {
+    path: '/intro',
+    name: 'intro',
+    component: () => import('../pages/Intro.vue')
   },
   {
     path: '/link/:uuid',

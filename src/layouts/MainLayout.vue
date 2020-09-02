@@ -26,7 +26,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
-      content-class="bg-grey-1"
+      content-class="bg-grey-1 sidebar"
     >
       <q-list>
         <q-item-label
@@ -60,6 +60,9 @@
           </q-item-section>
         </q-item>
       </q-list>
+      <div class="terms-links">
+        <q-btn flat dense :to="{ name: 'intro' }">Introduction</q-btn><br><q-btn flat dense :to="{ name: 'terms' }">Terms of Service</q-btn> | <q-btn flat dense :to="{ name: 'privacy'}">Privacy Policy</q-btn>
+      </div>
     </q-drawer>
 
     <q-page-container>
@@ -190,4 +193,11 @@ export default {
     height: 40px
   .search
     min-width: 30%
+  .sidebar
+    position: relative
+  .terms-links
+    position: absolute
+    bottom: 5px
+    text-align: center
+    width: 100%
 </style>
