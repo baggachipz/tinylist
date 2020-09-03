@@ -1,6 +1,5 @@
-import fetch from "node-fetch"
-
 export async function handler (event) {
+  const fetch = require('node-fetch')
   const id = event.data.id
 
   if (!id) {
