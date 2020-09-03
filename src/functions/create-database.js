@@ -1,7 +1,6 @@
 exports.handler = async (event) => {
   const fetch = require('node-fetch')
-  const data = JSON.parse(event)
-  const id = data.id
+  const id = event.id
 
   if (!id) {
     throw new Error('id was not specified in payload')
