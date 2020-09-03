@@ -37,6 +37,7 @@ import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 import { uid, extend } from 'quasar'
 import draggable from 'vuedraggable'
+import { createDatabase } from '../utils'
 import GridItem from '../components/GridItem'
 import EditDialog from '../components/EditDialog'
 import QuickAdd from '../components/QuickAdd'
@@ -230,6 +231,9 @@ export default {
         // convert the existing item into one of type 'Share' and store the share id
         item.type = 'Share'
         item.value = shareId
+
+        // if in production mode, make the call to create the db
+        await createDatabase(shareId)
 
         // create the new database for the share
         this.shareDbs[shareId] = new PouchDB(shareId)
