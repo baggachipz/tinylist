@@ -1,5 +1,6 @@
 exports.handler = async (event) => {
   const fetch = require('node-fetch')
+  return event
   const id = event.id
 
   if (!id) {
