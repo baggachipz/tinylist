@@ -112,8 +112,8 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'TinyList',
-        short_name: 'TinyList',
+        name: 'tinylist',
+        short_name: 'tinylist',
         description: 'A minimalist, opinionated PWA checklists application.',
         display: 'standalone',
         orientation: 'portrait',
