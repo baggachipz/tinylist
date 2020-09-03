@@ -1,4 +1,4 @@
-export async function handler (event) {
+exports.handler = async (event) => {
   const fetch = require('node-fetch')
   const id = event.data.id
 
