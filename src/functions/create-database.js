@@ -1,5 +1,6 @@
 exports.handler = async (event) => {
   const fetch = require('node-fetch')
+  return event
   const data = JSON.parse(event.data)
   const id = data.id
 
