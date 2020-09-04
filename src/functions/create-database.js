@@ -17,7 +17,7 @@ exports.handler = function(event, context, callback) {
   // assemble the full db url with credentials, if they already aren't part of it
   if (!dbUrl.includes(dbUser) && !dbUrl.includes(dbPass)) {
     const baseUrl = dbUrl.slice(dbUrl.lastIndexOf('://') + 3)
-    dbUrl = dbUrl.replace(':\/\/', `://${dbUser}:${dbPass}@${baseUrl}`)
+    dbUrl = dbUrl.replace('://', `://${dbUser}:${dbPass}@${baseUrl}`)
   }
 
   // tack the id on, as defined in CouchDB API
