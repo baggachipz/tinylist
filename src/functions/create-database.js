@@ -7,8 +7,8 @@ exports.handler = function(event, context, callback) {
     throw new Error('id was not specified in payload')
   }
 
-  const dbUrl = process.env.DB_URL,
-    dbUser = process.env.DB_USER,
+  let dbUrl = process.env.DB_URL
+  const dbUser = process.env.DB_USER,
     dbPass = process.env.DB_PASS
 
   // make sure things are defined
@@ -24,7 +24,7 @@ exports.handler = function(event, context, callback) {
   dbUrl = dbUrl + '/' + id
 
   // call put method to create the new database
-  const response = fetch(dbUrl, {
+  fetch(dbUrl, {
     method: 'PUT'
   }).then(response => {
     if (response.ok) callback(null, {
