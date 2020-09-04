@@ -16,13 +16,13 @@ export default {
         try {
           await createDatabase(id)
           localStorage.setItem('uuid', id)
+          const route = this.$router.resolve({ name: 'list' })
+          window.location = route.href
         } catch (e) {
           console.log(e)
         }
       }
     }
-    const route = this.$router.resolve({ name: 'list' })
-    window.location = route.href
   }
 }
 </script>
