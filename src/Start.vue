@@ -13,16 +13,16 @@ export default {
     } else {
       if (!localStorage.getItem('uuid')) {
         const id = 'tl' + uid()
-        localStorage.setItem('uuid', id)
         try {
-          const response = await createDatabase(id)
-          console.debug(response)
+          await createDatabase(id)
+          localStorage.setItem('uuid', id)
         } catch (e) {
           console.log(e)
         }
       }
     }
-    return this.$router.replace({ name: 'list' })
+    const route = this.$router.resolve({ name: 'list' })
+    window.location = route.href
   }
 }
 </script>
