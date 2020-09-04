@@ -69,6 +69,13 @@ module.exports = function (/* ctx */) {
           loader: 'eslint-loader',
           exclude: /node_modules/
         })
+      },
+
+      env: {
+        CREATE_DB_URL: process.env.CREATE_DB_URL,
+        DB_USER: process.env.DB_USER,
+        DB_PASS: process.env.DB_PASS,
+        DB_URL: process.env.DB_URL
       }
     },
 
