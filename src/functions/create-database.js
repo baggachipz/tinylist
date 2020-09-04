@@ -26,7 +26,7 @@ exports.handler = function(event, context, callback) {
   // tack the id on, as defined in CouchDB API
   dbUrl = dbUrl + '/' + id
 
-  callback(null, dbUrl)
+  callback(null, { body: dbUrl })
 
   // // call put method to create the new database
   // fetch(dbUrl, {
