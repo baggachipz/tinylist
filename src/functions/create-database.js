@@ -15,10 +15,8 @@ exports.handler = function(event, context, callback) {
   // make sure things are defined
   if (!dbUrl && !dbUser && !dbPass) throw new Error ('database credentials have not been stored/fetched correctly.')
 
-  // assemble the full db url with credentials, if they already aren't part of it
-  if (!dbUrl.includes(dbUser) && !dbUrl.includes(dbPass)) {
-    dbUrl = dbUrl.replace('://', `://${dbUser}:${dbPass}@`)
-  }
+  // assemble the full db url with credentials
+  dbUrl = dbUrl.replace('://', `://${dbUser}:${dbPass}@`)
 
   // add port to url
   dbUrl += ':' + dbPort
