@@ -24,17 +24,23 @@ exports.handler = function(event, context, callback) {
   dbUrl = dbUrl + '/' + id
 
   // call put method to create the new database
-  const response = await fetch(dbUrl, {
+  const response = fetch(dbUrl, {
     method: 'PUT'
-  })
-  
-  if (response.ok) return id
+  }).then(response => {
+    if (response.ok) callback(null, {
+      statusCode: 200,
+      body: id
+    })
 
-  switch (response.status) {
-    case 412:
-      // already created, just return the id
-      return id
-    default:
-      throw new Error(response.statusText)
-  }
+    switch (response.status) {
+      case 412:
+        // already created, just return the id
+        callback(null, {
+          statusCode: 200,
+          body: id
+        })
+      default:
+        callback(response.statusText)
+    }
+  })
 }
