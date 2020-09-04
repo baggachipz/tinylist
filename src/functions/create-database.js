@@ -1,6 +1,6 @@
-exports.handler = async (event, context) => {
+exports.handler = function(event, context, callback) {
   const fetch = require('node-fetch')
-  return JSON.stringify(event.body)
+  return JSON.stringify(event.body.id)
   const id = event.id
 
   if (!id) {
