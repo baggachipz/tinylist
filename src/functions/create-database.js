@@ -9,7 +9,8 @@ exports.handler = function(event, context, callback) {
 
   let dbUrl = process.env.DB_URL
   const dbUser = process.env.DB_USER,
-    dbPass = process.env.DB_PASS
+    dbPass = process.env.DB_PASS,
+    dbPort = process.env.DB_PORT || 6984
 
   // make sure things are defined
   if (!dbUrl && !dbUser && !dbPass) throw new Error ('database credentials have not been stored/fetched correctly.')
@@ -18,6 +19,9 @@ exports.handler = function(event, context, callback) {
   if (!dbUrl.includes(dbUser) && !dbUrl.includes(dbPass)) {
     dbUrl = dbUrl.replace('://', `://${dbUser}:${dbPass}@`)
   }
+
+  // add port to url
+  dbUrl += ':' + dbPort
 
   // tack the id on, as defined in CouchDB API
   dbUrl = dbUrl + '/' + id
