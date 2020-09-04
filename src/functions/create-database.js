@@ -24,26 +24,24 @@ exports.handler = function(event, context, callback) {
   // tack the id on, as defined in CouchDB API
   dbUrl = dbUrl + '/' + id
 
-  callback(null, { body: dbUrl })
+  // call put method to create the new database
+  fetch(dbUrl, {
+    method: 'PUT'
+  }).then(response => {
+    if (response.ok) callback(null, {
+      statusCode: 200,
+      body: id
+    })
 
-  // // call put method to create the new database
-  // fetch(dbUrl, {
-  //   method: 'PUT'
-  // }).then(response => {
-  //   if (response.ok) callback(null, {
-  //     statusCode: 200,
-  //     body: id
-  //   })
-
-  //   switch (response.status) {
-  //     case 412:
-  //       // already created, just return the id
-  //       callback(null, {
-  //         statusCode: 200,
-  //         body: id
-  //       })
-  //     default:
-  //       callback(response.statusText)
-  //   }
-  // })
+    switch (response.status) {
+      case 412:
+        // already created, just return the id
+        callback(null, {
+          statusCode: 200,
+          body: id
+        })
+      default:
+        callback(response.statusText)
+    }
+  })
 }
