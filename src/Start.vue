@@ -10,6 +10,8 @@ export default {
   async mounted () {
     if (this.uuid) {
       localStorage.setItem('uuid', this.uuid)
+      const route = this.$router.resolve({ name: 'list' })
+      window.location = route.href
     } else {
       if (!localStorage.getItem('uuid')) {
         const id = 'tl' + uid()
