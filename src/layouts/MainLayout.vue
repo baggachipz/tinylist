@@ -181,7 +181,7 @@ export default {
       this.$router.replace({ name: 'get-started' })
     }
     if (!this.dbUrl) {
-      this.dbUrl = process.env.DB_URL || 'http://tinylist:password@localhost:5984'
+      this.dbUrl = process.env.DB_URL ? `${process.env.DB_URL}:${process.env.DB_PORT || 5984}` : 'http://localhost:5984'
     }
   }
 }

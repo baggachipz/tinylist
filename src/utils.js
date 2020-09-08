@@ -1,5 +1,6 @@
 export async function createDatabase (id) {
   if (process.env.PROD) {
+    debugger
     if (process.env.CREATE_DB_URL) {
       try {
         return await fetch(process.env.CREATE_DB_URL, {
@@ -17,6 +18,15 @@ export async function createDatabase (id) {
       throw new Error('CREATE_DB_URL has not been defined for production use.')
     }
   } else {
-    return 'No database creation necessary in dev mode.'
+    const createFunc = require('./functions/create-database').handler
+    return await new Promise((resolve, reject) => {
+      createFunc({ body: JSON.stringify({ id }) }, null, function (err, response) {
+        if (err) {
+          reject('Unable to create database: ' + err.toString())
+        } else {
+          resolve(response)
+        }
+      })
+    })
   }
 }

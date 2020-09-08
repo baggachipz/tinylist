@@ -7,7 +7,7 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -72,7 +72,11 @@ module.exports = function (/* ctx */) {
       },
 
       env: {
-        CREATE_DB_URL: process.env.CREATE_DB_URL
+        CREATE_DB_URL: process.env.CREATE_DB_URL,
+        DB_URL: ctx.dev ? 'http://localhost' : process.env.DB_URL,
+        DB_PORT: ctx.dev ? '5984' : process.env.DB_PORT,
+        DB_USER: ctx.dev ? 'tinylist' : process.env.DB_USER,
+        DB_PASS: ctx.dev ? 'password' : process.env.DB_PASS
       }
     },
 
