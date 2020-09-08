@@ -4,8 +4,7 @@ const routes = [
     path: '/',
     component: () => { return localStorage.getItem('uuid') ? import('layouts/MainLayout.vue') : import('pages/Intro.vue') },
     children: [
-      { path: '', name: 'list', component: () => import('pages/List.vue') },
-      { path: '/share/:uuid', name: 'shareitem', props: true, component: () => import('../Share.vue') }
+      { path: '', name: 'list', component: () => import('pages/List.vue') }
     ]
   },
   {
@@ -31,6 +30,12 @@ const routes = [
     name: 'linkuuid',
     props: true,
     component: () => import('../Start.vue')
+  },
+  {
+    path: '/share/:id',
+    name: 'shareitem',
+    props: true,
+    component: () => import('../Share.vue')
   },
 
   // Always leave this as last one,

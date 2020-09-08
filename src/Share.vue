@@ -1,19 +1,26 @@
 <template>
-  <div></div>
+  <div>Setting up your share....</div>
 </template>
 <script>
 import { uid } from 'quasar'
 import PouchDB from 'pouchdb'
 export default {
   name: 'Share',
-  props: ['uuid', 'id'],
+  props: ['id'],
   async mounted () {
-    const db = new PouchDB(this.uuid)
-    await db.put({
+    const uuid = localStorage.getItem('uuid')
+    if (!uuid) {
+      return this.$router.replace({ name: 'intro' })
+    }
+    const db = new PouchDB(uuid)
+    const response = await db.put({
       _id: uid(),
       type: 'Share',
-      value: this.id
+      value: this.id,
+      sort: -1
     })
+    console.debug(response)
+    debugger
     return this.$router.replace({ name: 'list' })
   }
 }

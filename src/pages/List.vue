@@ -201,7 +201,7 @@ export default {
         const link = window.location.origin + this.$router.resolve({
           name: 'shareitem',
           params: {
-            uuid: shareId
+            id: shareId
           }
         }).href
         this.$emit('share', {
@@ -233,7 +233,7 @@ export default {
         item.type = 'Share'
         item.value = shareId
 
-        // if in production mode, make the call to create the db
+        //  make the call to create the db
         await createDatabase(shareId)
 
         // create the new database for the share
@@ -345,7 +345,8 @@ export default {
     })
 
     this.initDbSync()
-    this.loadItems()
+    await this.loadItems()
+    this.reindexItems()
   },
   updated () {
     this.resizeViewport()
