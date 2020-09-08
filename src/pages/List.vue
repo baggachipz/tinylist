@@ -68,6 +68,7 @@ export default {
       shareDbs: {},
       items: [],
       sharedItems: {},
+      syncs: {},
       viewportHeight: '1000px'
     }
   },
@@ -261,8 +262,13 @@ export default {
       if (!db) db = this.db
       if (!id) id = this.uuid
 
+      if (this.syncs[`${this.dbUrl}/${id}`]) {
+        this.syncs[`${this.dbUrl}/${id}`].cancel()
+        delete this.syncs[`${this.dbUrl}/${id}`]
+      }
+
       if (db && this.dbUrl) {
-        db.sync(`${this.dbUrl}/${id}`, {
+        this.syncs[`${this.dbUrl}/${id}`] = db.sync(`${this.dbUrl}/${id}`, {
           live: true,
           retry: true
         }).on('change', this.loadItems)
@@ -350,9 +356,16 @@ export default {
     },
     uuid: function () {
       this.db = new PouchDB(this.uuid)
-      this.db.replicate.from(`${this.dbUrl}/${this.uuid}`).on('complete', () => {
+      this.db.replicate.from(`${this.dbUrl}/${this.uuid}`).on('complete', async () => {
+        await this.db.createIndex({
+          index: {
+            fields: ['sort']
+          }
+        })
         this.loadItems()
         this.initDbSync()
+      }).on('error', (err) => {
+        console.error(err)
       })
     }
   }
