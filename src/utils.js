@@ -1,6 +1,5 @@
 export async function createDatabase (id) {
   if (process.env.PROD) {
-    debugger
     if (process.env.CREATE_DB_URL) {
       try {
         return await fetch(process.env.CREATE_DB_URL, {
