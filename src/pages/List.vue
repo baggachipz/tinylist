@@ -226,9 +226,6 @@ export default {
         // get rid of the rev info as that pertains to the other item
         delete shareItem._rev
 
-        // set the creator for use later
-        shareItem.creator = this.uuid
-
         // convert the existing item into one of type 'Share' and store the share id
         item.type = 'Share'
         item.value = shareId
