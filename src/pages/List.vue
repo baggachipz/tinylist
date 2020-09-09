@@ -16,9 +16,9 @@
       </div>
     </div>
 
-    <draggable v-else v-model="items" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
+    <draggable v-else v-model="items" :handle="this.$q.platform.is.mobile ? '.handle' : false" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
       <div v-for="(item, idx) in gridItems" :key="idx" class="items-list-item">
-        <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
+        <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
       </div>
     </draggable>
 

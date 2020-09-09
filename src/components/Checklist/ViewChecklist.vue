@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-card-section class="content" :style="contentStyle">
+      <q-icon v-if="this.$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       <p class="q-pa-sm text-h6">{{ value.value.title }}</p>
       <q-list dense>
@@ -44,6 +45,9 @@ export default {
       default: ''
     },
     clipped: {
+      default: false
+    },
+    draggable: {
       default: false
     }
   },
@@ -90,8 +94,12 @@ export default {
       background: linear-gradient(rgba(255,255,255,0), 20%, rgba(255,255,255,1))
     .shared-icon
       position: absolute
-      top: 0
-      right: 0
+      top: -3px
+      right: -1px
+    .handle
+      position: absolute
+      top: -3px
+      left: -5px
   .active-buttons
     padding: 0
     color: $grey-7
