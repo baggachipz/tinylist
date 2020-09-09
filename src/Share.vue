@@ -13,14 +13,12 @@ export default {
       return this.$router.replace({ name: 'intro' })
     }
     const db = new PouchDB(uuid)
-    const response = await db.put({
+    await db.put({
       _id: uid(),
       type: 'Share',
       value: this.id,
       sort: -1
     })
-    console.debug(response)
-    debugger
     return this.$router.replace({ name: 'list' })
   }
 }
