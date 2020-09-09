@@ -3,7 +3,7 @@ exports.handler = function (event, context, callback) {
   const data = JSON.parse(event.body)
   const id = data.id
 
-  const btoaLocal = btoa || btoaShim
+  const bToA = (typeof btoa === 'undefined') ? btoaShim : btoa
 
   if (!id) {
     throw new Error('id was not specified in payload')
@@ -31,7 +31,7 @@ exports.handler = function (event, context, callback) {
     agent: null,
     headers: {
       'Content-Type': 'text/plain',
-      Authorization: 'Basic ' + btoaLocal(`${dbUser}:${dbPass}`)
+      Authorization: 'Basic ' + bToA(`${dbUser}:${dbPass}`)
     }
   }).then(response => {
     if (response.ok) {
