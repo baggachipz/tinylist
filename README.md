@@ -13,8 +13,9 @@ A minimalist, opinionated PWA checklists application.
 1. Squash bugs
 2. Undo delete of documents
 3. Dark mode
-4. Enhance sharing capabilities/ease of use
-5. ???
+4. Labels
+5. Enhance sharing capabilities/ease of use
+6. ???
 
 ## Support If You're a Fan
 If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
