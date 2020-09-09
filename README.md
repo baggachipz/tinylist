@@ -1,6 +1,6 @@
 ![tinylist](https://raw.githubusercontent.com/baggachipz/tinylist/master/src/assets/tinylist-yellow.svg)
 
-A minimalist, opinionated PWA checklists application.
+A secure, anonymous, minimalist PWA checklists application.
 
 * No advertisement or tracking
 * Free to use and open source
@@ -8,6 +8,7 @@ A minimalist, opinionated PWA checklists application.
 * Usable on any modern internet-connected device (but works offline!)
 * Also installs as an app on your phone or tablet
 * Secure and anonymous
+* Share notes with others without exposing your data
 
 ## Feature Roadmap
 1. Squash bugs

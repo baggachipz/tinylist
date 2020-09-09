@@ -55,7 +55,7 @@
                     <q-item-section avatar>
                       <q-icon name="mobile_friendly" />
                     </q-item-section>
-                    <q-item-section>Also installs as an app on your phone or tablet</q-item-section>
+                    <q-item-section>Installs as a progressive app on your phone or tablet</q-item-section>
                   </q-item>
                 </div>
                 <div class="col-12 col-md-6">
