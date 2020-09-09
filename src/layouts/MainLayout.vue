@@ -34,6 +34,20 @@
           class="text-grey-8"
         >
         </q-item-label>
+        <q-item clickable @click="support">
+          <q-item-section avatar>
+            <q-icon name="stars" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              Support tinylist
+            </q-item-label>
+            <q-item-label caption>
+              Hosting isn't cheap. Contributions are appreciated!
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-separator />
         <q-item clickable @click="linkUuid">
           <q-item-section avatar>
             <q-icon name="phonelink" />
@@ -171,6 +185,9 @@ export default {
     },
     bugReport () {
       window.open('https://github.com/baggachipz/tinylist/issues')
+    },
+    support () {
+      window.open('https://ko-fi.com/tinylist')
     }
   },
   created () {
