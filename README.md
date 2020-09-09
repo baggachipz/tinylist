@@ -16,6 +16,9 @@ A minimalist, opinionated PWA checklists application.
 4. Enhance sharing capabilities/ease of use
 5. ???
 
+## Support If You're a Fan
+If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
+
 ## Tech Stack Employed (and shout-outs)
 * [Quasar Framework](https://quasar.dev/)
 * [Vue.js](https://vuejs.org/)
