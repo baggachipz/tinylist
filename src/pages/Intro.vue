@@ -87,7 +87,7 @@
             <h4>Can I use my own database?</h4>
             <p>Absolutely. If you wish to use your own <a href="https://couchdb.apache.org/" target="_blank">CouchDB-compliant database</a>, modify the database address in the sidebar's Advanced Settings area.</p>
             <h4>Do you encrypt all data?</h4>
-            <p>All data is encrypted during transport (via https). Data is not encrypted at-rest in the database (localy or remotely). However, access to that data is not possible without knowing your personal unique key. Sharing of documents with friends or across devices would be prohibitively difficult if all data was encrypted, so this design decision was made. Your information remains secure, available, and convenient using this method.</p>
+            <p>All data is encrypted during transport (via https). Data is not encrypted at-rest in the database (locally or remotely). However, access to that data is not possible without knowing your personal unique key. Sharing of documents with friends or across devices would be prohibitively difficult if all data was encrypted, so this design decision was made. Your information remains secure, available, and convenient using this method.</p>
           </div>
         </div>
 
