@@ -9,6 +9,13 @@ A minimalist, opinionated PWA checklists application.
 * Also installs as an app on your phone or tablet
 * Secure and anonymous
 
+## Feature Roadmap
+1. Squash bugs
+2. Undo delete of documents
+3. Dark mode
+4. Enhance sharing capabilities/ease of use
+5. ???
+
 ## Tech Stack Employed (and shout-outs)
 * [Quasar Framework](https://quasar.dev/)
 * [Vue.js](https://vuejs.org/)
@@ -16,7 +23,8 @@ A minimalist, opinionated PWA checklists application.
 * [PouchDB](https://pouchdb.com/)
 * [CouchDB](http://couchdb.apache.org/)
 
-## Install the dependencies
+## Development
+### Install the dependencies
 ```bash
 npm install
 ```
