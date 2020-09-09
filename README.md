@@ -15,8 +15,9 @@ A secure, anonymous, minimalist PWA checklists application.
 2. Undo delete of documents
 3. Dark mode
 4. Labels
-5. Enhance sharing capabilities/ease of use
-6. ???
+5. Internationalization
+6. Enhance sharing capabilities/ease of use
+7. ???
 
 ## Support If You're a Fan
 If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
