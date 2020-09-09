@@ -48,11 +48,11 @@ export default {
     .shared-icon
       position: absolute
       top: -3px
-      right: -1px
+      left: -1px
     .handle
       position: absolute
       top: -3px
-      left: -5px
+      right: -5px
   .active-buttons
     padding: 0
 </style>
