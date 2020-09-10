@@ -122,7 +122,7 @@ module.exports = function (ctx) {
       manifest: {
         name: 'tinylist',
         short_name: 'tinylist',
-        description: 'A minimalist, opinionated PWA checklists application.',
+        description: 'Create and share notes and checklists, without sacrificing your privacy.',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
