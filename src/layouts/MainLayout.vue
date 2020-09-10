@@ -88,6 +88,7 @@
 <script>
 import ChangeUuidDialog from '../components/ChangeUuidDialog'
 import ChangeDburlDialog from '../components/ChangeDburlDialog'
+import QRCodeDialog from '../components/QRCodeDialog'
 import { copyToClipboard } from 'quasar'
 
 export default {
@@ -159,6 +160,11 @@ export default {
           message: opts.msg,
           actions: [
             {
+              id: 'qrcode',
+              icon: 'qr_code_2',
+              label: 'Scan a code'
+            },
+            {
               id: 'copy',
               icon: 'content_copy',
               label: 'Copy to clipboard'
@@ -171,6 +177,14 @@ export default {
           ]
         }).onOk(action => {
           switch (action.id) {
+            case 'qrcode':
+              this.$q.dialog({
+                component: QRCodeDialog,
+                parent: this,
+                code: opts.url,
+                msg: 'Scan this code with your device to link them and sync your data.'
+              })
+              break
             case 'copy':
               copyToClipboard(opts.url).then(() => {
                 this.$q.notify('Copied to clipboard.')
