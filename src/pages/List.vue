@@ -23,7 +23,10 @@
     </draggable>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-fab icon="edit" color="primary" direction="up" vertical-actions-align="right">
+      <q-tooltip :value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
+        Tap the button to get started. <q-icon name="east" />
+      </q-tooltip>
+      <q-fab icon="edit" color="primary" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
         <q-fab-action label-position="left" icon="sticky_note_2" label="Note" @click="createNew('Note')" />
         <q-fab-action label-position="left" icon="fact_check" label="Checklist" @click="createNew('Checklist')" />
       </q-fab>
@@ -69,7 +72,8 @@ export default {
       items: [],
       sharedItems: {},
       syncs: {},
-      viewportHeight: '1000px'
+      viewportHeight: '1000px',
+      showFtueTooltip: false
     }
   },
   methods: {
@@ -276,9 +280,10 @@ export default {
     resizeViewport () {
       // create a heights array, the length of which matches the number of columns
       const heights = new Array(this.numberOfColumns).fill(0)
+      const items = this.$refs.viewport && this.$refs.viewport.$children ? this.$refs.viewport.$children : []
 
       // iterate through each of the items in the viewport
-      this.$refs.viewport.$children.forEach((child, idx) => {
+      items.forEach((child, idx) => {
         // get the height of that item and add it to the 'column' height
         const height = getComputedStyle(child.$el).getPropertyValue('height')
         heights[idx % this.numberOfColumns] += (parseFloat(height) + 10)
@@ -344,6 +349,7 @@ export default {
     this.initDbSync()
     await this.loadItems()
     this.reindexItems()
+    this.showFtueTooltip = this.$q.screen.name === 'xs' && !this.searchItems.length && !this.gridItems.length
   },
   updated () {
     this.resizeViewport()
