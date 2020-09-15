@@ -3,14 +3,28 @@
     <q-card-section class="content" :style="contentStyle">
       <q-icon v-if="this.$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
-      <p class="q-pa-sm text-h6">{{ value.value.title }}</p>
+      <p class="q-pa-sm text-h6 checklist-title">{{ value.value.title }}</p>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
-          <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" />
+          <q-item-section side class="checklist-side">
+            <q-checkbox v-model="item.value.checked" @input="onInput(item)" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ item.value.label }}
+            </q-item-label>
+          </q-item-section>
         </q-item>
         <q-separator v-if="checkedItems.length && uncheckedItems.length" />
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
-          <q-checkbox v-model="item.value.checked" :label="item.value.label" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
+          <q-item-section side class="checklist-side">
+            <q-checkbox v-model="item.value.checked" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="checked-item">
+              {{ item.value.label }}
+            </q-item-label>
+          </q-item-section>
         </q-item>
       </q-list>
       <div class="clipped" v-if="clipped">&mldr;</div>
@@ -79,8 +93,12 @@ export default {
   .content
     padding: 0
     position: relative
+    .checklist-title
+      margin: 0
     .checklist-item
       padding: 0
+      .checklist-side
+        padding: 0
     .clipped
       position: absolute
       width: 100%

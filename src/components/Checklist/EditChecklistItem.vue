@@ -2,12 +2,12 @@
   <q-item dense @mouseenter="active=true" @mouseleave="active=false" class="q-pa-none">
     <q-item-section side>
       <div class="side-icons">
-        <q-icon dense name="drag_indicator" size="sm" :class="active ? 'drag-active' : 'drag-inactive'" />
+        <q-icon dense name="drag_indicator" size="sm" :class="active ? 'handle drag-active' : 'handle drag-inactive'" />
         <q-checkbox :value="checked" dense size="sm" @input="changeChecked" class="on-right" />
       </div>
     </q-item-section>
     <q-item-section>
-      <q-input borderless dense size="xs" :value="label" placeholder="List item" @input="changeLabel" @keyup.enter="enterPressed" class="q-pa-none" input-class="q-pa-none" ref="input" :autofocus="setFocus" hide-bottom-space />
+      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" @keyup.enter="enterPressed" class="q-pa-none" input-class="q-pa-none" ref="input" :autofocus="setFocus" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
       <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
@@ -53,7 +53,7 @@ export default {
         deleted: this.deleted
       })
     },
-    enterPressed () {
+    enterPressed (e) {
       this.$emit('enter-pressed', this._id)
     },
     deleteItem () {

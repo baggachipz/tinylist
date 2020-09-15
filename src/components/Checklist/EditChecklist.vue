@@ -5,7 +5,7 @@
     </q-card-section>
     <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">
-        <draggable v-model="uncheckedItems">
+        <draggable v-model="uncheckedItems" handle=".handle">
           <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" :set-focus="item.setFocus" @delete="deleteItem" @enter-pressed="insertNewItemAfter" />
         </draggable>
       </q-list>
@@ -17,7 +17,7 @@
           </div>
         </q-item-section>
         <q-item-section>
-          <q-input v-model="newItem" borderless dense deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" autofocus />
+          <q-input v-model="newItem" borderless dense deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" :autofocus="$q.platform.is.desktop" />
         </q-item-section>
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">

@@ -3,7 +3,7 @@
     <q-card-section class="content" :style="contentStyle">
       <q-icon v-if="this.$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
-      <p class="q-pa-sm text-h6">{{ value.value.title }}</p>
+      <p class="q-pa-sm text-h6 note-title">{{ value.value.title }}</p>
       <pre>{{ value.value.data }}</pre>
       <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
@@ -25,7 +25,10 @@ export default {
   .content
     padding: 0
     position: relative
+    .note-title
+      margin: 0
     pre
+      margin: 0
       padding: 0 8px
       font-family: "Roboto"
       overflow-x: auto;
