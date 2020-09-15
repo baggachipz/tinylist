@@ -15,7 +15,7 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-separator v-if="checkedItems.length && uncheckedItems.length" />
+        <q-separator class="checked-separator" v-if="checkedItems.length && uncheckedItems.length" />
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
             <q-checkbox v-model="item.value.checked" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
@@ -118,6 +118,8 @@ export default {
       position: absolute
       top: -3px
       right: -5px
+    .checked-separator
+      margin: 5px 0
   .active-buttons
     padding: 0
     color: $grey-7
