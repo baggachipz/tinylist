@@ -6,7 +6,7 @@
     <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">
         <draggable v-model="uncheckedItems" handle=".handle">
-          <edit-checklist-item v-for="item in uncheckedItems" :key="item._id" :_id="item._id" v-model="item.value" :set-focus="item.setFocus" @delete="deleteItem" @enter-pressed="insertNewItemAfter" />
+          <edit-checklist-item v-for="(item, idx) in uncheckedItems" :key="idx" :_id="item._id" v-model="item.value" @delete="deleteItem" @enter-pressed="insertNewItemAfter" @delete-pressed="appendToItemBefore" />
         </draggable>
       </q-list>
       <q-item dense class="q-pa-none">
@@ -57,29 +57,55 @@ export default {
     }
   },
   methods: {
-    createNewItem (idx) {
-      if (this.newItem && this.newItem.trim().length) {
-        const newItem = {
-          _id: uid(),
-          value: {
-            label: this.newItem,
-            checked: false,
-            deleted: false
+    createNewItem (idx, val) {
+      if (!val) {
+        if (this.newItem && this.newItem.trim().length) {
+          val = this.newItem.slice()
+          this.newItem = ''
+        }
+      }
+
+      const newItem = {
+        _id: uid(),
+        value: {
+          label: val,
+          checked: false,
+          deleted: false
+        }
+      }
+      if (idx >= 0) {
+        this.value.value.items.splice(idx, 0, newItem)
+      } else {
+        this.value.value.items.push(newItem)
+      }
+      return newItem
+    },
+    insertNewItemAfter (args) {
+      const idx = this.getItemIndex(args.id) + 1
+      const item = this.createNewItem(idx, args.val)
+      this.$nextTick(function () {
+        const newIdx = this.getItemIndex(item._id)
+        const component = this.$refs.ChecklistItems.$children[0].$children[newIdx]
+        if (component) {
+          component.focus()
+          component.setCursor(0)
+        }
+      })
+    },
+    appendToItemBefore (args) {
+      const idx = this.getItemIndex(args.id) - 1
+      if (idx >= 0) {
+        const item = this.$refs.ChecklistItems.$children[0].$children[idx]
+        if (item) {
+          item.focus()
+          if (args.val) {
+            item.appendLabel(args.val)
           }
         }
-        if (idx >= 0) {
-          newItem.setFocus = true
-          this.value.value.items.splice(idx, 0, newItem)
-        } else {
-          this.value.value.items.push(newItem)
-        }
-        this.newItem = ''
       }
     },
-    insertNewItemAfter (id) {
-      this.newItem = ''
-      const idx = this.value.value.items.findIndex(item => item._id === id)
-      this.createNewItem(idx + 1)
+    getItemIndex (id) {
+      return this.value.value.items.findIndex(item => item._id === id)
     },
     deleteItem (id) {
       this.value.value.items = this.value.value.items.filter(item => item._id !== id)
@@ -114,6 +140,11 @@ export default {
         title: null,
         items: []
       })
+    }
+  },
+  beforeDestroy () {
+    if (this.newItem && this.newItem.length) {
+      this.createNewItem()
     }
   }
 }

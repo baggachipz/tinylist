@@ -7,7 +7,7 @@
       </div>
     </q-item-section>
     <q-item-section>
-      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" @keyup.enter="enterPressed" class="q-pa-none" input-class="q-pa-none" ref="input" :autofocus="setFocus" hide-bottom-space />
+      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
       <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
@@ -21,10 +21,7 @@ export default {
     _id: {
       required: true
     },
-    value: {},
-    setFocus: {
-      default: false
-    }
+    value: {}
   },
   data () {
     return {
@@ -38,6 +35,10 @@ export default {
     focus () {
       this.$refs.input.focus()
     },
+    appendLabel (val) {
+      this.label += val
+      this.onChange()
+    },
     changeLabel (val) {
       this.label = val
       this.onChange()
@@ -45,6 +46,12 @@ export default {
     changeChecked (val) {
       this.checked = val
       this.onChange()
+    },
+    setCursor (idx) {
+      if (idx < 0) {
+        idx = this.label.length + idx
+      }
+      this.$refs.input.$refs.input.selectionStart = this.$refs.input.$refs.input.selectionEnd = idx
     },
     onChange () {
       this.$emit('input', {
@@ -54,7 +61,23 @@ export default {
       })
     },
     enterPressed (e) {
-      this.$emit('enter-pressed', this._id)
+      const start = e.target.selectionStart, end = e.target.selectionEnd
+      if (end > 0) {
+        const beginStr = this.label.slice(0, start)
+        const endStr = this.label.slice(end)
+        this.changeLabel(beginStr.replace(/\r?\n|\r/, ''))
+        this.$emit('enter-pressed', { id: this._id, val: endStr })
+      }
+      e.preventDefault()
+    },
+    deletePressed (e) {
+      const start = e.target.selectionStart, end = e.target.selectionEnd
+      if (start === 0 && end === 0) {
+        const endStr = this.label ? this.label.slice(end) : ''
+        this.$emit('delete-pressed', { id: this._id, val: endStr })
+        this.deleteItem()
+        e.preventDefault()
+      }
     },
     deleteItem () {
       this.$emit('delete', this._id)
@@ -65,6 +88,14 @@ export default {
     this.checked = !!this.value.checked
     this.deleted = !!this.value.deleted
     this.onChange()
+  },
+  watch: {
+    value: {
+      handler: function () {
+        this.label = this.value.label
+      },
+      deep: true
+    }
   }
 }
 </script>

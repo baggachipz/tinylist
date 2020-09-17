@@ -34,9 +34,14 @@ export default {
       // required by name for QDialog plugin
       this.$refs.dialog.show()
     },
-    hide () {
+    async hide (ok) {
       // required by name for QDialog plugin
-      this.$refs.dialog.hide()
+      await this.$refs.dialog.hide()
+      if (ok) {
+        this.$emit('ok', this.value)
+      } else {
+        this.$emit('cancel')
+      }
     },
     onDialogHide () {
       // required to be emitted
@@ -44,14 +49,7 @@ export default {
       this.$emit('hide')
     },
     onCloseClick () {
-      if (!this.value.new || this.$refs['edit-component'].hasData()) {
-        // if new item box has a value in it, add as an item before close
-        if (this.$refs['edit-component'].createNewItem) this.$refs['edit-component'].createNewItem()
-        this.$emit('ok', this.value)
-      } else {
-        this.$emit('cancel')
-      }
-      this.hide()
+      this.hide(!this.value.new || this.$refs['edit-component'].hasData())
     },
     deleteItem () {
       this.$parent.$parent.deleteItem(this.value._id)
