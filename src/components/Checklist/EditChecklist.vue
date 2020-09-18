@@ -58,7 +58,6 @@ export default {
   },
   methods: {
     createNewItem (idx, val) {
-      debugger
       if (!val) {
         if (this.newItem && this.newItem.trim().length) {
           val = this.newItem.slice()
