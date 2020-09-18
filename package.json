@@ -1,6 +1,6 @@
 {
   "name": "tinylist",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A minimalist, opinionated PWA notes/checklists application.",
   "productName": "TinyList",
   "author": "Matt Curtis <matt@curtii.com>",
