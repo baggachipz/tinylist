@@ -12,7 +12,7 @@
       <q-item dense class="q-pa-none">
         <q-item-section side>
           <div class="side-icons">
-            <q-btn flat round dense icon="add" size="sm" @click="createNewItem" />
+            <q-btn flat round dense icon="add" size="sm" @click="createNewItem()" />
             <q-checkbox dense size="sm" :value="false" class="on-right" disabled />
           </div>
         </q-item-section>
@@ -58,6 +58,7 @@ export default {
   },
   methods: {
     createNewItem (idx, val) {
+      debugger
       if (!val) {
         if (this.newItem && this.newItem.trim().length) {
           val = this.newItem.slice()
