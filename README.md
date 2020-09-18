@@ -13,11 +13,12 @@ A secure, anonymous, minimalist PWA checklists application.
 ## Feature Roadmap
 1. Squash bugs
 2. Undo delete of documents
-3. Dark mode
-4. Labels
-5. Internationalization
-6. Enhance sharing capabilities/ease of use
-7. ???
+3. Alphabetical sort for checklists
+4. Markdown support for notes
+5. Dark mode
+6. Internationalization
+7. Enhance sharing capabilities/ease of use
+8. ???
 
 ## Support If You're a Fan
 If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
