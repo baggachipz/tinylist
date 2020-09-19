@@ -1,0 +1,27 @@
+---
+version: "3.2"
+
+services:
+  tinylist:
+    image: 127.0.0.1:5000/tinylist
+    environment:
+      PROD: 'true'
+      DB_URL: couchdb
+      DB_PORT: 5984
+      DB_USER: tinylist
+      DB_PASS: tinylist
+      CREATE_DB_URL: http://couchdb:5984
+    ports:
+      - "80:80"
+      - "443:443"
+  couchdb:
+    image: couchdb
+    environment:
+      COUCHDB_USER: tinylist
+      COUCHDB_PASSWORD: tinylist
+    volumes:
+      - /mnt/data/couchdb:/opt/couchdb/data
+    ports:
+      - "5984:5984"
+
+
