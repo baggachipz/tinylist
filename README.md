@@ -10,6 +10,9 @@ A secure, anonymous, minimalist PWA checklists application.
 * Secure and anonymous
 * Share notes with others without exposing your data
 
+Video description of the project:
+https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
+
 ## Feature Roadmap
 1. Squash bugs
 2. Undo delete of documents
