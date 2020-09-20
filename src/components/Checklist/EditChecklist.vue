@@ -28,8 +28,11 @@
     </q-card-section>
     <q-card-actions>
       <slot name="bottom-toolbar-left"></slot>
-      <q-btn flat round icon="delete_sweep" class="action-button" @click="deleteCheckedItems" v-if="checkedItems.length" tooltip="Delete checked items">
+      <q-btn flat round icon="delete_sweep" class="action-button" @click="deleteCheckedItems" v-if="checkedItems.length">
         <q-tooltip>Delete checked items</q-tooltip>
+      </q-btn>
+      <q-btn flat round icon="sort" class="action-button" @click="toggleSort" v-if="uncheckedItems">
+        <q-tooltip>Sort (ascending, descending)</q-tooltip>
       </q-btn>
       <q-space />
       <slot name="bottom-toolbar-right"></slot>
@@ -53,7 +56,8 @@ export default {
   data () {
     return {
       newItem: '',
-      checkedExpanded: false
+      checkedExpanded: false,
+      sort: null
     }
   },
   methods: {
@@ -116,6 +120,31 @@ export default {
     },
     hasData () {
       return this.value && this.value.value && ((this.value.value.title && this.value.value.title.length) || (this.value.value.items && this.value.value.items.length) || (this.newItem && this.newItem.length))
+    },
+    toggleSort () {
+      const sorts = ['asc', 'desc']
+      this.sort = sorts[(sorts.indexOf(this.sort) + 1) % sorts.length]
+      this.$set(this.value.value, 'items', this.sortItems())
+    },
+    sortItems () {
+      switch (this.sort) {
+        case 'asc':
+          return this.value.value.items.sort((a, b) => {
+            const aVal = a.value.label.toLowerCase(), bVal = b.value.label.toLowerCase()
+            if (aVal === bVal) return 0
+            return aVal > bVal ? 1 : -1
+          })
+        case 'desc':
+          return this.value.value.items.sort((a, b) => {
+            const aVal = a.value.label.toLowerCase(), bVal = b.value.label.toLowerCase()
+            if (aVal === bVal) return 0
+            return aVal < bVal ? 1 : -1
+          })
+        case 'id':
+          return this.value.value.items.sort((a, b) => a._id - b._id)
+        default:
+          return this.value.value.items
+      }
     }
   },
   computed: {
