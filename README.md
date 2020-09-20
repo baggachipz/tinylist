@@ -57,3 +57,6 @@ quasar build -m pwa
 
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+
+### Running the App on Docker
+[Docker instructions](Docker.md) are available to run the app using docker-compose.
