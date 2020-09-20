@@ -66,7 +66,7 @@ export default {
       return `View${this.value.type}`
     },
     contentStyle () {
-      return `overflow: hidden; max-height: ${this.maxHeight}px;`
+      return `overflow: auto; max-height: ${this.maxHeight}px;`
     },
     cardClass () {
       return this.value.share ? 'shared q-pa-xs' : 'q-pa-xs'

@@ -1,11 +1,10 @@
 <template>
   <div>
-    <q-card-section class="content" :style="contentStyle">
+    <q-card-section class="content">
       <q-icon v-if="this.$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       <p class="q-pa-sm text-h6 note-title">{{ value.value.title }}</p>
-      <pre>{{ value.value.data }}</pre>
-      <div class="clipped" v-if="clipped">&mldr;</div>
+      <div v-html="content" class="markdown" :style="contentStyle" />
     </q-card-section>
     <q-card-actions v-if="this.$q.platform.is.desktop" class="active-buttons">
       <slot name="bottom-toolbar-left"></slot>
@@ -16,9 +15,16 @@
   </div>
 </template>
 <script>
+import MarkdownIt from 'markdown-it'
 export default {
   name: 'ViewNote',
-  props: ['value', 'active', 'contentStyle', 'clipped', 'draggable']
+  props: ['value', 'active', 'contentStyle', 'clipped', 'draggable'],
+  computed: {
+    content () {
+      const md = new MarkdownIt()
+      return md.render(this.value.value.data)
+    }
+  }
 }
 </script>
 <style lang="sass" scoped>
@@ -27,16 +33,9 @@ export default {
     position: relative
     .note-title
       margin: 0
-    pre
-      margin: 0
+    .markdown
       padding: 0 8px
-      font-family: "Roboto"
-      overflow-x: auto;
-      white-space: pre-wrap;
-      white-space: -moz-pre-wrap;
-      white-space: -pre-wrap;
-      white-space: -o-pre-wrap;
-      word-wrap: break-word;
+      overflow: scroll-auto
     .clipped
       position: absolute
       width: 100%
