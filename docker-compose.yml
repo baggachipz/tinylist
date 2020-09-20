@@ -6,15 +6,22 @@ services:
     image: 127.0.0.1:5000/tinylist
     environment:
       PROD: 'true'
-      DB_URL: couchdb
+      DB_URL: http://db
       DB_PORT: 5984
       DB_USER: tinylist
       DB_PASS: tinylist
-      CREATE_DB_URL: http://couchdb:5984
+#      CREATE_DB_URL: http://db:5984
+      CREATE_DB_URL: 'http://db:5984'
+#      NODE_ENV: development
+#      SERVICE_WORKER_FILE: 
     ports:
       - "80:80"
+#      - "81:81"
       - "443:443"
-  couchdb:
+    depends_on:
+      - db
+
+  db:
     image: couchdb
     environment:
       COUCHDB_USER: tinylist
