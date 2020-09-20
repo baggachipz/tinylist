@@ -3,21 +3,18 @@ version: "3.2"
 
 services:
   tinylist:
-    image: 127.0.0.1:5000/tinylist
-    environment:
-      PROD: 'true'
-      DB_URL: http://db
-      DB_PORT: 5984
-      DB_USER: tinylist
-      DB_PASS: tinylist
-#      CREATE_DB_URL: http://db:5984
-      CREATE_DB_URL: 'http://db:5984'
-#      NODE_ENV: development
-#      SERVICE_WORKER_FILE: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROD: 'true'
+        DB_URL: http://192.168.1.5
+        DB_PORT: 5984
+        DB_USER: tinylist
+        DB_PASS: tinylist
+        CREATE_DB_URL: 'http://192.168.1.5:5984'
     ports:
       - "80:80"
-#      - "81:81"
-      - "443:443"
     depends_on:
       - db
 
