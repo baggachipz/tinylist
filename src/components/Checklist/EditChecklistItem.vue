@@ -93,6 +93,8 @@ export default {
     value: {
       handler: function () {
         this.label = this.value.label
+        this.checked = this.value.checked
+        this.deleted = this.value.deleted
       },
       deep: true
     }
