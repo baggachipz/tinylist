@@ -33,6 +33,7 @@ If you like this project, please consider [supporting it](https://ko-fi.com/tiny
 * [Vue-Draggable](https://github.com/SortableJS/Vue.Draggable)
 * [PouchDB](https://pouchdb.com/)
 * [CouchDB](http://couchdb.apache.org/)
+* [markdown-it](https://github.com/markdown-it/markdown-it)
 
 ## Development
 ### Install the dependencies
