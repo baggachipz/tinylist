@@ -66,3 +66,6 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 ### Running the App on Docker
 [Docker instructions](Docker.md) are available to run the app using docker-compose.
+
+### Running your own database instance ###
+[Instructions  here](https://github.com/baggachipz/tinylist/wiki/Configuring-CouchDB-for-use-with-TinyList) for installing and configuring your own CouchDB instance.
