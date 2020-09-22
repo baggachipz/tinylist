@@ -15,7 +15,7 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 
 ## Feature Roadmap
 1. Squash bugs
-2. Undo delete of documents
+2. ~~Undo delete of documents~~
 3. ~~Alphabetical sort for checklists~~
 4. ~~Markdown support for notes~~
 5. Dark mode
