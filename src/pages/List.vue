@@ -182,9 +182,22 @@ export default {
     async deleteItem (id) {
       const doc = this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
       if (doc) {
-        await this.db.remove(doc)
+        const response = await this.db.remove(doc)
+        // set rev to the newest one so the restore doesn't cause a conflict
+        doc._rev = response._rev
         this.loadItems()
+        this.$q.notify({
+          message: 'Deleted.',
+          progress: true,
+          actions: [
+            { label: 'Undo', handler: () => this.restoreItem(doc) }
+          ]
+        })
       }
+    },
+    async restoreItem (doc) {
+      await this.db.put(doc)
+      await this.loadItems()
     },
     async reindexItems () {
       // bulk-insert the documents after updating their sort properties
