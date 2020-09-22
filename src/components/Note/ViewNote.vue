@@ -1,10 +1,11 @@
 <template>
   <div>
-    <q-card-section class="content">
+    <q-card-section class="content" :style="contentStyle">
       <q-icon v-if="this.$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       <p class="q-pa-sm text-h6 note-title">{{ value.value.title }}</p>
-      <div v-html="content" class="markdown" :style="contentStyle" />
+      <div v-html="content" class="markdown" />
+      <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
     <q-card-actions v-if="this.$q.platform.is.desktop" class="active-buttons">
       <slot name="bottom-toolbar-left"></slot>
