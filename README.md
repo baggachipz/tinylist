@@ -41,6 +41,11 @@ If you like this project, please consider [supporting it](https://ko-fi.com/tiny
 npm install
 ```
 
+### Install Quasar CLI ###
+```bash
+npm -g @quasar/cli
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
 quasar dev
