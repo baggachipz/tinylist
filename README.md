@@ -19,9 +19,9 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 3. ~~Alphabetical sort for checklists~~
 4. ~~Markdown support for notes~~
 5. Dark mode
-6. True list view
-7. Internationalization
-8. Enhance sharing capabilities/ease of use
+6. Enhance PWA 'add to homescreen' functionality
+7. True list view
+8. Internationalization
 9. ???
 
 ## Support If You're a Fan
