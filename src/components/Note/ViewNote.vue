@@ -58,4 +58,8 @@ export default {
       right: -5px
   .active-buttons
     padding: 0
+  .body--dark
+    .content
+      .clipped
+        background: linear-gradient(rgba(29,29,29,0), 20%, rgba(29,29,29,1))
 </style>

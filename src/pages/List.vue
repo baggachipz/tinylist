@@ -26,7 +26,7 @@
       <q-tooltip :value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
         Tap the button to get started. <q-icon name="east" />
       </q-tooltip>
-      <q-fab icon="edit" color="primary" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
+      <q-fab icon="edit" color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
         <q-fab-action label-position="left" icon="sticky_note_2" label="Note" @click="createNew('Note')" />
         <q-fab-action label-position="left" icon="fact_check" label="Checklist" @click="createNew('Checklist')" />
       </q-fab>

@@ -14,7 +14,7 @@
       </q-card-section>
       <q-card-actions align="right">
         <q-btn label="Cancel" @click="onCancelClick" />
-        <q-btn color="primary" label="Save" @click="onSaveClick" />
+        <q-btn :color="$q.dark.isActive ? '' : 'primary'" :text-color="$q.dark.isActive ? 'primary' : ''" label="Save" @click="onSaveClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>

@@ -190,9 +190,4 @@ export default {
   .checked-item
     color: $grey-7
     text-decoration: line-through
-  .action-button
-    color: $grey-7
-    &:hover
-      color: black
-
 </style>

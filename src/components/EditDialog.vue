@@ -15,7 +15,7 @@
               <q-tooltip>Share</q-tooltip>
             </q-btn>
           </div>
-          <q-btn color="primary" label="Close" @click="onCloseClick" />
+          <q-btn :color="$q.dark.isActive ? '' : 'primary'" :text-color="$q.dark.isActive ? 'primary' : ''" label="Close" @click="onCloseClick" />
         </template>
       </component>
     </q-card>
@@ -67,10 +67,3 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
-  .action-buttons
-    color: $grey-7
-    button
-      &:hover
-        color: black
-</style>

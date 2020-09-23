@@ -122,8 +122,8 @@ export default {
       margin: 5px 0
   .active-buttons
     padding: 0
-    color: $grey-7
-    button
-      &:hover
-        color: black
+  .body--dark
+    .content
+      .clipped
+        background: linear-gradient(rgba(29,29,29,0), 20%, rgba(29,29,29,1))
 </style>

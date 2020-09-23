@@ -9,7 +9,7 @@
         <div class="qrcode" v-html="qrcode" />
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn color="primary" label="Done" @click="onOKClick" />
+        <q-btn :color="$q.dark.isActive ? '' : 'primary'" :text-color="$q.dark.isActive ? 'primary' : ''" label="Done" @click="onOKClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>

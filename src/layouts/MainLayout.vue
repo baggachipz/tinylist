@@ -6,11 +6,12 @@
           flat
           dense
           round
+          :color="$q.dark.isActive ? 'dark' : ''"
           icon="menu"
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
-        <q-input standout dark dense class="search q-ml-md on-left" placeholder="Search..." input-class="text-right" debounce="500" v-model="search">
+        <q-input standout :dark="!$q.dark.isActive" dense class="search q-ml-md on-left" placeholder="Search..." input-class="text-right" debounce="500" v-model="search">
           <template v-slot:append>
             <q-icon v-if="search === ''" name="search" />
             <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
@@ -18,7 +19,11 @@
         </q-input>
         <q-space />
 
-        <img src="~/assets/tinylist-white.svg" class="logo" alt="tinylist" />
+        <q-btn flat dense unelevated :ripple="false" @click="toggleDarkMode">
+          <img v-if="$q.dark.isActive" src="~/assets/tinylist-dark.svg" class="logo" alt="tinylist" />
+          <img v-else src="~/assets/tinylist-white.svg" class="logo" alt="tinylist" />
+          <q-tooltip>Toggle Dark Mode</q-tooltip>
+        </q-btn>
 
       </q-toolbar>
     </q-header>
@@ -26,14 +31,9 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
-      content-class="bg-grey-1 sidebar"
+      content-class="sidebar"
     >
       <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-        </q-item-label>
         <q-item clickable @click="support">
           <q-item-section avatar>
             <q-icon name="stars" />
@@ -202,10 +202,18 @@ export default {
     },
     support () {
       window.open('https://ko-fi.com/tinylist')
+    },
+    toggleDarkMode () {
+      this.$q.dark.toggle()
+      localStorage.setItem('darkmode', this.$q.dark.isActive)
     }
   },
   created () {
     this.createdFirst = localStorage.getItem('createdFirst')
+    const darkMode = localStorage.getItem('darkmode')
+    if (darkMode !== null && typeof darkMode !== 'undefined') {
+      this.$q.dark.set(JSON.parse(darkMode))
+    }
   },
   mounted () {
     if (!this.uuid) {

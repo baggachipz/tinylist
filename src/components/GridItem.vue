@@ -82,12 +82,3 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
-  .active-buttons
-    color: $grey-7
-    button
-      &:hover
-        color: black
-  .shared
-    background: $amber-1
-</style>
