@@ -73,6 +73,16 @@
             <q-item-label>File a Bug Report</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable @click="redditCommunity">
+          <q-item-section avatar>
+            <q-icon v-if="$q.dark.isActive" name="tl:reddit-dark" />
+            <q-icon v-else name="tl:reddit-light" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Reddit Community</q-item-label>
+            <q-item-label caption>/r/tinylist for updates, discussion</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
       <div class="terms-links">
         <q-btn flat dense :to="{ name: 'intro' }">Introduction</q-btn><br><q-btn flat dense :to="{ name: 'terms' }">Terms of Service</q-btn> | <q-btn flat dense :to="{ name: 'privacy'}">Privacy Policy</q-btn>
@@ -90,6 +100,11 @@ import ChangeUuidDialog from '../components/ChangeUuidDialog'
 import ChangeDburlDialog from '../components/ChangeDburlDialog'
 import QRCodeDialog from '../components/QRCodeDialog'
 import { copyToClipboard } from 'quasar'
+
+const additionalIcons = {
+  'tl:reddit-light': 'img:/icons/reddit-light.svg',
+  'tl:reddit-dark': 'img:/icons/reddit-dark.svg'
+}
 
 export default {
   name: 'MainLayout',
@@ -203,6 +218,9 @@ export default {
     support () {
       window.open('https://ko-fi.com/tinylist')
     },
+    redditCommunity () {
+      window.open('https://www.reddit.com/r/tinylist')
+    },
     toggleDarkMode () {
       this.$q.dark.toggle()
       localStorage.setItem('darkmode', this.$q.dark.isActive)
@@ -213,6 +231,14 @@ export default {
     const darkMode = localStorage.getItem('darkmode')
     if (darkMode !== null && typeof darkMode !== 'undefined') {
       this.$q.dark.set(JSON.parse(darkMode))
+    }
+
+    // map custom icons into the set as defined at the top
+    this.$q.iconMapFn = (iconName) => {
+      const icon = additionalIcons[iconName]
+      if (typeof icon !== 'undefined') {
+        return { icon: icon }
+      }
     }
   },
   mounted () {
