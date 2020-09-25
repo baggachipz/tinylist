@@ -16,7 +16,7 @@
           <div class="col col-md-9">
             <h5><strong>tinylist</strong> is different from other note-taking apps:</h5>
 
-            <q-list class="text-grey-9 text-body1">
+            <q-list class="text-body1">
               <div class="row items-center">
                 <div class="col-12 col-md-6">
                   <q-item>
@@ -109,8 +109,13 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-  .page
-    background: $amber-1
   .logo
     width: 90%
+
+  .body--dark
+    a
+      color  white
+  .body--light
+    .page
+      background: $amber-1
 </style>

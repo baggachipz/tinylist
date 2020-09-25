@@ -23,4 +23,8 @@ export default {
 <style lang="sass" scoped>
   .logo
     height: 40px
+
+  .body--dark
+    a
+      color $white
 </style>
