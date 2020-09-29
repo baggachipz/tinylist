@@ -70,17 +70,19 @@ module.exports = function (ctx) {
           exclude: /node_modules/
         })
 
-        const CopyWebpackPlugin = require('copy-webpack-plugin')
-        cfg.plugins.push(
-          new CopyWebpackPlugin({
-            patterns: [
-              {
-                from: '_redirects',
-                to: cfg.output.path
-              }
-            ]
-          })
-        )
+        if (cfg.output && cfg.output.path) {
+          const CopyWebpackPlugin = require('copy-webpack-plugin')
+          cfg.plugins.push(
+            new CopyWebpackPlugin({
+              patterns: [
+                {
+                  from: '_redirects',
+                  to: cfg.output.path
+                }
+              ]
+            })
+          )
+        }
       },
 
       env: {
