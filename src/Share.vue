@@ -11,15 +11,24 @@
 </template>
 <script>
 import { uid } from 'quasar'
+import { createDatabase } from './utils'
 import PouchDB from 'pouchdb'
 export default {
   name: 'Share',
   props: ['id'],
   async mounted () {
-    const uuid = localStorage.getItem('uuid')
-    if (!uuid) {
-      return this.$router.replace({ name: 'intro' })
+    // create database if it doesn't exist yet
+    if (!localStorage.getItem('uuid')) {
+      const id = 'tl' + uid()
+      try {
+        await createDatabase(id)
+        localStorage.setItem('uuid', id)
+      } catch (e) {
+        console.log(e)
+      }
     }
+    // get db and store the new item
+    const uuid = localStorage.getItem('uuid')
     const db = new PouchDB(uuid)
     await db.put({
       _id: uid(),
