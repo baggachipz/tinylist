@@ -69,6 +69,18 @@ module.exports = function (ctx) {
           loader: 'eslint-loader',
           exclude: /node_modules/
         })
+
+        const CopyWebpackPlugin = require('copy-webpack-plugin')
+        cfg.plugins.push(
+          new CopyWebpackPlugin({
+            patterns: [
+              {
+                from: '_redirects',
+                to: cfg.output.path
+              }
+            ]
+          })
+        )
       },
 
       env: {
