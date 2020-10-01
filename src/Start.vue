@@ -31,6 +31,9 @@ export default {
         } catch (e) {
           console.log(e)
         }
+      } else {
+        const route = this.$router.resolve({ name: 'list' })
+        window.location = route.href
       }
     }
   }
