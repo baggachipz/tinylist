@@ -3,7 +3,7 @@
     <q-page-container>
       <q-page class="msg-bg">
         <div class="row">
-          <div class="col msg text-body1"><p><q-spinner-ball size="3em" /></p><p>Creating your database....</p></div>
+          <div class="col msg"><p><q-spinner-ball size="3em" /></p><p>Creating your database....</p></div>
         </div>
       </q-page>
     </q-page-container>

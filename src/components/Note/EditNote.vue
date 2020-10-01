@@ -42,6 +42,6 @@ export default {
     padding-top: 0
     padding-bottom: 0
   .input-area
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 220px);
     overflow: auto
 </style>

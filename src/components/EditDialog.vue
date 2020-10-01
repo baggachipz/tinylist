@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
+  <q-dialog persistent ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <component v-bind:is="editType" v-model="value" ref="edit-component">
         <template v-slot:bottom-toolbar-left>
