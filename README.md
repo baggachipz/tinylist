@@ -21,8 +21,9 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 5. ~~Dark mode~~
 6. Enhance PWA 'add to homescreen' functionality
 7. True list view
-8. Internationalization
-9. ???
+8. Ability to 'pin' notes/checklists to the top
+9. Internationalization
+19. ???
 
 ## Support If You're a Fan
 If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
