@@ -20,7 +20,7 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 4. ~~Markdown support for notes~~
 5. ~~Dark mode~~
 6. Enhance PWA 'add to homescreen' functionality
-7. True list view
+7. ~~True list view~~
 8. Ability to 'pin' notes/checklists to the top
 9. Internationalization
 19. ???
