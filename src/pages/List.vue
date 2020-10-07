@@ -10,14 +10,14 @@
       </q-banner>
     </div>
 
-    <div class="search-results items-list scroll-y column" v-if="searchItems">
-      <div v-for="(item, idx) in searchItems" :key="idx" class="items-list-item">
+    <div class="search-results items-grid scroll-y column" v-if="searchItems">
+      <div v-for="(item, idx) in searchItems" :key="idx" class="display-item">
         <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
       </div>
     </div>
 
-    <draggable v-else v-model="items" :handle="this.$q.platform.is.mobile ? '.handle' : false" class="items-list scroll-y column" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
-      <div v-for="(item, idx) in gridItems" :key="idx" class="items-list-item">
+    <draggable v-else v-model="items" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
+      <div v-for="(item, idx) in displayItems" :key="idx" class="display-item">
         <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
       </div>
     </draggable>
@@ -63,6 +63,9 @@ export default {
     },
     search: {
       default: null
+    },
+    displayMode: {
+      default: 'grid'
     }
   },
   data () {
@@ -299,7 +302,7 @@ export default {
       items.forEach((child, idx) => {
         // get the height of that item and add it to the 'column' height
         const height = getComputedStyle(child.$el).getPropertyValue('height')
-        heights[idx % this.numberOfColumns] += (parseFloat(height) + 10)
+        heights[idx % this.numberOfColumns] += (parseFloat(height) + 12)
       })
 
       // set the height to the tallest column height
@@ -321,26 +324,27 @@ export default {
   },
   computed: {
     numberOfColumns () {
+      if (this.displayMode === 'list') {
+        return 1
+      }
+
       switch (this.$q.screen.name) {
         case 'xs':
           return 2
         case 'sm':
         case 'md':
           return 3
-        case 'lg':
-        case 'xl':
-          return 4
         default:
           return 3
       }
     },
-    gridItems () {
+    displayItems () {
       return this.mapItems(this.items)
     },
     searchItems () {
       const search = this.search && this.search.length > 2 ? new RegExp(this.search, 'i') : false
       if (!search) return false
-      return this.gridItems.filter(item => {
+      return this.displayItems.filter(item => {
         if (search.test(item.value.title)) return true
         if (item.type === 'Checklist') {
           return item.value.items.some(val => search.test(val.value.label))
@@ -362,7 +366,7 @@ export default {
     this.initDbSync()
     await this.loadItems()
     this.reindexItems()
-    this.showFtueTooltip = this.$q.screen.name === 'xs' && !this.searchItems.length && !this.gridItems.length
+    this.showFtueTooltip = this.$q.screen.name === 'xs' && !this.searchItems.length && !this.displayItems.length
   },
   updated () {
     this.resizeViewport()
@@ -391,16 +395,12 @@ export default {
 
 <style lang="sass" scoped>
 
-  // Masonry layout
-  .items-list-item
-    padding: 5px
-
-  .items-list
+  // Masonry (grid) layout
+  .items-grid
     flex-flow: column wrap
     overflow-y: visible
     height: 1000px
 
-  .items-list
     @media (max-width: $breakpoint-xs-max)
       > div
         &:nth-child(2n + 1)
@@ -414,7 +414,7 @@ export default {
         width: 0 !important
         order: 1
 
-    @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
+    @media (min-width: $breakpoint-sm-min)
       > div
         &:nth-child(3n + 1)
           order: 1
@@ -430,32 +430,27 @@ export default {
         width: 0 !important
         order: 2
 
-    @media (min-width: $breakpoint-lg-min)
-      > div
-        &:nth-child(3n + 1)
-          order: 1
-        &:nth-child(3n + 2)
-          order: 2
-        &:nth-child(3n + 3)
-          order: 3
-        &:nth-child(3n)
-          order: 4
-
-      &:before,
-      &:after
-        content: ''
-        flex: 1 0 100% !important
-        width: 0 !important
-        order: 3
-
-    .items-list-item
+    .display-item
+      padding: 5px
       @media (max-width: $breakpoint-xs-max)
         width: 50%
-      @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
+      @media (min-width: $breakpoint-sm-min)
         width: 33.33%
-      @media (min-width: $breakpoint-lg-min)
-        width: 25%
 
+  // List layout
+  .items-list
+    .display-item
+      width: 100%
+      .q-card
+        margin: 5px auto
+        @media (max-width: $breakpoint-xs-max)
+          width: 100%
+        @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
+          width: 51%
+        @media (min-width: $breakpoint-lg-min)
+          width: 800px
+
+  // Other list page features
   .top-focus-area
     margin: 0 auto
     width: 100%

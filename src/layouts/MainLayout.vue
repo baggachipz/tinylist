@@ -19,7 +19,7 @@
         </q-input>
         <q-space />
 
-        <q-btn flat dense unelevated :ripple="false" @click="toggleDarkMode">
+        <q-btn flat dense unelevated :ripple="false" @click="darkMode = !darkMode">
           <img v-if="$q.dark.isActive" src="~/assets/tinylist-dark.svg" class="logo" alt="tinylist" />
           <img v-else src="~/assets/tinylist-white.svg" class="logo" alt="tinylist" />
           <q-tooltip>Toggle Dark Mode</q-tooltip>
@@ -33,7 +33,7 @@
       bordered
       content-class="sidebar"
     >
-      <q-list>
+      <q-list class="sidebar-menu">
         <q-item clickable @click="support">
           <q-item-section avatar>
             <q-icon name="stars" />
@@ -57,15 +57,45 @@
           </q-item-section>
         </q-item>
         <q-separator />
-        <q-expansion-item icon="settings" label="Advanced Settings" caption="Here there be dragons">
-          <q-card>
-            <q-card-section>
-              <q-input dense readonly :value="this.uuid" label="My Unique ID" @click="editUuid" />
-              <q-input dense readonly :value="this.dbUrl" label="Remote Database" @click="editDbUrl" />
-            </q-card-section>
-          </q-card>
+        <q-expansion-item icon="settings" label="Settings" group="settings">
+          <q-list dense>
+            <q-item tag="label">
+              <q-item-section>
+                <q-item-label>Dark Mode</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-toggle v-model="darkMode" />
+              </q-item-section>
+            </q-item>
+            <q-item tag="label">
+              <q-item-section>
+                <q-item-label>Display Style</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn-toggle flat v-model="displayMode" :options="[{value: 'grid', slot: 'grid'},{value:'list', slot: 'list'}]">
+                  <template v-slot:grid>
+                    <q-icon name="view_module" />
+                    <q-tooltip>Grid</q-tooltip>
+                  </template>
+                  <template v-slot:list>
+                    <q-icon name="view_stream" />
+                    <q-tooltip>List</q-tooltip>
+                  </template>
+                </q-btn-toggle>
+              </q-item-section>
+            </q-item>
+            <q-expansion-item icon="admin_panel_settings" label="Advanced Settings" caption="Here there be dragons">
+              <q-card>
+                <q-card-section>
+                  <q-input dense readonly :value="this.uuid" label="My Unique ID" @click="editUuid" />
+                  <q-input dense readonly :value="this.dbUrl" label="Remote Database" @click="editDbUrl" />
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
         </q-expansion-item>
-        <q-item clickable @click="bugReport">
+        <q-separator />
+        <q-item dense clickable @click="bugReport">
           <q-item-section avatar>
             <q-icon name="bug_report" />
           </q-item-section>
@@ -73,7 +103,7 @@
             <q-item-label>File a Bug Report</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable @click="redditCommunity">
+        <q-item dense clickable @click="redditCommunity">
           <q-item-section avatar>
             <q-icon v-if="$q.dark.isActive" name="tl:reddit-dark" />
             <q-icon v-else name="tl:reddit-light" />
@@ -90,7 +120,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" @created="createdDoc" @share="share" @clearsearch="search=null" />
+      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" :display-mode="displayMode" @created="createdDoc" @share="share" @clearsearch="search=null" />
     </q-page-container>
   </q-layout>
 </template>
@@ -115,6 +145,7 @@ export default {
       createdFirst: false,
       uuid: localStorage.getItem('uuid'),
       dbUrl: localStorage.getItem('dbUrl'),
+      displayMode: localStorage.getItem('displaymode') || 'grid',
       search: null
     }
   },
@@ -220,17 +251,35 @@ export default {
     },
     redditCommunity () {
       window.open('https://www.reddit.com/r/tinylist')
-    },
-    toggleDarkMode () {
-      this.$q.dark.toggle()
-      localStorage.setItem('darkmode', this.$q.dark.isActive)
+    }
+  },
+  computed: {
+    darkMode: {
+      get () {
+        return this.$q.dark.isActive
+      },
+      set (val) {
+        this.$q.dark.set(!!val)
+        localStorage.setItem('darkmode', this.$q.dark.isActive)
+      }
+    }
+  },
+  watch: {
+    displayMode (val) {
+      localStorage.setItem('displaymode', val)
     }
   },
   created () {
     this.createdFirst = localStorage.getItem('createdFirst')
+
     const darkMode = localStorage.getItem('darkmode')
     if (darkMode !== null && typeof darkMode !== 'undefined') {
-      this.$q.dark.set(JSON.parse(darkMode))
+      this.darkMode = JSON.parse(darkMode)
+    }
+
+    const displayMode = localStorage.getItem('displaymode')
+    if (displayMode !== null && typeof displayMode !== 'undefined') {
+      this.displayMode = displayMode
     }
 
     // map custom icons into the set as defined at the top
@@ -259,6 +308,9 @@ export default {
     min-width: 30%
   .sidebar
     position: relative
+    .sidebar-menu
+      height: calc(100vh - 5em)
+      overflow: scroll
   .terms-links
     position: absolute
     bottom: 5px
