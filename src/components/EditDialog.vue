@@ -1,7 +1,7 @@
 <template>
   <q-dialog persistent ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <component v-bind:is="editType" v-model="value" ref="edit-component">
+      <component v-if="editType" v-bind:is="editType" v-model="value" @change="onChange" ref="edit-component">
         <template v-slot:bottom-toolbar-left>
           <div class="action-buttons">
             <q-btn flat round icon="delete" @click="deleteItem">
@@ -51,6 +51,9 @@ export default {
     onCloseClick () {
       this.hide(!this.value.new || this.$refs['edit-component'].hasData())
     },
+    onChange () {
+      this.$emit('input', this.value)
+    },
     deleteItem () {
       this.$parent.$parent.deleteItem(this.value._id)
       this.hide()
@@ -62,7 +65,7 @@ export default {
   },
   computed: {
     editType () {
-      return `Edit${this.value.type}`
+      return this.value && this.value.type ? `Edit${this.value.type}` : null
     }
   }
 }

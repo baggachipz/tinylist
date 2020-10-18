@@ -6,7 +6,7 @@
     <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">
         <draggable v-model="uncheckedItems" handle=".handle">
-          <edit-checklist-item v-for="(item, idx) in uncheckedItems" :key="idx" :_id="item._id" v-model="item.value" @delete="deleteItem" @enter-pressed="insertNewItemAfter" @delete-pressed="appendToItemBefore" />
+          <edit-checklist-item v-for="(item, idx) in uncheckedItems" :key="idx" :_id="item._id" v-model="item.value" @input="onChange" @delete="deleteItem" @enter-pressed="insertNewItemAfter" @delete-pressed="appendToItemBefore" />
         </draggable>
       </q-list>
       <q-item dense class="q-pa-none">
@@ -22,7 +22,7 @@
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
-          <q-checkbox v-model="item.value.checked" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
+          <q-checkbox v-model="item.value.checked" @input="onChange" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-expansion-item>
     </q-card-section>
@@ -49,6 +49,9 @@ export default {
   props: {
     value: {
       _id: {
+        required: true
+      },
+      _rev: {
         required: true
       }
     }
@@ -82,11 +85,13 @@ export default {
       } else {
         this.value.value.items.push(newItem)
       }
+      this.onChange()
       return newItem
     },
     insertNewItemAfter (args) {
       const idx = this.getItemIndex(args.id) + 1
       const item = this.createNewItem(idx, args.val)
+      this.onChange()
       this.$nextTick(function () {
         const newIdx = this.getItemIndex(item._id)
         const component = this.$refs.ChecklistItems.$children[0].$children[newIdx]
@@ -107,16 +112,18 @@ export default {
           }
         }
       }
+      this.onChange()
     },
     getItemIndex (id) {
       return this.value.value.items.findIndex(item => item._id === id)
     },
     deleteItem (id) {
       this.value.value.items = this.value.value.items.filter(item => item._id !== id)
+      this.onChange()
     },
     deleteCheckedItems () {
       this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
-      this.$emit('change', this.value)
+      this.onChange()
     },
     hasData () {
       return this.value && this.value.value && ((this.value.value.title && this.value.value.title.length) || (this.value.value.items && this.value.value.items.length) || (this.newItem && this.newItem.length))
@@ -125,6 +132,7 @@ export default {
       const sorts = ['asc', 'desc']
       this.sort = sorts[(sorts.indexOf(this.sort) + 1) % sorts.length]
       this.$set(this.value.value, 'items', this.sortItems())
+      this.onChange()
     },
     sortItems () {
       switch (this.sort) {
@@ -145,6 +153,9 @@ export default {
         default:
           return this.value.value.items
       }
+    },
+    onChange () {
+      this.$emit('change', this.value)
     }
   },
   computed: {

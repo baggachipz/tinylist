@@ -32,6 +32,8 @@
       </q-fab>
     </q-page-sticky>
 
+    <edit-dialog v-model="editingItem" @input="onEdited" ref="editDialog" />
+
   </q-page>
 </template>
 
@@ -52,6 +54,7 @@ export default {
   components: {
     GridItem,
     QuickAdd,
+    EditDialog,
     draggable
   },
   props: {
@@ -74,6 +77,7 @@ export default {
       shareDbs: {},
       items: [],
       sharedItems: {},
+      editingItem: null,
       syncs: {},
       viewportHeight: '1000px',
       showFtueTooltip: false
@@ -138,14 +142,8 @@ export default {
       }).onOk(component.onCreated)
     },
     editItem (item) {
-      // for use in scope below
-      const component = this
-
-      component.$q.dialog({
-        component: EditDialog,
-        parent: this,
-        value: item
-      }).onOk(component.onEdited)
+      this.editingItem = item
+      this.$refs.editDialog.show()
     },
     async onCreated (item) {
       // add item to the front of the list
@@ -168,9 +166,15 @@ export default {
     },
     async onEdited (doc) {
       if (doc.share) {
-        delete doc.share
-        doc.modified = Date.now()
-        await this.shareDbs[doc._id].put(doc)
+        await this.shareDbs[doc._id].put({
+          _id: doc._id,
+          _rev: this.sharedItems[doc._id]._rev,
+          created: doc.created,
+          modified: Date.now(),
+          sort: doc.sort,
+          type: doc.type,
+          value: doc.value
+        })
       } else {
         const item = this.items.find(item => item._id === doc._id)
         if (item) {

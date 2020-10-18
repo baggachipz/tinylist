@@ -7,7 +7,7 @@
       </div>
     </q-item-section>
     <q-item-section>
-      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
+      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" debounce="800" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
       <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
@@ -87,7 +87,6 @@ export default {
     this.label = this.value.label
     this.checked = !!this.value.checked
     this.deleted = !!this.value.deleted
-    this.onChange()
   },
   watch: {
     value: {
