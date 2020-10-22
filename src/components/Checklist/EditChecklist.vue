@@ -42,7 +42,7 @@
 <script>
 import draggable from 'vuedraggable'
 import EditChecklistItem from './EditChecklistItem'
-import { uid } from 'quasar'
+import { uid, throttle } from 'quasar'
 export default {
   name: 'EditChecklist',
   components: { draggable, EditChecklistItem },
@@ -91,7 +91,6 @@ export default {
     insertNewItemAfter (args) {
       const idx = this.getItemIndex(args.id) + 1
       const item = this.createNewItem(idx, args.val)
-      this.onChange()
       this.$nextTick(function () {
         const newIdx = this.getItemIndex(item._id)
         const component = this.$refs.ChecklistItems.$children[0].$children[newIdx]
@@ -155,7 +154,9 @@ export default {
       }
     },
     onChange () {
-      this.$emit('change', this.value)
+      throttle(() => {
+        this.$emit('change', this.value)
+      }, 250)
     }
   },
   computed: {
