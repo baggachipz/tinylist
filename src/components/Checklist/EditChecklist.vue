@@ -1,11 +1,11 @@
 <template>
   <div>
     <q-card-section class="section">
-      <q-input borderless v-model="value.value.title" class="text-h6" placeholder="Title" debounce="500" />
+      <q-input borderless v-model="title" class="text-h6" @input="onChange" placeholder="Title" />
     </q-card-section>
     <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">
-        <draggable v-model="uncheckedItems" handle=".handle">
+        <draggable v-model="uncheckedItems" @change="onOrderChange" handle=".handle">
           <edit-checklist-item v-for="(item, idx) in uncheckedItems" :key="idx" :_id="item._id" v-model="item.value" @input="onChange" @delete="deleteItem" @enter-pressed="insertNewItemAfter" @delete-pressed="appendToItemBefore" />
         </draggable>
       </q-list>
@@ -42,7 +42,7 @@
 <script>
 import draggable from 'vuedraggable'
 import EditChecklistItem from './EditChecklistItem'
-import { uid, throttle } from 'quasar'
+import { uid, extend } from 'quasar'
 export default {
   name: 'EditChecklist',
   components: { draggable, EditChecklistItem },
@@ -53,11 +53,19 @@ export default {
       },
       _rev: {
         required: true
+      },
+      value: {
+        default: {
+          title: null,
+          items: []
+        }
       }
     }
   },
   data () {
     return {
+      title: this.value.value ? this.value.value.title : null,
+      items: this.value.value ? this.value.value.items : [],
       newItem: '',
       checkedExpanded: false,
       sort: null
@@ -81,9 +89,9 @@ export default {
         }
       }
       if (idx >= 0) {
-        this.value.value.items.splice(idx, 0, newItem)
+        this.items.splice(idx, 0, newItem)
       } else {
-        this.value.value.items.push(newItem)
+        this.items.push(newItem)
       }
       this.onChange()
       return newItem
@@ -114,73 +122,74 @@ export default {
       this.onChange()
     },
     getItemIndex (id) {
-      return this.value.value.items.findIndex(item => item._id === id)
+      return this.items.findIndex(item => item._id === id)
     },
     deleteItem (id) {
-      this.value.value.items = this.value.value.items.filter(item => item._id !== id)
+      this.items = this.items.filter(item => item._id !== id)
       this.onChange()
     },
     deleteCheckedItems () {
-      this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
+      this.items = this.items.filter(item => !item.value.checked)
       this.onChange()
     },
     hasData () {
-      return this.value && this.value.value && ((this.value.value.title && this.value.value.title.length) || (this.value.value.items && this.value.value.items.length) || (this.newItem && this.newItem.length))
+      return ((this.title && this.title.length) || (this.items && this.items.length) || (this.newItem && this.newItem.length))
     },
     toggleSort () {
       const sorts = ['asc', 'desc']
       this.sort = sorts[(sorts.indexOf(this.sort) + 1) % sorts.length]
-      this.$set(this.value.value, 'items', this.sortItems())
+      this.items = this.sortItems()
       this.onChange()
     },
     sortItems () {
       switch (this.sort) {
         case 'asc':
-          return this.value.value.items.sort((a, b) => {
+          return this.items.sort((a, b) => {
             const aVal = a.value.label.toLowerCase(), bVal = b.value.label.toLowerCase()
             if (aVal === bVal) return 0
             return aVal > bVal ? 1 : -1
           })
         case 'desc':
-          return this.value.value.items.sort((a, b) => {
+          return this.items.sort((a, b) => {
             const aVal = a.value.label.toLowerCase(), bVal = b.value.label.toLowerCase()
             if (aVal === bVal) return 0
             return aVal < bVal ? 1 : -1
           })
         case 'id':
-          return this.value.value.items.sort((a, b) => a._id - b._id)
+          return this.items.sort((a, b) => a._id - b._id)
         default:
-          return this.value.value.items
+          return this.items
       }
     },
     onChange () {
-      throttle(() => {
-        this.$emit('change', this.value)
-      }, 250)
+      const val = extend({}, this.value, {
+        value: {
+          title: this.title,
+          items: this.items
+        }
+      })
+      this.$emit('change', val)
+    },
+    onOrderChange (action) {
+      if (action.moved) {
+        this.onChange()
+      }
     }
   },
   computed: {
     uncheckedItems: {
       get: function () {
-        return this.value.value.items.filter(item => !item.value.checked)
+        return this.items.filter(item => !item.value.checked)
       },
       set: function (val) {
-        this.$set(this.value.value, 'items', val.concat(this.checkedItems))
+        this.items = val.concat(this.checkedItems)
       }
     },
     checkedItems () {
-      return this.value.value.items.filter(item => item.value.checked)
+      return this.items.filter(item => item.value.checked)
     },
     completedItemsLabel () {
       return `${this.checkedItems.length} checked items`
-    }
-  },
-  created () {
-    if (!this.value.value) {
-      this.$set(this.value, 'value', {
-        title: null,
-        items: []
-      })
     }
   },
   beforeDestroy () {

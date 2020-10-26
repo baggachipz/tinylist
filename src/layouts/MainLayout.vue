@@ -57,6 +57,15 @@
           </q-item-section>
         </q-item>
         <q-separator />
+        <q-item v-if="$q.platform.is.mobile && $q.platform.is.ios" clickable @click="showHomescreenInstructions">
+          <q-item-section avatar>
+            <q-icon name="add_to_home_screen" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Install on Your Device</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-separator />
         <q-expansion-item icon="settings" label="Settings" group="settings">
           <q-list dense>
             <q-item tag="label">
@@ -129,6 +138,7 @@
 import ChangeUuidDialog from '../components/ChangeUuidDialog'
 import ChangeDburlDialog from '../components/ChangeDburlDialog'
 import QRCodeDialog from '../components/QRCodeDialog'
+import IosHomescreenDialog from '../components/IosHomescreenDialog'
 import { copyToClipboard } from 'quasar'
 
 const additionalIcons = {
@@ -251,6 +261,17 @@ export default {
     },
     redditCommunity () {
       window.open('https://www.reddit.com/r/tinylist')
+    },
+    showHomescreenInstructions () {
+      if (this.$q.platform.is.ios) {
+        this.$q.dialog({
+          component: IosHomescreenDialog,
+          parent: this
+        })
+      }
+      if (this.$q.platform.is.android) {
+
+      }
     }
   },
   computed: {

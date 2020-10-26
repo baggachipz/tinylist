@@ -1,7 +1,7 @@
 <template>
   <q-dialog persistent ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <component v-if="editType" v-bind:is="editType" v-model="value" @change="onChange" ref="edit-component">
+      <component v-if="editType" v-bind:is="editType" :value="val" @change="onChange" ref="edit-component">
         <template v-slot:bottom-toolbar-left>
           <div class="action-buttons">
             <q-btn flat round icon="delete" @click="deleteItem">
@@ -11,7 +11,7 @@
         </template>
         <template v-slot:bottom-toolbar-right>
           <div class="action-buttons">
-            <q-btn v-if="!value.new" flat round icon="share" @click.prevent="shareItem">
+            <q-btn v-if="!val.new" flat round icon="share" @click.prevent="shareItem">
               <q-tooltip>Share</q-tooltip>
             </q-btn>
           </div>
@@ -24,11 +24,17 @@
 <script>
 import EditChecklist from './Checklist/EditChecklist'
 import EditNote from './Note/EditNote'
+import { throttle } from 'quasar'
 
 export default {
   name: 'EditDialog',
   components: { EditChecklist, EditNote },
   props: ['value'],
+  data () {
+    return {
+      val: this.value
+    }
+  },
   methods: {
     show () {
       // required by name for QDialog plugin
@@ -38,7 +44,8 @@ export default {
       // required by name for QDialog plugin
       await this.$refs.dialog.hide()
       if (ok) {
-        this.$emit('ok', this.value)
+        this.$emit('input', this.val)
+        this.$emit('ok', this.val)
       } else {
         this.$emit('cancel')
       }
@@ -49,17 +56,21 @@ export default {
       this.$emit('hide')
     },
     onCloseClick () {
-      this.hide(!this.value.new || this.$refs['edit-component'].hasData())
+      this.hide(!this.val.new || this.$refs['edit-component'].hasData())
     },
-    onChange () {
-      this.$emit('input', this.value)
+    onChange (val) {
+      this.val = val
+      this.emitVal()
+    },
+    emitVal () {
+      this.$emit('input', this.val)
     },
     deleteItem () {
-      this.$parent.$parent.deleteItem(this.value._id)
+      this.$parent.$parent.deleteItem(this.val._id)
       this.hide()
     },
     shareItem () {
-      this.$parent.$parent.onShare(this.value)
+      this.$parent.$parent.onShare(this.val)
       this.hide()
     }
   },
@@ -67,6 +78,14 @@ export default {
     editType () {
       return this.value && this.value.type ? `Edit${this.value.type}` : null
     }
+  },
+  watch: {
+    value () {
+      this.val = this.value
+    }
+  },
+  created () {
+    this.emitVal = throttle(this.emitVal, 500)
   }
 }
 </script>

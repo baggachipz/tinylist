@@ -1,10 +1,10 @@
 <template>
   <div>
     <q-card-section class="section">
-      <q-input borderless v-model="value.value.title" @input="onChange" class="text-h6" placeholder="Title" debounce="500" />
+      <q-input borderless v-model="title" @input="onChange" class="text-h6" placeholder="Title" />
     </q-card-section>
     <q-card-section class="section input-area">
-      <q-input borderless v-model="value.value.data" @input="onChange" placeholder="Begin typing..." debounce="500" autofocus autogrow />
+      <q-input borderless v-model="text" @input="onChange" placeholder="Begin typing..." autofocus autogrow />
     </q-card-section>
     <q-card-actions>
       <slot name="bottom-toolbar-left"></slot>
@@ -14,6 +14,7 @@
   </div>
 </template>
 <script>
+import { extend } from 'quasar'
 export default {
   name: 'EditNote',
   props: {
@@ -23,22 +24,30 @@ export default {
       },
       _rev: {
         required: true
+      },
+      value: {
+        default: null
       }
+    }
+  },
+  data () {
+    return {
+      title: this.value.value.title,
+      text: this.value.value.data
     }
   },
   methods: {
     hasData () {
-      return this.value && this.value.value && ((this.value.value.title && this.value.value.title.length) || (this.value.value.data && this.value.value.data.length))
+      return ((this.title && this.title.length) || (this.text && this.text.length))
     },
     onChange () {
-      this.$emit('change', this.value)
-    }
-  },
-  created () {
-    if (!this.value.value) {
-      this.$set(this.value, 'value', {
-        title: null
+      const val = extend(true, this.value, {
+        value: {
+          title: this.title,
+          data: this.text
+        }
       })
+      this.$emit('change', val)
     }
   }
 }

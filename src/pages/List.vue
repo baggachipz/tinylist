@@ -46,6 +46,7 @@ import { createDatabase } from '../utils'
 import GridItem from '../components/GridItem'
 import EditDialog from '../components/EditDialog'
 import QuickAdd from '../components/QuickAdd'
+import IosHomescreenDialog from '../components/IosHomescreenDialog'
 
 PouchDB.plugin(PouchDBFind)
 
@@ -80,7 +81,8 @@ export default {
       editingItem: null,
       syncs: {},
       viewportHeight: '1000px',
-      showFtueTooltip: false
+      showFtueTooltip: false,
+      showIosTooltip: false
     }
   },
   methods: {
@@ -165,21 +167,28 @@ export default {
       await this.loadItems()
     },
     async onEdited (doc) {
+      if (!doc) throw new Error('No document sent to onEdited method.')
+
+      // if a shared item, construct the item to put in the db
       if (doc.share) {
-        await this.shareDbs[doc._id].put({
+        const item = {
           _id: doc._id,
-          _rev: this.sharedItems[doc._id]._rev,
+          _rev: doc._rev,
           created: doc.created,
           modified: Date.now(),
           sort: doc.sort,
           type: doc.type,
           value: doc.value
-        })
+        }
+        const response = await this.shareDbs[doc._id].put(item)
+        if (this.editingItem) {
+          this.$set(this.editingItem, '_rev', response.rev)
+        }
       } else {
-        const item = this.items.find(item => item._id === doc._id)
-        if (item) {
-          item.modified = Date.now()
-          await this.db.put(item)
+        doc.modified = Date.now()
+        const response = await this.db.put(doc)
+        if (this.editingItem) {
+          this.$set(this.editingItem, '_rev', response.rev)
         }
       }
 
@@ -260,18 +269,16 @@ export default {
         // create the new database for the share
         this.shareDbs[shareId] = new PouchDB(shareId)
 
+        // initiate the sync (after the first replication to save on http calls)
+        this.initDbSync(this.shareDbs[shareId], shareId)
+
         // store the new item in the new shared db
         await this.shareDbs[shareId].put(shareItem)
-
-        // push the new shared db up to the server
-        this.shareDbs[shareId].replicate.to(`${this.dbUrl}/${shareId}`).on('complete', function () {
-          // initiate the sync (after the first replication to save on http calls)
-          this.initDbSync(this.shareDbs[shareId], shareId)
-        })
 
         // store the shared-type item
         await this.db.put(item)
 
+        this.loadItems()
         return shareId
       } else {
         // share has already been created, return the shared id
@@ -324,6 +331,17 @@ export default {
     },
     clearSearch () {
       this.$emit('clearsearch')
+    },
+    showHomescreenInstructions () {
+      if (this.$q.platform.is.ios) {
+        this.$q.dialog({
+          component: IosHomescreenDialog,
+          parent: this
+        })
+      }
+      if (this.$q.platform.is.android) {
+
+      }
     }
   },
   computed: {
@@ -371,6 +389,43 @@ export default {
     await this.loadItems()
     this.reindexItems()
     this.showFtueTooltip = this.$q.screen.name === 'xs' && !this.searchItems.length && !this.displayItems.length
+    if (this.$q.platform.is.ios) {
+      history.pushState({}, null, window.location.origin + this.$router.resolve({
+        name: 'linkuuid',
+        params: {
+          uuid: this.uuid
+        }
+      }).href)
+      if (!this.showFtueTooltip && !localStorage.getItem('seenIosTooltip')) {
+        const dismiss = this.$q.notify({
+          message: 'Want to install tinylist as an app?',
+          color: 'primary',
+          textColor: this.$q.dark.isActive ? 'dark' : 'white',
+          icon: 'add_to_home_screen',
+          position: 'bottom-left',
+          timeout: 10000,
+          actions: [
+            {
+              label: 'No Thanks',
+              color: this.$q.dark.isActive ? 'dark' : 'white',
+              handler: function () {
+                localStorage.setItem('seenIosTooltip', true)
+                dismiss()
+              }
+            },
+            {
+              label: 'Yes!',
+              color: this.$q.dark.isActive ? 'dark' : 'white',
+              handler: () => {
+                localStorage.setItem('seenIosTooltip', true)
+                this.showHomescreenInstructions()
+                dismiss()
+              }
+            }
+          ]
+        })
+      }
+    }
   },
   updated () {
     this.resizeViewport()

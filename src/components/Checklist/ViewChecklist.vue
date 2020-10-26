@@ -43,6 +43,7 @@
   </div>
 </template>
 <script>
+import { extend } from 'quasar'
 export default {
   name: 'ViewChecklist',
   props: {
@@ -71,8 +72,9 @@ export default {
     },
     deleteCheckedItems (e) {
       e.stopPropagation()
-      this.value.value.items = this.value.value.items.filter(item => !item.value.checked)
-      this.$emit('change', this.value)
+      const val = extend({}, this.value)
+      val.value.items = val.value.items.filter(item => !item.value.checked)
+      this.$emit('change', val)
     }
   },
   computed: {
