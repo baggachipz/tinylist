@@ -12,6 +12,8 @@
   "dependencies": {
     "@quasar/extras": "^1.9.10",
     "core-js": "^3.6.5",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.5.0",
     "markdown-it": "^12.0.2",
     "node-fetch": "^2.6.1",
     "pouchdb": "^7.2.2",

@@ -42,7 +42,9 @@ import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 import { uid, extend } from 'quasar'
 import draggable from 'vuedraggable'
-import { createDatabase } from '../utils'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
+import { createDatabase, ExportItem, ImportItem } from '../utils'
 import GridItem from '../components/GridItem'
 import EditDialog from '../components/EditDialog'
 import QuickAdd from '../components/QuickAdd'
@@ -342,6 +344,76 @@ export default {
       if (this.$q.platform.is.android) {
 
       }
+    },
+    exportAllData () {
+      const zip = new JSZip()
+
+      this.displayItems.forEach(item => {
+        let name = item.value.title
+        const dupeTest = new RegExp(`^${name}(\\(?\\d?\\)?).json`) //eslint-disable-line
+        const dupes = zip.filter(path => dupeTest.test(path))
+        if (dupes.length) {
+          name = `${name}(${dupes.length})`
+        }
+
+        zip.file(`${name}.json`, new ExportItem(item).toString())
+      })
+
+      zip.generateAsync({ type: 'blob' }).then(blob => {
+        saveAs(blob, 'tinylist.zip')
+      })
+    },
+    async importFile (file) {
+      try {
+        if (file.type === 'application/zip') {
+          const zip = await JSZip.loadAsync(file)
+
+          // if a Google Takeout archive, only get files in the 'Keep' folder
+          let files = zip.filter(path => {
+            return /^Takeout\/Keep\/.*\.json$/.test(path)
+          })
+
+          if (!files.length) {
+            // must not be a Takeout archive, just do every json file
+            files = zip.filter(path => {
+              return /.*\.json$/.test(path)
+            })
+          }
+
+          files.forEach(async item => {
+            try {
+              await this.importDataItem(await item.async('text'))
+            } catch (e) {
+              this.$q.notify({
+                type: 'negative',
+                message: `Unable to import "${item.name}.\n${e.message}`
+              })
+            }
+          })
+        } else {
+          await this.importDataItem(await file.text())
+        }
+      } catch (e) {
+        this.$q.notify({
+          type: 'negative',
+          message: e.message
+        })
+      }
+    },
+    async importDataItem (data) {
+      const item = JSON.parse(data)
+      if (item._id) {
+        // get latest _rev to overwrite
+        try {
+          const existingItem = await this.db.get(item._id)
+          item._rev = existingItem._rev
+        } catch (e) {
+          // do nothing, item doesn't exist in the current db and will be created with this id
+        }
+      } else {
+        item._id = uid()
+      }
+      await this.onCreated(new ImportItem(item))
     }
   },
   computed: {

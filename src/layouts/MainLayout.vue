@@ -65,8 +65,7 @@
             <q-item-label>Install on Your Device</q-item-label>
           </q-item-section>
         </q-item>
-        <q-separator />
-        <q-expansion-item icon="settings" label="Settings" group="settings">
+        <q-expansion-item icon="settings" label="Settings" group="main">
           <q-list dense>
             <q-item tag="label">
               <q-item-section>
@@ -104,24 +103,50 @@
           </q-list>
         </q-expansion-item>
         <q-separator />
-        <q-item dense clickable @click="bugReport">
-          <q-item-section avatar>
-            <q-icon name="bug_report" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>File a Bug Report</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item dense clickable @click="redditCommunity">
-          <q-item-section avatar>
-            <q-icon v-if="$q.dark.isActive" name="tl:reddit-dark" />
-            <q-icon v-else name="tl:reddit-light" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Reddit Community</q-item-label>
-            <q-item-label caption>/r/tinylist for updates, discussion</q-item-label>
-          </q-item-section>
-        </q-item>
+        <q-expansion-item icon="cloud" label="Data" group="main" v-if="exportIsPossible">
+          <q-list dense>
+            <q-item dense clickable @click="dataUpload">
+              <q-item-section avatar>
+                <q-icon name="cloud_upload" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Import</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item dense clickable @click="dataDownload">
+              <q-item-section avatar>
+                <q-icon name="cloud_download" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Export</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
+        <q-separator v-if="exportIsPossible" />
+        <q-expansion-item icon="feedback" label="Feedback" group="main">
+          <q-list dense>
+            <q-item dense clickable @click="bugReport">
+              <q-item-section avatar>
+                <q-icon name="bug_report" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>File a Bug Report</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item dense clickable @click="redditCommunity">
+              <q-item-section avatar>
+                <q-icon v-if="$q.dark.isActive" name="tl:reddit-dark" />
+                <q-icon v-else name="tl:reddit-light" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Reddit Community</q-item-label>
+                <q-item-label caption>/r/tinylist for updates, discussion</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
+        <q-separator />
       </q-list>
       <div class="terms-links">
         <q-btn flat dense :to="{ name: 'intro' }">Introduction</q-btn><br><q-btn flat dense :to="{ name: 'terms' }">Terms of Service</q-btn> | <q-btn flat dense :to="{ name: 'privacy'}">Privacy Policy</q-btn>
@@ -129,7 +154,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" :display-mode="displayMode" @created="createdDoc" @share="share" @clearsearch="search=null" />
+      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" :display-mode="displayMode" @created="createdDoc" @share="share" @clearsearch="search=null" ref="currentPage" />
     </q-page-container>
   </q-layout>
 </template>
@@ -139,6 +164,7 @@ import ChangeUuidDialog from '../components/ChangeUuidDialog'
 import ChangeDburlDialog from '../components/ChangeDburlDialog'
 import QRCodeDialog from '../components/QRCodeDialog'
 import IosHomescreenDialog from '../components/IosHomescreenDialog'
+import ImportDataDialog from '../components/ImportDataDialog'
 import { copyToClipboard } from 'quasar'
 
 const additionalIcons = {
@@ -156,7 +182,8 @@ export default {
       uuid: localStorage.getItem('uuid'),
       dbUrl: localStorage.getItem('dbUrl'),
       displayMode: localStorage.getItem('displaymode') || 'grid',
-      search: null
+      search: null,
+      exportIsPossible: false
     }
   },
   methods: {
@@ -272,6 +299,21 @@ export default {
       if (this.$q.platform.is.android) {
 
       }
+    },
+    dataDownload () {
+      if (this.exportIsPossible) {
+        this.$refs.currentPage.exportAllData()
+      }
+    },
+    dataUpload () {
+      if (this.exportIsPossible) {
+        this.$q.dialog({
+          component: ImportDataDialog,
+          parent: this
+        }).onOk(file => {
+          this.$refs.currentPage.importFile(file)
+        })
+      }
     }
   },
   computed: {
@@ -318,6 +360,9 @@ export default {
     if (!this.dbUrl) {
       this.dbUrl = process.env.DB_URL ? `${process.env.DB_URL}:${process.env.DB_PORT || 5984}` : 'https://db.tinylist.app:6984'
     }
+  },
+  updated () {
+    this.exportIsPossible = this.$refs.currentPage && this.$refs.currentPage.exportAllData
   }
 }
 </script>
