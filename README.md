@@ -22,7 +22,7 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 6. ~~True list view~~
 7. Enhance PWA 'add to homescreen' functionality 
 8. Ability to 'pin' notes/checklists to the top
-9. Import/export of data
+9. ~~Import/export of data~~
 10. Internationalization
 
 ## Support If You're a Fan
@@ -35,6 +35,8 @@ If you like this project, please consider [supporting it](https://ko-fi.com/tiny
 * [PouchDB](https://pouchdb.com/)
 * [CouchDB](http://couchdb.apache.org/)
 * [markdown-it](https://github.com/markdown-it/markdown-it)
+* [file-saver](https://github.com/eligrey/FileSaver.js)
+* [JSZip](https://github.com/Stuk/jszip)
 
 ## Development
 ### Install the dependencies
