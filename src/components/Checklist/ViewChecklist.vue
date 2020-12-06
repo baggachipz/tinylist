@@ -5,20 +5,22 @@
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       <p class="q-pa-sm text-h6 checklist-title">{{ value.value.title }}</p>
       <q-list dense>
-        <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
-          <q-item-section side class="checklist-side">
-            <q-checkbox v-model="item.value.checked" @input="onInput(item)" size="xs" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>
-              {{ item.value.label }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+        <transition-group leave-active-class="animated fadeOutDown">
+          <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
+            <q-item-section side class="checklist-side">
+              <q-checkbox :value="!!item.selected" @input="onChecked(item)" size="xs" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>
+                {{ item.value.label }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </transition-group>
         <q-separator class="checked-separator" v-if="checkedItems.length && uncheckedItems.length" />
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
-            <q-checkbox v-model="item.value.checked" @input="onInput(item)" size="xs" color="grey-7" class="checked-item" />
+            <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" size="xs" color="grey-7" class="checked-item" />
           </q-item-section>
           <q-item-section>
             <q-item-label class="checked-item">
@@ -67,7 +69,16 @@ export default {
     }
   },
   methods: {
-    onInput (val, evt) {
+    onChecked (val, evt) {
+      val.selected = true
+      setTimeout(() => {
+        val.value.checked = true
+        this.$emit('change', this.value)
+      }, 250)
+    },
+    onUnChecked (val, evt) {
+      val.selected = false
+      val.value.checked = false
       this.$emit('change', this.value)
     },
     deleteCheckedItems (e) {

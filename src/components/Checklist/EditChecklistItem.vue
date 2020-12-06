@@ -1,18 +1,20 @@
 <template>
-  <q-item dense @mouseenter="active=true" @mouseleave="active=false" class="q-pa-none">
-    <q-item-section side>
-      <div class="side-icons">
-        <q-icon dense name="drag_indicator" size="sm" :class="active ? 'handle drag-active' : 'handle drag-inactive'" />
-        <q-checkbox :value="checked" dense size="sm" @input="changeChecked" class="on-right" />
-      </div>
-    </q-item-section>
-    <q-item-section>
-      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" debounce="800" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
-    </q-item-section>
-    <q-item-section side>
-      <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
-    </q-item-section>
-  </q-item>
+  <transition leave-active-class="animated fadeOutDown">
+    <q-item v-if="!checked" dense @mouseenter="active=true" @mouseleave="active=false" class="q-pa-none">
+      <q-item-section side>
+        <div class="side-icons">
+          <q-icon dense name="drag_indicator" size="sm" :class="active ? 'handle drag-active' : 'handle drag-inactive'" />
+          <q-checkbox :value="selected" dense size="sm" @input="changeChecked" class="on-right" />
+        </div>
+      </q-item-section>
+      <q-item-section>
+        <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" debounce="800" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
+      </q-item-section>
+      <q-item-section side>
+        <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
+      </q-item-section>
+    </q-item>
+  </transition>
 </template>
 <script>
 export default {
@@ -28,7 +30,8 @@ export default {
       label: '',
       checked: false,
       deleted: false,
-      active: false
+      active: false,
+      selected: false
     }
   },
   methods: {
@@ -44,8 +47,11 @@ export default {
       this.onChange()
     },
     changeChecked (val) {
-      this.checked = val
-      this.onChange()
+      this.selected = val
+      setTimeout(() => {
+        this.checked = val
+        this.onChange()
+      }, 200)
     },
     setCursor (idx) {
       if (idx < 0) {
@@ -94,6 +100,7 @@ export default {
         this.label = this.value.label
         this.checked = this.value.checked
         this.deleted = this.value.deleted
+        this.selected = this.value.checked
       },
       deep: true
     }
