@@ -5,18 +5,16 @@
       <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       <p class="q-pa-sm text-h6 checklist-title">{{ value.value.title }}</p>
       <q-list dense>
-        <transition-group leave-active-class="animated fadeOutDown">
-          <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
-            <q-item-section side class="checklist-side">
-              <q-checkbox :value="!!item.selected" @input="onChecked(item)" size="xs" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>
-                {{ item.value.label }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </transition-group>
+        <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
+          <q-item-section side class="checklist-side">
+            <q-checkbox :value="!!item.selected" @input="onChecked(item)" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              {{ item.value.label }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
         <q-separator class="checked-separator" v-if="checkedItems.length && uncheckedItems.length" />
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
@@ -74,7 +72,7 @@ export default {
       setTimeout(() => {
         val.value.checked = true
         this.$emit('change', this.value)
-      }, 250)
+      }, 500)
     },
     onUnChecked (val, evt) {
       val.selected = false
