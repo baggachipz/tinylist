@@ -300,7 +300,15 @@ export default {
       if (db && this.dbUrl) {
         this.syncs[`${this.dbUrl}/${id}`] = db.sync(`${this.dbUrl}/${id}`, {
           live: true,
-          retry: true
+          retry: true,
+          back_off_function: (delay) => {
+            if (delay === 0) {
+              // set initial value to a random one close to 1 sec. Randomize so not every db tries to sync at exactly the same time.
+              return 1000 + ((Math.random() - 0.5) * 200)
+            }
+            // since this isn't the first failed attempt to connect, throttle by 2x the previous value with a max of 10 seconds
+            return Math.min(delay * 2, 10000)
+          }
         }).on('change', this.loadItems)
       } else {
         throw new Error(`could not start sync for id: ${id}`)
