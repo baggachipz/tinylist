@@ -20,10 +20,11 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 4. ~~Markdown support for notes~~
 5. ~~Dark mode~~
 6. ~~True list view~~
-7. Enhance PWA 'add to homescreen' functionality 
+7. ~~Enhance PWA 'add to homescreen' functionality~~
 8. Ability to 'pin' notes/checklists to the top
-9. ~~Import/export of data~~
-10. Internationalization
+9. Support for image attachments
+10. ~~Import/export of data~~
+11. Internationalization
 
 ## Support If You're a Fan
 If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
@@ -37,6 +38,7 @@ If you like this project, please consider [supporting it](https://ko-fi.com/tiny
 * [markdown-it](https://github.com/markdown-it/markdown-it)
 * [file-saver](https://github.com/eligrey/FileSaver.js)
 * [JSZip](https://github.com/Stuk/jszip)
+* [qrcode-svg](https://github.com/papnkukn/qrcode-svg)
 
 ## Development
 ### Install the dependencies
