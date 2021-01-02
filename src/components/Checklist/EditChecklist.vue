@@ -22,7 +22,7 @@
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
-          <q-checkbox v-model="item.value.checked" @input="onChange" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
+          <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-expansion-item>
     </q-card-section>
@@ -160,6 +160,10 @@ export default {
         default:
           return this.items
       }
+    },
+    onUnChecked (item) {
+      item.selected = false
+      this.onChange()
     },
     onChange () {
       const val = extend({}, this.value, {
