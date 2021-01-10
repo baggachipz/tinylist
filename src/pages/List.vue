@@ -306,8 +306,8 @@ export default {
               // set initial value to a random one close to 1 sec. Randomize so not every db tries to sync at exactly the same time.
               return 1000 + ((Math.random() - 0.5) * 200)
             }
-            // since this isn't the first failed attempt to connect, throttle by 2x the previous value with a max of 10 seconds
-            return Math.min(delay * 2, 10000)
+            // since this isn't the first failed attempt to connect, throttle by 2x the previous value with a max of 5 seconds
+            return Math.min(delay * 2, 5000)
           }
         }).on('change', this.loadItems)
       } else {
