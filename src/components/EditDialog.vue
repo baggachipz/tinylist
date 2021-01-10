@@ -80,8 +80,11 @@ export default {
     }
   },
   watch: {
-    value () {
-      this.val = this.value
+    value: {
+      handler () {
+        this.val = this.value
+      },
+      deep: true
     }
   },
   created () {

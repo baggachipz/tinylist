@@ -7,7 +7,7 @@
       </div>
     </q-item-section>
     <q-item-section>
-      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" debounce="800" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
+      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
       <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
@@ -37,8 +37,12 @@ export default {
       this.$refs.input.focus()
     },
     appendLabel (val) {
+      const idx = this.label.length
       this.label += val
       this.onChange()
+      this.$nextTick(function () {
+        this.setCursor(idx)
+      })
     },
     changeLabel (val) {
       this.label = val
@@ -70,16 +74,20 @@ export default {
         const beginStr = this.label.slice(0, start)
         const endStr = this.label.slice(end)
         this.changeLabel(beginStr.replace(/\r?\n|\r/, ''))
+        this.onChange()
         this.$emit('enter-pressed', { id: this._id, val: endStr })
       }
       e.preventDefault()
     },
     deletePressed (e) {
       const start = e.target.selectionStart, end = e.target.selectionEnd
-      if (start === 0 && end === 0) {
+      if (start === 0) {
         const endStr = this.label ? this.label.slice(end) : ''
-        this.$emit('delete-pressed', { id: this._id, val: endStr })
-        this.deleteItem()
+        // delete the item if there is no text in it
+        if (end === 0) this.deleteItem()
+        this.$nextTick(function () {
+          this.$emit('delete-pressed', { id: this._id, val: endStr })
+        })
         e.preventDefault()
       }
     },
