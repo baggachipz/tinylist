@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <draggable v-if="!searchItems && displayPinned.length" v-model="pinned" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" @change="reindexItems" ref="pinned" v-bind:style="{ height: viewportHeight['pinned'] }">
+    <draggable v-if="!searchItems && displayPinned.length" v-model="displayPinned" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="pinned" v-bind:style="{ height: viewportHeight['pinned'] }">
       <div v-for="(item, idx) in displayPinned" :key="idx" class="display-item">
         <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" />
       </div>
@@ -24,7 +24,7 @@
 
     <q-separator v-if="!searchItems && displayPinned.length" spaced="xl" />
 
-    <draggable v-if="!searchItems" v-model="items" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" @change="reindexItems" ref="unpinned" v-bind:style="{ height: viewportHeight['unpinned'] }">
+    <draggable v-if="!searchItems" v-model="displayItems" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="unpinned" v-bind:style="{ height: viewportHeight['unpinned'] }">
       <div v-for="(item, idx) in displayItems" :key="idx" class="display-item">
         <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" />
       </div>
@@ -133,6 +133,7 @@ export default {
 
           // set meta info about the doc
           doc.pinned = item.pinned
+          doc.sort = item.sort
 
           // set the item in the sharedItems collection
           $set(sharedItems, item.value, doc)
@@ -209,6 +210,7 @@ export default {
         const parentItem = this.items.find(parent => parent.value === doc._id)
         if (!parentItem) throw new Error('No parent doc found for shared item: ' + doc._id)
         parentItem.pinned = doc.pinned
+        parentItem.sort = doc.sort
         parentItem.modified = Date.now()
         await this.db.put(parentItem)
       } else {
@@ -246,17 +248,22 @@ export default {
       await this.db.put(doc)
       await this.loadItems()
     },
-    async reindexItems () {
-      // bulk-insert the documents after updating their sort properties
-      await this.db.bulkDocs(this.items.map((doc, idx) => {
-        doc.sort = idx
-        return doc
-      }))
-      await this.db.bulkDocs(this.pinned.map((doc, idx) => {
-        doc.sort = idx
-        return doc
-      }))
+    async reindexItems (items) {
+      if (!items) items = this.items
+      const sorted = items.map((doc, idx) => {
+        if (doc.share) {
+          const parentItem = this.items.find(parent => parent.value === doc._id)
+          parentItem.sort = idx
+          return parentItem
+        } else {
+          doc.sort = idx
+          return doc
+        }
+      })
+      this.items.sort((item1, item2) => item1.sort - item2.sort)
+      await this.db.bulkDocs(sorted)
       this.loadItems()
+      return this.mapItems(sorted)
     },
     async onShare (item) {
       this.$q.dialog({
@@ -372,7 +379,7 @@ export default {
       // if a shared item, return the shared doc from the db; otherwise, just return the item
       return items.map(item => {
         const doc = sharedItems[item.value] || {}
-        return item.type === 'Share' ? Object.assign(doc, { share: true, pinned: item.pinned }) : item
+        return item.type === 'Share' ? Object.assign(doc, { share: true, pinned: item.pinned, sort: item.sort }) : item
       })
     },
     clearSearch () {
@@ -476,11 +483,21 @@ export default {
           return 3
       }
     },
-    displayItems () {
-      return this.mapItems(this.items.filter(item => !item.pinned))
+    displayItems: {
+      get () {
+        return this.mapItems(this.items.filter(item => !item.pinned))
+      },
+      async set (items) {
+        return await this.reindexItems(items)
+      }
     },
-    displayPinned () {
-      return this.mapItems(this.items.filter(item => item.pinned))
+    displayPinned: {
+      get () {
+        return this.mapItems(this.items.filter(item => item.pinned))
+      },
+      async set (items) {
+        return await this.reindexItems(items)
+      }
     },
     searchItems () {
       const search = this.search && this.search.length > 2 ? new RegExp(this.search, 'i') : false
