@@ -87,7 +87,6 @@ export default {
       db: null,
       shareDbs: {},
       items: [],
-      pinned: [],
       sharedItems: {},
       editingItem: null,
       syncs: {},
@@ -144,7 +143,6 @@ export default {
       this.items.forEach(mapShared)
 
       this.resizeViewports()
-      return { items: this.items, pinned: this.pinned }
     },
     createNew (...args) {
       const [type, val] = args
