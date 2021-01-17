@@ -1,9 +1,9 @@
 <template>
   <div>
     <q-card-section class="content" :style="contentStyle">
-      <q-icon v-if="this.$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
-      <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
+      <slot name="top-toolbar-left"></slot>
       <p class="q-pa-sm text-h6 checklist-title">{{ value.value.title }}</p>
+      <slot name="top-toolbar-right"></slot>
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
@@ -106,29 +106,11 @@ export default {
     position: relative
     .checklist-title
       margin: 0
+      overflow-wrap: break-word
     .checklist-item
       padding: 0
       .checklist-side
         padding: 0
-    .clipped
-      position: absolute
-      width: 100%
-      bottom: 0
-      height: 2.1em
-      padding-top: 1em
-      font-weight: 900
-      font-size: 1.5em
-      padding-left: 3px
-      color: $grey
-      background: linear-gradient(rgba(255,255,255,0), 20%, rgba(255,255,255,1))
-    .shared-icon
-      position: absolute
-      top: -3px
-      left: -1px
-    .handle
-      position: absolute
-      top: -3px
-      right: -5px
     .checked-separator
       margin: 5px 0
   .active-buttons

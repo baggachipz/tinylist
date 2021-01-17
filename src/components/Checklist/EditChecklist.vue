@@ -1,7 +1,9 @@
 <template>
   <div>
     <q-card-section class="section">
+      <slot name="top-toolbar-left"></slot>
       <q-input borderless v-model="title" class="text-h6" @input="onChange" placeholder="Title" />
+      <slot name="top-toolbar-right"></slot>
     </q-card-section>
     <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">

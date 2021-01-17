@@ -2,6 +2,12 @@
   <q-dialog persistent ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <component v-if="editType" v-bind:is="editType" :value="val" @change="onChange" ref="edit-component">
+        <template v-slot:top-toolbar-right>
+          <q-btn round flat size="sm" :icon="val.pinned ? 'push_pin' : 'o_push_pin'" class="pin-button" @click="pinItem">
+            <q-tooltip v-if="val.pinned">Unpin</q-tooltip>
+            <q-tooltip v-else>Pin</q-tooltip>
+          </q-btn>
+        </template>
         <template v-slot:bottom-toolbar-left>
           <div class="action-buttons">
             <q-btn flat round icon="delete" @click="deleteItem">
@@ -65,6 +71,10 @@ export default {
     emitVal () {
       this.$emit('input', this.val)
     },
+    pinItem (e) {
+      this.$emit('pin', this.val)
+      e.stopPropagation()
+    },
     deleteItem () {
       this.$parent.$parent.deleteItem(this.val._id)
       this.hide()
@@ -92,3 +102,10 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+  .section
+    .pin-button
+      position: absolute
+      top: 0
+      right: 0
+</style>
