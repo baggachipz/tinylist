@@ -28,14 +28,17 @@ export default {
         required: true
       },
       value: {
-        default: null
+        default: {
+          title: null,
+          data: null
+        }
       }
     }
   },
   data () {
     return {
-      title: this.value.value.title,
-      text: this.value.value.data
+      title: this.value.value ? this.value.value.title : null,
+      text: this.value.value ? this.value.value.data : null
     }
   },
   methods: {
