@@ -21,7 +21,7 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 5. ~~Dark mode~~
 6. ~~True list view~~
 7. ~~Enhance PWA 'add to homescreen' functionality~~
-8. Ability to 'pin' notes/checklists to the top
+8. ~~Ability to 'pin' notes/checklists to the top~~
 9. Support for image attachments
 10. ~~Import/export of data~~
 11. Internationalization

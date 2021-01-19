@@ -1,6 +1,18 @@
 <template>
   <q-card dense bordered :class="cardClass" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
     <component v-if="value.type" v-bind:is="viewType" :value="value" @change="onChange" :active="active" :draggable="draggable" ref="view">
+      <template v-slot:top-toolbar-left>
+        <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
+      </template>
+      <template v-slot:top-toolbar-right>
+        <q-icon v-if="$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
+        <div v-else>
+          <q-btn round flat size="sm" :icon="value.pinned ? 'push_pin' : 'o_push_pin'" class="pin-button" @click="pinItem" v-if="active">
+            <q-tooltip v-if="value.pinned">Unpin</q-tooltip>
+            <q-tooltip v-else>Pin</q-tooltip>
+          </q-btn>
+        </div>
+      </template>
       <template v-slot:bottom-toolbar-left>
         <div class="active-buttons">
           <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
@@ -46,6 +58,10 @@ export default {
       this.$emit('share', this.value)
       e.stopPropagation()
     },
+    pinItem (e) {
+      this.$emit('pin', this.value)
+      e.stopPropagation()
+    },
     onChange (id) {
       this.$emit('change', id)
     },
@@ -63,3 +79,18 @@ export default {
   }
 }
 </script>
+<style lang="sass" scoped>
+  .content
+    .shared-icon
+      position: absolute
+      top: -3px
+      left: -1px
+    .handle
+      position: absolute
+      top: -3px
+      right: -5px
+    .pin-button
+      position: absolute
+      top: 0
+      right: 0
+</style>

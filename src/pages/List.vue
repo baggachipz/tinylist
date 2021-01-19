@@ -16,9 +16,17 @@
       </div>
     </div>
 
-    <draggable v-else v-model="items" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" @change="reindexItems" ref="viewport" v-bind:style="{ height: viewportHeight }">
+    <draggable v-if="!searchItems && displayPinned.length" v-model="displayPinned" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="pinned" v-bind:style="{ height: viewportHeight['pinned'] }">
+      <div v-for="(item, idx) in displayPinned" :key="idx" class="display-item">
+        <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" />
+      </div>
+    </draggable>
+
+    <q-separator v-if="!searchItems && displayPinned.length" spaced="xl" />
+
+    <draggable v-if="!searchItems" v-model="displayItems" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="unpinned" v-bind:style="{ height: viewportHeight['unpinned'] }">
       <div v-for="(item, idx) in displayItems" :key="idx" class="display-item">
-        <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
+        <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" />
       </div>
     </draggable>
 
@@ -32,7 +40,7 @@
       </q-fab>
     </q-page-sticky>
 
-    <edit-dialog v-model="editingItem" @input="onEdited" ref="editDialog" />
+    <edit-dialog v-model="editingItem" @input="onEdited" @pin="onPin" ref="editDialog" />
 
   </q-page>
 </template>
@@ -82,7 +90,10 @@ export default {
       sharedItems: {},
       editingItem: null,
       syncs: {},
-      viewportHeight: '1000px',
+      viewportHeight: {
+        unpinned: '1000px',
+        pinned: '0px'
+      },
       showFtueTooltip: false,
       showIosTooltip: false
     }
@@ -107,8 +118,7 @@ export default {
       // set items from result
       this.items = result.docs
 
-      // iterate through each item
-      this.items.forEach(async item => {
+      async function mapShared (item) {
         // if item is shared
         if (item.type === 'Share') {
           // if shared db has not been initialized yet for this item
@@ -119,12 +129,20 @@ export default {
           }
           // grab item from the shared db
           const doc = await shareDbs[item.value].get(item.value)
+
+          // set meta info about the doc
+          doc.pinned = item.pinned
+          doc.sort = item.sort
+
+          // set the item in the sharedItems collection
           $set(sharedItems, item.value, doc)
         }
-      })
+      }
 
-      this.resizeViewport()
-      return this.items
+      // iterate through each item
+      this.items.forEach(mapShared)
+
+      this.resizeViewports()
     },
     createNew (...args) {
       const [type, val] = args
@@ -178,7 +196,6 @@ export default {
           _rev: doc._rev,
           created: doc.created,
           modified: Date.now(),
-          sort: doc.sort,
           type: doc.type,
           value: doc.value
         }
@@ -186,6 +203,14 @@ export default {
         if (this.editingItem) {
           this.$set(this.editingItem, '_rev', response.rev)
         }
+
+        // get and update the parent item with metadata like pinned, modified, etc
+        const parentItem = this.items.find(parent => parent.value === doc._id)
+        if (!parentItem) throw new Error('No parent doc found for shared item: ' + doc._id)
+        parentItem.pinned = doc.pinned
+        parentItem.sort = doc.sort
+        parentItem.modified = Date.now()
+        await this.db.put(parentItem)
       } else {
         doc.modified = Date.now()
         const response = await this.db.put(doc)
@@ -195,7 +220,11 @@ export default {
       }
 
       await this.loadItems()
-      this.resizeViewport()
+      this.resizeViewports()
+    },
+    async onPin (doc) {
+      doc.pinned = !doc.pinned
+      this.onEdited(doc)
     },
     async deleteItem (id) {
       const doc = this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
@@ -217,13 +246,22 @@ export default {
       await this.db.put(doc)
       await this.loadItems()
     },
-    async reindexItems () {
-      // bulk-insert the documents after updating their sort properties
-      await this.db.bulkDocs(this.items.map((doc, idx) => {
-        doc.sort = idx
-        return doc
-      }))
+    async reindexItems (items) {
+      if (!items) items = this.items
+      const sorted = items.map((doc, idx) => {
+        if (doc.share) {
+          const parentItem = this.items.find(parent => parent.value === doc._id)
+          parentItem.sort = idx
+          return parentItem
+        } else {
+          doc.sort = idx
+          return doc
+        }
+      })
+      this.items.sort((item1, item2) => item1.sort - item2.sort)
+      await this.db.bulkDocs(sorted)
       this.loadItems()
+      return this.mapItems(sorted)
     },
     async onShare (item) {
       this.$q.dialog({
@@ -314,10 +352,10 @@ export default {
         throw new Error(`could not start sync for id: ${id}`)
       }
     },
-    resizeViewport () {
+    resizeViewport (viewport) {
       // create a heights array, the length of which matches the number of columns
       const heights = new Array(this.numberOfColumns).fill(0)
-      const items = this.$refs.viewport && this.$refs.viewport.$children ? this.$refs.viewport.$children : []
+      const items = this.$refs[viewport] && this.$refs[viewport].$children ? this.$refs[viewport].$children : []
 
       // iterate through each of the items in the viewport
       items.forEach((child, idx) => {
@@ -327,7 +365,10 @@ export default {
       })
 
       // set the height to the tallest column height
-      this.viewportHeight = Math.max(...heights) + 'px'
+      this.viewportHeight[viewport] = Math.max(...heights) + 'px'
+    },
+    resizeViewports () {
+      ['pinned', 'unpinned'].forEach(viewport => this.resizeViewport(viewport))
     },
     mapItems (items) {
       // get local reference handle for use in the callback below
@@ -336,7 +377,7 @@ export default {
       // if a shared item, return the shared doc from the db; otherwise, just return the item
       return items.map(item => {
         const doc = sharedItems[item.value] || {}
-        return item.type === 'Share' ? Object.assign(doc, { share: true }) : item
+        return item.type === 'Share' ? Object.assign(doc, { share: true, pinned: item.pinned, sort: item.sort }) : item
       })
     },
     clearSearch () {
@@ -440,8 +481,21 @@ export default {
           return 3
       }
     },
-    displayItems () {
-      return this.mapItems(this.items)
+    displayItems: {
+      get () {
+        return this.mapItems(this.items.filter(item => !item.pinned))
+      },
+      async set (items) {
+        return await this.reindexItems(items)
+      }
+    },
+    displayPinned: {
+      get () {
+        return this.mapItems(this.items.filter(item => item.pinned))
+      },
+      async set (items) {
+        return await this.reindexItems(items)
+      }
     },
     searchItems () {
       const search = this.search && this.search.length > 2 ? new RegExp(this.search, 'i') : false
@@ -508,7 +562,7 @@ export default {
     }
   },
   updated () {
-    this.resizeViewport()
+    this.resizeViewports()
   },
   watch: {
     dbUrl: function () {
