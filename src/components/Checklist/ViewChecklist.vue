@@ -7,7 +7,7 @@
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
-            <q-checkbox :value="!!item.selected" @input="onChecked(item)" size="xs" />
+            <q-checkbox :value="!!item.value.selected" @input="onChecked(item)" size="xs" />
           </q-item-section>
           <q-item-section>
             <q-item-label>
@@ -59,23 +59,20 @@ export default {
     contentStyle: {
       default: ''
     },
-    clipped: {
-      default: false
-    },
     draggable: {
       default: false
     }
   },
   methods: {
     onChecked (val, evt) {
-      val.selected = true
+      this.$set(val.value, 'selected', true)
       setTimeout(() => {
         val.value.checked = true
         this.$emit('change', this.value)
       }, 500)
     },
     onUnChecked (val, evt) {
-      val.selected = false
+      val.value.selected = false
       val.value.checked = false
       this.$emit('change', this.value)
     },
