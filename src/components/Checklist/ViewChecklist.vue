@@ -27,7 +27,6 @@
           </q-item-section>
         </q-item>
       </q-list>
-      <div class="clipped" v-if="clipped">&mldr;</div>
     </q-card-section>
     <q-card-actions v-if="this.$q.platform.is.desktop" class="active-buttons">
       <slot name="bottom-toolbar-left"></slot>
@@ -112,8 +111,4 @@ export default {
       margin: 5px 0
   .active-buttons
     padding: 0
-  .body--dark
-    .content
-      .clipped
-        background: linear-gradient(rgba(29,29,29,0), 20%, rgba(29,29,29,1))
 </style>
