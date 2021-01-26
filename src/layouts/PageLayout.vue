@@ -11,7 +11,7 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
-      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" @created="createdDoc" @share="share" @clearsearch="search=null" />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
