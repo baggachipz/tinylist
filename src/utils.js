@@ -1,9 +1,22 @@
+const MODE = {
+  CREATE: 'create',
+  DESTROY: 'destroy'
+}
+
 export async function createDatabase (id) {
+  return doDbOperation(MODE.CREATE, id)
+}
+
+export async function destroyDatabase (id) {
+  return doDbOperation(MODE.DESTROY, id)
+}
+
+async function doDbOperation (mode, id) {
   if (process.env.PROD) {
     if (process.env.CREATE_DB_URL) {
       try {
         return await fetch(process.env.CREATE_DB_URL, {
-          method: 'POST',
+          method: mode === MODE.DESTROY ? 'DELETE' : 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json'
@@ -11,7 +24,7 @@ export async function createDatabase (id) {
           body: JSON.stringify({ id })
         })
       } catch (e) {
-        throw new Error('Unable to create database: ' + e.toString())
+        throw new Error(`Unable to ${mode} database: ${e.toString()}`)
       }
     } else {
       throw new Error('CREATE_DB_URL has not been defined for production use.')
@@ -19,9 +32,9 @@ export async function createDatabase (id) {
   } else {
     const createFunc = require('./functions/create-database').handler
     return await new Promise((resolve, reject) => {
-      createFunc({ body: JSON.stringify({ id }) }, null, function (err, response) {
-        if (err) {
-          reject('Unable to create database: ' + err.toString())
+      createFunc({ body: JSON.stringify({ id }), httpMethod: mode === MODE.DESTROY ? 'DELETE' : 'POST' }, null, function (e, response) {
+        if (e) {
+          reject(`Unable to ${mode} database: ${e.toString()}`)
         } else {
           resolve(response)
         }

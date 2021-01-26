@@ -12,7 +12,8 @@ const routes = [
     component: () => import('layouts/PageLayout.vue'),
     children: [
       { path: '/privacy', name: 'privacy', component: () => import('../pages/Privacy.vue') },
-      { path: '/terms', name: 'terms', component: () => import('../pages/Terms.vue') }
+      { path: '/terms', name: 'terms', component: () => import('../pages/Terms.vue') },
+      { path: '/destroy-database', name: 'destroy-database', component: () => import('../Destroy.vue') }
     ]
   },
   {

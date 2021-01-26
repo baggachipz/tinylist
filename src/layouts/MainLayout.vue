@@ -98,6 +98,9 @@
                   <q-input dense readonly :value="this.uuid" label="My Unique ID" @click="editUuid" />
                   <q-input dense readonly :value="this.dbUrl" label="Remote Database" @click="editDbUrl" />
                 </q-card-section>
+                <q-card-actions align="right">
+                  <q-btn dense flat color="negative" size="sm" class="float-right" icon="delete_forever" to="destroy-database">Delete Database</q-btn>
+                </q-card-actions>
               </q-card>
             </q-expansion-item>
           </q-list>

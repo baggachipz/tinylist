@@ -2,6 +2,7 @@ exports.handler = function (event, context, callback) {
   const fetch = require('node-fetch')
   const data = JSON.parse(event.body)
   const id = data.id
+  const verb = event.httpMethod === 'DELETE' ? 'DELETE' : 'PUT' // delete or create only; default to create
 
   const bToA = (typeof btoa === 'undefined') ? btoaShim : btoa
 
@@ -25,7 +26,7 @@ exports.handler = function (event, context, callback) {
 
   // call put method to create the new database
   fetch(dbUrl, {
-    method: 'PUT',
+    method: verb,
     credentials: 'same-origin',
     redirect: 'follow',
     agent: null,
