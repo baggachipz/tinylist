@@ -23,9 +23,10 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 7. ~~Enhance PWA 'add to homescreen' functionality~~
 8. ~~Ability to 'pin' notes/checklists to the top~~
 9. ~~Import/export of data~~
-10. Support for image attachments
-11. Labels
-12. Internationalization
+10. Encrypt individual notes/checklists
+11. Support for image attachments
+12. Labels
+13. Internationalization
 
 ## Support If You're a Fan
 If you like this project, please consider [supporting it](https://ko-fi.com/tinylist). I do not monetize the app and have to pay hosting costs.
