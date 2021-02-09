@@ -1,6 +1,6 @@
 <template>
   <q-card dense bordered :class="cardClass" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
-    <component v-if="value.type" v-bind:is="viewType" :value="value" @change="onChange" :active="active" :draggable="draggable" ref="view">
+    <component v-if="value.type" v-bind:is="viewType" :value="value" @change="onChange" :active="active" :draggable="draggable" ref="view" class="griditem">
       <template v-slot:top-toolbar-left>
         <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
       </template>
@@ -93,4 +93,6 @@ export default {
       position: absolute
       top: 0
       right: 0
+  .griditem
+    overflow-wrap: break-word
 </style>
