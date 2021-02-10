@@ -40,7 +40,7 @@
       </q-fab>
     </q-page-sticky>
 
-    <edit-dialog v-model="editingItem" @input="onEdited" @pin="onPin" ref="editDialog" />
+    <edit-dialog v-model="editingItem" @input="onEdited" ref="editDialog" />
 
   </q-page>
 </template>

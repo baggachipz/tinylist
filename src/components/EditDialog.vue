@@ -72,7 +72,8 @@ export default {
       this.$emit('input', this.val)
     },
     pinItem (e) {
-      this.$emit('pin', this.val)
+      this.$set(this.val, 'pinned', !this.val.pinned)
+      this.emitVal()
       e.stopPropagation()
     },
     deleteItem () {
