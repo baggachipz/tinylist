@@ -299,9 +299,6 @@ export default {
           parent: this
         })
       }
-      if (this.$q.platform.is.android) {
-
-      }
     },
     dataDownload () {
       if (this.exportIsPossible) {

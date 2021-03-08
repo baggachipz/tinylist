@@ -390,9 +390,6 @@ export default {
           parent: this
         })
       }
-      if (this.$q.platform.is.android) {
-
-      }
     },
     exportAllData () {
       const zip = new JSZip()
@@ -508,6 +505,8 @@ export default {
         if (item.type === 'Note') {
           return search.test(item.value.data)
         }
+        // otherwise return false
+        return false
       })
     }
   },
@@ -522,7 +521,7 @@ export default {
     this.initDbSync()
     await this.loadItems()
     this.reindexItems()
-    this.showFtueTooltip = this.$q.screen.name === 'xs' && !this.searchItems.length && !this.displayItems.length
+    this.showFtueTooltip = this.$q.platform.is.mobile && !this.searchItems.length && !this.displayItems.length
     if (this.$q.platform.is.ios) {
       history.pushState({}, null, window.location.origin + this.$router.resolve({
         name: 'linkuuid',

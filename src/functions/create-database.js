@@ -57,7 +57,7 @@ exports.handler = function (event, context, callback) {
 }
 
 function btoaShim (str) {
-  var buffer
+  let buffer
 
   if (str instanceof Buffer) {
     buffer = str

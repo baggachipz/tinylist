@@ -26,5 +26,5 @@ export default {
 
   .body--dark
     a
-      color $white
+      color: white
 </style>
