@@ -65,6 +65,7 @@
             <q-item-label>Install on Your Device</q-item-label>
           </q-item-section>
         </q-item>
+        <q-separator v-if="$q.platform.is.mobile && $q.platform.is.ios" />
         <q-expansion-item icon="settings" label="Settings" group="main">
           <q-list dense>
             <q-item tag="label">
@@ -352,6 +353,22 @@ export default {
         return { icon: icon }
       }
     }
+
+    // alter the manifest.json for PWA's to be dynamic. This alters the uuid param so that the manifest properly includes that id in the start_url.
+    fetch('/manifest.json')
+      .then(response => response.json())
+      .then(manifest => {
+        // create the route to start on
+        const startRoute = this.$router.resolve({ name: 'linkuuid', params: { uuid: this.uuid } })
+
+        // alter the manifest value with this route
+        manifest.start_url = startRoute.href
+
+        // set the manifest to be inline
+        document.querySelector('link[rel="manifest"]').setAttribute('href', 'data:application/manifest+json,' + JSON.stringify(manifest))
+      }).catch(error => {
+        console.error('Unable to load PWA manifest: ' + error)
+      })
   },
   mounted () {
     if (!this.uuid) {
