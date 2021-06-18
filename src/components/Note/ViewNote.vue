@@ -23,7 +23,7 @@ export default {
   props: ['value', 'active', 'contentStyle', 'clipped', 'draggable'],
   computed: {
     content () {
-      const md = new MarkdownIt()
+      const md = new MarkdownIt({ linkify: true })
       return md.render(this.value.value.data)
     }
   }
