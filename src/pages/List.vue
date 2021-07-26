@@ -230,19 +230,19 @@ export default {
       const doc = this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
       if (doc) {
         const response = await this.db.remove(doc)
-        // set rev to the newest one so the restore doesn't cause a conflict
-        doc._rev = response._rev
         this.loadItems()
         this.$q.notify({
           message: 'Deleted.',
           progress: true,
           actions: [
-            { label: 'Undo', handler: () => this.restoreItem(doc) }
+            { label: 'Undo', handler: () => this.restoreItem(doc, response._rev) }
           ]
         })
       }
     },
-    async restoreItem (doc) {
+    async restoreItem (doc, rev) {
+      // set rev to the newest one so the restore doesn't cause a conflict
+      doc._rev = rev
       await this.db.put(doc)
       await this.loadItems()
     },
