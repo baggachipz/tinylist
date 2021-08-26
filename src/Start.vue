@@ -18,22 +18,19 @@ export default {
   async mounted () {
     if (this.uuid) {
       localStorage.setItem('uuid', this.uuid)
-      const route = this.$router.resolve({ name: 'list' })
-      window.location = route.href
+      this.$router.replace({ name: 'list' })
     } else {
       if (!localStorage.getItem('uuid')) {
         const id = 'tl' + uid()
         try {
           await createDatabase(id)
           localStorage.setItem('uuid', id)
-          const route = this.$router.resolve({ name: 'list' })
-          window.location = route.href
+          this.$router.replace({ name: 'list' })
         } catch (e) {
           console.log(e)
         }
       } else {
-        const route = this.$router.resolve({ name: 'list' })
-        window.location = route.href
+        this.$router.replace({ name: 'list' })
       }
     }
   }
