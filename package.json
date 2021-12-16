@@ -1,7 +1,7 @@
 {
   "name": "tinylist",
   "version": "1.0.0",
-  "description": "A minimalist, opinionated PWA notes/checklists application.",
+  "description": "A privacy-focused PWA notes/checklists application that syncs instantly across devices.",
   "productName": "TinyList",
   "author": "Matt Curtis <matt@curtii.com>",
   "private": true,
