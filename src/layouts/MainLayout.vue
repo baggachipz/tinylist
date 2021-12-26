@@ -43,7 +43,7 @@
               Support tinylist
             </q-item-label>
             <q-item-label caption>
-              Hosting isn't cheap. Contributions are appreciated!
+              Your contributions help keep tinylist free and available to all.
             </q-item-label>
           </q-item-section>
         </q-item>
