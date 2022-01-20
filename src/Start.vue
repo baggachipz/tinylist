@@ -25,7 +25,7 @@ export default {
         try {
           await createDatabase(id)
           localStorage.setItem('uuid', id)
-          this.$router.replace({ name: 'list' })
+          this.$router.go()
         } catch (e) {
           console.log(e)
         }
