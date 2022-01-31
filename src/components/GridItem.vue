@@ -15,6 +15,9 @@
       </template>
       <template v-slot:bottom-toolbar-left>
         <div class="active-buttons">
+          <q-btn dense flat round icon="archive" @click="archiveItem" v-if="active && !isArchiveItem">
+            <q-tooltip>Archive</q-tooltip>
+          </q-btn>
           <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
             <q-tooltip>Delete</q-tooltip>
           </q-btn>
@@ -58,6 +61,13 @@ export default {
       this.$emit('share', this.value)
       e.stopPropagation()
     },
+    folderItem (e, folder) {
+      this.$emit('moveToFolder', this.value, folder)
+      e.stopPropagation()
+    },
+    archiveItem (e) {
+      this.folderItem(e, String.fromCharCode(0) + 'Archive')
+    },
     pinItem (e) {
       this.$emit('pin', this.value)
       e.stopPropagation()
@@ -75,6 +85,9 @@ export default {
     },
     cardClass () {
       return this.value.share ? 'shared q-pa-xs' : 'q-pa-xs'
+    },
+    isArchiveItem () {
+      return this.value?.folder === String.fromCharCode(0) + 'Archive'
     }
   }
 }

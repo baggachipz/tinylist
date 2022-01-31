@@ -66,6 +66,17 @@
           </q-item-section>
         </q-item>
         <q-separator v-if="$q.platform.is.mobile && $q.platform.is.ios" />
+        <q-expansion-item icon="folder" label="Folders" v-if="folders.length > 1">
+          <q-list dense v-for="(folder) in folders" :key="folder">
+            <q-item dense :clickable="folder !== currentFolder" :active="folder === currentFolder" @click="setFolder(folder)">
+              <q-item-section avatar></q-item-section>
+              <q-item-section>
+                <q-item-label>{{ typeof folder === 'undefined' ? '(No Folder)' : folder }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
+        <q-separator v-if="folders.length > 1" />
         <q-expansion-item icon="settings" label="Settings" group="main">
           <q-list dense>
             <q-item tag="label">
@@ -158,7 +169,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" :display-mode="displayMode" @created="createdDoc" @share="share" @clearsearch="search=null" ref="currentPage" />
+      <router-view :uuid="uuid" :dbUrl="dbUrl" :search="search" :display-mode="displayMode" :folder="currentFolder" @created="createdDoc" @share="share" @clearsearch="search=null" @setFolder="setFolder" @setFolders="setFolders" ref="currentPage" />
     </q-page-container>
   </q-layout>
 </template>
@@ -187,7 +198,9 @@ export default {
       dbUrl: localStorage.getItem('dbUrl'),
       displayMode: localStorage.getItem('displaymode') || 'grid',
       search: null,
-      exportIsPossible: false
+      exportIsPossible: false,
+      folders: [],
+      currentFolder: undefined
     }
   },
   methods: {
@@ -283,6 +296,12 @@ export default {
           }
         })
       }
+    },
+    setFolder (folder) {
+      this.currentFolder = folder
+    },
+    setFolders (folders) {
+      this.folders = (folders && folders.length) ? folders.sort() : []
     },
     bugReport () {
       window.open('https://github.com/baggachipz/tinylist/issues')
