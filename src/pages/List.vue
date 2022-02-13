@@ -57,8 +57,10 @@ import GridItem from '../components/GridItem'
 import EditDialog from '../components/EditDialog'
 import QuickAdd from '../components/QuickAdd'
 import IosHomescreenDialog from '../components/IosHomescreenDialog'
+import pouchDBSearch from 'pouchdb-quick-search'
 
 PouchDB.plugin(PouchDBFind)
+PouchDB.plugin(pouchDBSearch)
 
 export default {
   name: 'List',
@@ -87,6 +89,7 @@ export default {
       db: null,
       shareDbs: {},
       items: [],
+      searchItems: false,
       sharedItems: {},
       editingItem: null,
       syncs: {},
@@ -493,21 +496,6 @@ export default {
       async set (items) {
         return await this.reindexItems(items)
       }
-    },
-    searchItems () {
-      const search = this.search && this.search.length > 2 ? new RegExp(this.search, 'i') : false
-      if (!search) return false
-      return this.displayItems.filter(item => {
-        if (search.test(item.value.title)) return true
-        if (item.type === 'Checklist') {
-          return item.value.items.some(val => search.test(val.value.label))
-        }
-        if (item.type === 'Note') {
-          return search.test(item.value.data)
-        }
-        // otherwise return false
-        return false
-      })
     }
   },
   async mounted () {
@@ -521,7 +509,7 @@ export default {
     this.initDbSync()
     await this.loadItems()
     this.reindexItems()
-    this.showFtueTooltip = this.$q.platform.is.mobile && !this.searchItems.length && !this.displayItems.length
+    this.showFtueTooltip = this.$q.platform.is.mobile && !this.searchItems && !this.displayItems.length
     if (this.$q.platform.is.ios) {
       history.pushState({}, null, window.location.origin + this.$router.resolve({
         name: 'linkuuid',
@@ -580,6 +568,18 @@ export default {
       }).on('error', (err) => {
         console.error(err)
       })
+    },
+    search: async function () {
+      if (!this.search || this.search.length < 3) this.searchItems = false
+      else {
+        const result = await this.db.search({
+          query: this.search,
+          fields: ['value.data', 'value.items.value.label', 'value.title'],
+          include_docs: true
+        })
+
+        this.searchItems = result.rows.map(row => row.doc)
+      }
     }
   }
 }
