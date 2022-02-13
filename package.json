@@ -14,7 +14,7 @@
     "@quasar/extras": "^1.9.19",
     "core-js": "^3.9.1",
     "file-saver": "^2.0.5",
-    "jszip": "^3.6.0",
+    "jszip": "^3.7.0",
     "markdown-it": "^12.0.4",
     "node-fetch": "^2.6.1",
     "pouchdb": "^7.2.2",
