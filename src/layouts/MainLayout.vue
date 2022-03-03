@@ -71,7 +71,7 @@
             <q-item dense :clickable="folder !== currentFolder" :active="folder === currentFolder" @click="setFolder(folder)">
               <q-item-section avatar></q-item-section>
               <q-item-section>
-                <q-item-label>{{ typeof folder === 'undefined' ? '(No Folder)' : folder }}</q-item-label>
+                <q-item-label>{{ typeof folder === 'undefined' ? 'Main Page (No Folder)' : folder }}</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>

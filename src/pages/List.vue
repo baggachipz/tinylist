@@ -24,9 +24,11 @@
 
     <q-separator v-if="!searchItems && displayPinned.length" spaced="xl" />
 
-    <q-breadcrumbs v-if="folder">
-      <q-breadcrumbs-el icon="home" @click="setFolder(null)" label="Home" />
-      <q-breadcrumbs-el icon="folder_open" :label="folder" />
+    <q-breadcrumbs v-if="folder" class="folder-breadcrumbs">
+      <q-breadcrumbs-el icon="home" @click="setFolder(undefined)" class="clickable" label="Main" />
+      <q-breadcrumbs-el icon="folder_open" label=" ">
+        <q-select borderless options-dense :options="displayFolders" :value="folder" @input="setFolder" />
+      </q-breadcrumbs-el>
     </q-breadcrumbs>
 
     <draggable v-if="!searchItems" v-model="displayItems" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="unpinned" v-bind:style="{ height: viewportHeight['unpinned'] }">
@@ -519,6 +521,9 @@ export default {
       const folders = [...new Set(this.items.map(item => item.folder))]
       this.$emit('setFolders', folders)
       return folders
+    },
+    displayFolders () {
+      return this.folders.filter(folder => !!folder)
     }
   },
   async mounted () {
@@ -676,5 +681,10 @@ export default {
       width: 33%
     @media (min-width: $breakpoint-lg-min)
       width: 25%
+
+  // breadcrumbs
+  .folder-breadcrumbs
+    .clickable
+      cursor: pointer
 
 </style>
