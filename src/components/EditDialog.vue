@@ -10,6 +10,10 @@
         </template>
         <template v-slot:bottom-toolbar-left>
           <div class="action-buttons">
+            <q-btn dense flat round icon="archive" @click="archiveItem" v-if="!val.new && !isArchiveItem">
+            <q-tooltip>Archive</q-tooltip>
+          </q-btn>
+          <folder-selector :folders="folders" :current-folder="value.folder" @move="folderItem" v-if="!val.new" />
             <q-btn flat round icon="delete" @click="deleteItem">
               <q-tooltip>Delete</q-tooltip>
             </q-btn>
@@ -30,12 +34,18 @@
 <script>
 import EditChecklist from './Checklist/EditChecklist'
 import EditNote from './Note/EditNote'
+import FolderSelector from './FolderSelector'
 import { throttle } from 'quasar'
 
 export default {
   name: 'EditDialog',
-  components: { EditChecklist, EditNote },
-  props: ['value'],
+  components: { EditChecklist, EditNote, FolderSelector },
+  props: {
+    value: {},
+    folders: {
+      default: () => []
+    }
+  },
   data () {
     return {
       val: this.value
@@ -83,11 +93,23 @@ export default {
     shareItem () {
       this.$parent.$parent.onShare(this.val)
       this.hide()
+    },
+    folderItem (folder) {
+      this.$emit('moveToFolder', this.value, folder)
+      this.hide()
+    },
+    archiveItem (e) {
+      this.folderItem(String.fromCharCode(0) + 'Archive')
+      this.hide()
+      e.stopPropagation()
     }
   },
   computed: {
     editType () {
       return this.value && this.value.type ? `Edit${this.value.type}` : null
+    },
+    isArchiveItem () {
+      return this.value?.folder === String.fromCharCode(0) + 'Archive'
     }
   },
   watch: {
