@@ -12,21 +12,28 @@
 
     <div class="search-results items-grid scroll-y column" v-if="searchItems">
       <div v-for="(item, idx) in searchItems" :key="idx" class="display-item">
-        <grid-item :value="item" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" />
+        <grid-item :value="item" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @moveToFolder="setItemFolder" />
       </div>
     </div>
 
     <draggable v-if="!searchItems && displayPinned.length" v-model="displayPinned" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="pinned" v-bind:style="{ height: viewportHeight['pinned'] }">
       <div v-for="(item, idx) in displayPinned" :key="idx" class="display-item">
-        <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" />
+        <grid-item :value="item" :draggable="true" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" @moveToFolder="setItemFolder" />
       </div>
     </draggable>
 
     <q-separator v-if="!searchItems && displayPinned.length" spaced="xl" />
 
+    <q-breadcrumbs v-if="folder" class="folder-breadcrumbs">
+      <q-breadcrumbs-el icon="home" @click="setFolder(undefined)" class="clickable" label="Main" />
+      <q-breadcrumbs-el icon="folder_open" label=" ">
+        <q-select borderless options-dense :options="displayFolders" :value="folder" @input="setFolder" />
+      </q-breadcrumbs-el>
+    </q-breadcrumbs>
+
     <draggable v-if="!searchItems" v-model="displayItems" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="unpinned" v-bind:style="{ height: viewportHeight['unpinned'] }">
       <div v-for="(item, idx) in displayItems" :key="idx" class="display-item">
-        <grid-item :value="item" :draggable="true" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" />
+        <grid-item :value="item" :draggable="true" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" @moveToFolder="setItemFolder" />
       </div>
     </draggable>
 
@@ -40,7 +47,7 @@
       </q-fab>
     </q-page-sticky>
 
-    <edit-dialog v-model="editingItem" @input="onEdited" ref="editDialog" />
+    <edit-dialog v-model="editingItem" @input="onEdited" :folders="folders" @moveToFolder="setItemFolder" ref="editDialog" />
 
   </q-page>
 </template>
@@ -82,6 +89,9 @@ export default {
     },
     displayMode: {
       default: 'grid'
+    },
+    folder: {
+      default: null
     }
   },
   data () {
@@ -89,6 +99,7 @@ export default {
       db: null,
       shareDbs: {},
       items: [],
+      folders: [],
       searchItems: false,
       sharedItems: {},
       editingItem: null,
@@ -103,11 +114,17 @@ export default {
   },
   methods: {
     async loadItems () {
+      const folder = this.folder
+
       // get items from local db
       const result = await this.db.find({
         selector: {
           type: { $exists: true },
-          sort: { $exists: true }
+          sort: { $exists: true },
+          $or: [
+            { folder: { $exists: false } },
+            { folder: folder }
+          ]
         },
         sort: ['sort']
       })
@@ -142,10 +159,28 @@ export default {
         }
       }
 
-      // iterate through each item
+      // iterate through each item and map it to the shared item if necessary
       this.items.forEach(mapShared)
 
+      this.loadFolders()
+
       this.resizeViewports()
+    },
+    async loadFolders () {
+      const allFolders = await this.db.find({
+        selector: { folder: { $exists: true } },
+        fields: ['folder']
+      })
+
+      // de-dupe the result set
+      const folders = [...new Set(allFolders.docs.map(item => item.folder))]
+
+      // add in the 'main' folder which is actually <undefined>
+      folders.unshift(undefined)
+
+      this.folders = folders
+      this.$emit('setFolders', folders)
+      return folders
     },
     createNew (...args) {
       const [type, val] = args
@@ -169,6 +204,9 @@ export default {
     editItem (item) {
       this.editingItem = item
       this.$refs.editDialog.show()
+    },
+    getItemById (id) {
+      return this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
     },
     async onCreated (item) {
       // add item to the front of the list
@@ -229,8 +267,32 @@ export default {
       doc.pinned = !doc.pinned
       this.onEdited(doc)
     },
+    async setItemFolder (doc, folder) {
+      if (doc) {
+        const oldFolder = doc.folder
+        const docId = doc._id
+        if (folder) doc.folder = folder
+        else delete doc.folder
+        await this.onEdited(doc)
+        this.$q.notify({
+          message: `Moved to "${folder || 'Main Page'}".`,
+          progress: true,
+          actions: [
+            {
+              label: 'Undo',
+              handler: async () => {
+                const newDoc = await this.db.get(docId)
+                if (oldFolder) newDoc.folder = oldFolder
+                else delete newDoc.folder
+                this.onEdited(newDoc)
+              }
+            }
+          ]
+        })
+      }
+    },
     async deleteItem (id) {
-      const doc = this.items.find(item => item._id === id || (item.type === 'Share' && item.value === id))
+      const doc = this.getItemById(id)
       if (doc) {
         const response = await this.db.remove(doc)
         this.loadItems()
@@ -386,6 +448,9 @@ export default {
     clearSearch () {
       this.$emit('clearsearch')
     },
+    setFolder (folder) {
+      this.$emit('setFolder', folder)
+    },
     showHomescreenInstructions () {
       if (this.$q.platform.is.ios) {
         this.$q.dialog({
@@ -483,7 +548,7 @@ export default {
     },
     displayItems: {
       get () {
-        return this.mapItems(this.items.filter(item => !item.pinned))
+        return this.mapItems(this.items.filter(item => !item.pinned && (item.folder === this.folder || (!this.folder && !item.folder))))
       },
       async set (items) {
         return await this.reindexItems(items)
@@ -496,20 +561,24 @@ export default {
       async set (items) {
         return await this.reindexItems(items)
       }
+    },
+    displayFolders () {
+      return this.folders.filter(folder => !!folder)
     }
   },
   async mounted () {
     this.db = new PouchDB(this.uuid)
     await this.db.createIndex({
       index: {
-        fields: ['sort']
+        fields: ['type', 'sort', 'folder']
       }
     })
 
     this.initDbSync()
     await this.loadItems()
     this.reindexItems()
-    this.showFtueTooltip = this.$q.platform.is.mobile && !this.searchItems && !this.displayItems.length
+    this.$emit('setFolders', this.folders)
+    this.showFtueTooltip = this.$q.platform.is.mobile && !this.searchItems.length && !this.displayItems.length
     if (this.$q.platform.is.ios) {
       history.pushState({}, null, window.location.origin + this.$router.resolve({
         name: 'linkuuid',
@@ -560,7 +629,7 @@ export default {
       this.db.replicate.from(`${this.dbUrl}/${this.uuid}`).on('complete', async () => {
         await this.db.createIndex({
           index: {
-            fields: ['sort']
+            fields: ['type', 'sort', 'folder']
           }
         })
         this.loadItems()
@@ -580,6 +649,9 @@ export default {
 
         this.searchItems = result.rows.map(row => row.doc)
       }
+    },
+    folder: async function () {
+      this.loadItems()
     }
   }
 }
@@ -652,5 +724,10 @@ export default {
       width: 33%
     @media (min-width: $breakpoint-lg-min)
       width: 25%
+
+  // breadcrumbs
+  .folder-breadcrumbs
+    .clickable
+      cursor: pointer
 
 </style>

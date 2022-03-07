@@ -1,5 +1,5 @@
 <template>
-  <q-card dense bordered :class="cardClass" :flat="!active" @mouseover="active=true" @mouseleave="active=false" @click="onClick">
+  <q-card dense bordered :class="cardClass" :flat="!active" @mouseover="mouseOver" @mouseleave="mouseLeave" @click="onClick">
     <component v-if="value.type" v-bind:is="viewType" :value="value" @change="onChange" :active="active" :draggable="draggable" ref="view" class="griditem">
       <template v-slot:top-toolbar-left>
         <q-icon v-if="value.share" name="group" class="text-grey-5 shared-icon" size="xs"><q-tooltip>Shared {{ value.type }}</q-tooltip></q-icon>
@@ -15,6 +15,10 @@
       </template>
       <template v-slot:bottom-toolbar-left>
         <div class="active-buttons">
+          <q-btn dense flat round icon="archive" @click="archiveItem" v-if="active && !isArchiveItem">
+            <q-tooltip>Archive</q-tooltip>
+          </q-btn>
+          <folder-selector :folders="folders" :current-folder="value.folder" @move="folderItem" @selecting="selectingFolder = true" @not-selecting="selectingFolder = false" v-if="active" />
           <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
             <q-tooltip>Delete</q-tooltip>
           </q-btn>
@@ -33,20 +37,25 @@
 <script>
 import ViewChecklist from './Checklist/ViewChecklist'
 import ViewNote from './Note/ViewNote'
+import FolderSelector from './FolderSelector'
 export default {
   name: 'GridItem',
-  components: { ViewChecklist, ViewNote },
+  components: { ViewChecklist, ViewNote, FolderSelector },
   props: {
     value: {
       required: true
     },
     draggable: {
       default: false
+    },
+    folders: {
+      default: []
     }
   },
   data () {
     return {
-      active: false
+      active: false,
+      selectingFolder: false
     }
   },
   methods: {
@@ -58,6 +67,13 @@ export default {
       this.$emit('share', this.value)
       e.stopPropagation()
     },
+    folderItem (folder) {
+      this.$emit('moveToFolder', this.value, folder)
+    },
+    archiveItem (e) {
+      this.folderItem(String.fromCharCode(0) + 'Archive')
+      e.stopPropagation()
+    },
     pinItem (e) {
       this.$emit('pin', this.value)
       e.stopPropagation()
@@ -67,6 +83,13 @@ export default {
     },
     onClick () {
       this.$emit('click')
+      this.selectingFolder = false
+    },
+    mouseOver () {
+      this.active = true
+    },
+    mouseLeave () {
+      if (!this.selectingFolder) this.active = false
     }
   },
   computed: {
@@ -75,6 +98,9 @@ export default {
     },
     cardClass () {
       return this.value.share ? 'shared q-pa-xs' : 'q-pa-xs'
+    },
+    isArchiveItem () {
+      return this.value?.folder === String.fromCharCode(0) + 'Archive'
     }
   }
 }
