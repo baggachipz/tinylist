@@ -27,7 +27,7 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 11. Encrypt individual notes/checklists
 12. Support for image attachments
 13. Labels
-14. Archiving
+14. ~~Archiving~~
 15. Internationalization
 
 ## Support If You're a Fan
