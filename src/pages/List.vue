@@ -119,12 +119,9 @@ export default {
       // get items from local db
       const result = await this.db.find({
         selector: {
-          type: { $exists: true },
           sort: { $exists: true },
-          $or: [
-            { folder: { $exists: false } },
-            { folder: folder }
-          ]
+          type: { $exists: true },
+          folder: folder || { $exists: false }
         },
         sort: ['sort']
       })
@@ -570,7 +567,7 @@ export default {
     this.db = new PouchDB(this.uuid)
     await this.db.createIndex({
       index: {
-        fields: ['type', 'sort', 'folder']
+        fields: ['sort', 'folder', 'type']
       }
     })
 
@@ -629,7 +626,7 @@ export default {
       this.db.replicate.from(`${this.dbUrl}/${this.uuid}`).on('complete', async () => {
         await this.db.createIndex({
           index: {
-            fields: ['type', 'sort', 'folder']
+            fields: ['sort', 'type', 'folder']
           }
         })
         this.loadItems()
