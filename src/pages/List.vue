@@ -116,6 +116,10 @@ export default {
     async loadItems () {
       const folder = this.folder
 
+      await this.db.createIndex({
+        index: { fields: ['sort', 'type', 'folder'] }
+      })
+
       // get items from local db
       const result = await this.db.find({
         selector: {
