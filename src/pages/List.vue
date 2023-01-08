@@ -489,9 +489,9 @@ export default {
           })
 
           if (!files.length) {
-            // must not be a Takeout archive, just do every json file
+            // must not be a Takeout archive, just do every json and txt file
             files = zip.filter(path => {
-              return /.*\.json$/.test(path)
+              return /.*\.(json|txt)$/.test(path) && !(/__MACOSX/.test(path))
             })
           }
 
@@ -516,19 +516,28 @@ export default {
       }
     },
     async importDataItem (data) {
-      const item = JSON.parse(data)
-      if (item._id) {
-        // get latest _rev to overwrite
-        try {
-          const existingItem = await this.db.get(item._id)
-          item._rev = existingItem._rev
-        } catch (e) {
-          // do nothing, item doesn't exist in the current db and will be created with this id
+      let item = {}
+
+      try {
+        // assume json and try to parse that.
+        item = JSON.parse(data)
+        if (item._id) {
+          // get latest _rev to overwrite
+          try {
+            const existingItem = await this.db.get(item._id)
+            item._rev = existingItem._rev
+          } catch (e) {
+            // do nothing, item doesn't exist in the current db and will be created with this id
+          }
+        } else {
+          item._id = uid()
         }
-      } else {
-        item._id = uid()
+      } catch (e) {
+        // not json, just do as txt
+        item.textContent = data
       }
-      await this.onCreated(new ImportItem(item))
+
+      await this.onCreated(new ImportItem(item, item._id || uid()))
     }
   },
   computed: {
