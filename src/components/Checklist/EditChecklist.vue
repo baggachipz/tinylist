@@ -128,6 +128,7 @@ export default {
     },
     deleteItem (id) {
       this.items = this.items.filter(item => item._id !== id)
+      this.onChange()
     },
     deleteCheckedItems () {
       this.items = this.items.filter(item => !item.value.checked)
