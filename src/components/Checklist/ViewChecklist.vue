@@ -15,8 +15,23 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-separator class="checked-separator" v-if="checkedItems.length && uncheckedItems.length" />
-        <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
+        <q-separator class="checked-separator" v-if="checkedItems.length && uncheckedItems.length && !this.$q.platform.is.desktop" />
+        <q-item v-if="checkedItems.length && !this.$q.platform.is.desktop" class="checklist-item">
+          <q-item-section side class="checklist-side">
+            <q-icon name="check_box" class="q-px-xs" size="xs" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ completedItemsLabel }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length && this.$q.platform.is.desktop" @click.stop="onToggle" dense-toggle switch-toggle-side expand-separator class="q-pa-none" :label="completedItemsLabel">
+          <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
+            <q-item-section side class="checklist-side">
+              <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
+            </q-item-section>
+          </q-item>
+        </q-expansion-item>
+        <!-- <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
             <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" size="xs" color="grey-7" class="checked-item" />
           </q-item-section>
@@ -25,7 +40,7 @@
               {{ item.value.label }}
             </q-item-label>
           </q-item-section>
-        </q-item>
+        </q-item> -->
       </q-list>
     </q-card-section>
     <q-card-actions v-if="this.$q.platform.is.desktop" class="active-buttons">
@@ -62,7 +77,13 @@ export default {
       default: false
     }
   },
+  data () {
+    return {
+      checkedExpanded: false
+    }
+  },
   methods: {
+    onToggle () {},
     onChecked (val, evt) {
       this.$set(val.value, 'selected', true)
       const that = this
@@ -89,6 +110,9 @@ export default {
     },
     checkedItems () {
       return this.value.value.items.filter(item => item.value.checked)
+    },
+    completedItemsLabel () {
+      return `${this.checkedItems.length} checked items`
     }
   }
 }
