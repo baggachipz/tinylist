@@ -65,9 +65,10 @@ export default {
   methods: {
     onChecked (val, evt) {
       this.$set(val.value, 'selected', true)
-      setTimeout(() => {
+      const that = this
+      setTimeout(function () {
         val.value.checked = true
-        this.$emit('change', this.value)
+        that.$emit('change', val.value)
       }, 500)
     },
     onUnChecked (val, evt) {
