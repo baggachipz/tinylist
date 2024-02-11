@@ -213,6 +213,11 @@ export default {
       // add item to the front of the list
       item.sort = 0
 
+      // add item to the current folder
+      if (this.folder) {
+        item.folder = this.folder
+      }
+
       // remove 'new' flag since it's not new anymore
       delete item.new
 
