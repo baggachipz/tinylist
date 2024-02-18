@@ -30,12 +30,26 @@ export default {
     // get db and store the new item
     const uuid = localStorage.getItem('uuid')
     const db = new PouchDB(uuid)
-    await db.put({
-      _id: uid(),
-      type: 'Share',
-      value: this.id,
-      sort: -1
+
+    // store the new shared item in the db, if it is not there yet
+    const sharedId = this.id
+    db.query(function (doc, emit) {
+      if (doc.value === sharedId) {
+        emit(doc)
+      }
+    }).then(function (result) {
+      if (!result.rows) {
+        db.put({
+          _id: uid(),
+          type: 'Share',
+          value: sharedId,
+          sort: -1
+        })
+      }
+    }).catch(function (err) {
+      console.log(err)
     })
+
     return this.$router.replace({ name: 'list' })
   }
 }
