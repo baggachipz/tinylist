@@ -7,7 +7,7 @@
       <template v-slot:top-toolbar-right>
         <q-icon v-if="$q.platform.is.mobile && draggable" class="handle text-grey-5" name="drag_indicator" size="xs" dense />
         <div v-else>
-          <q-btn round flat size="sm" :icon="value.pinned ? 'push_pin' : 'o_push_pin'" class="pin-button" @click="pinItem" v-if="active">
+          <q-btn round flat size="sm" :icon="value.pinned ? 'push_pin' : 'o_push_pin'" class="pin-button" @click="pinItem" v-if="canEdit && active">
             <q-tooltip v-if="value.pinned">Unpin</q-tooltip>
             <q-tooltip v-else>Pin</q-tooltip>
           </q-btn>
@@ -15,20 +15,21 @@
       </template>
       <template v-slot:bottom-toolbar-left>
         <div class="active-buttons">
-          <q-btn dense flat round icon="archive" @click="archiveItem" v-if="active && !isArchiveItem">
+          <q-btn dense flat round icon="archive" @click="archiveItem" v-if="canEdit && active && !isArchiveItem">
             <q-tooltip>Archive</q-tooltip>
           </q-btn>
-          <folder-selector :folders="folders" :current-folder="value.folder" @move="folderItem" @selecting="selectingFolder = true" @not-selecting="selectingFolder = false" v-if="active" />
-          <q-btn dense flat round icon="delete" @click="deleteItem" v-if="active">
+          <folder-selector :folders="folders" :current-folder="value.folder" @move="folderItem" @selecting="selectingFolder = true" @not-selecting="selectingFolder = false" v-if="canEdit && active" />
+          <q-btn dense flat round icon="delete" @click="deleteItem" v-if="canEdit && active">
             <q-tooltip>Delete</q-tooltip>
           </q-btn>
         </div>
       </template>
       <template v-slot:bottom-toolbar-right>
         <div class="active-buttons">
-          <q-btn v-if="!value.new && active" flat round dense icon="share" @click.prevent="shareItem">
+          <q-btn v-if="canEdit && !value.new && active" flat round dense icon="share" @click.prevent="shareItem">
             <q-tooltip>Share</q-tooltip>
           </q-btn>
+          <q-spinner v-if="loading" color="primary" size="2em" />
         </div>
       </template>
     </component>
@@ -50,6 +51,9 @@ export default {
     },
     folders: {
       default: []
+    },
+    loading: {
+      default: false
     }
   },
   data () {
@@ -82,8 +86,10 @@ export default {
       this.$emit('change', id)
     },
     onClick () {
-      this.$emit('click')
-      this.selectingFolder = false
+      if (this.canEdit) {
+        this.$emit('click')
+        this.selectingFolder = false
+      }
     },
     mouseOver () {
       this.active = true
@@ -101,6 +107,9 @@ export default {
     },
     isArchiveItem () {
       return this.value?.folder === String.fromCharCode(0) + 'Archive'
+    },
+    canEdit () {
+      return !this.loading
     }
   }
 }

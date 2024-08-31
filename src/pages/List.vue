@@ -12,13 +12,13 @@
 
     <div class="search-results items-grid scroll-y column" v-if="searchItems">
       <div v-for="(item, idx) in searchItems" :key="idx" class="display-item">
-        <grid-item :value="item" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @moveToFolder="setItemFolder" />
+        <grid-item :loading="loading" :value="item" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @moveToFolder="setItemFolder" />
       </div>
     </div>
 
     <draggable v-if="!searchItems && displayPinned.length" v-model="displayPinned" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="pinned" v-bind:style="{ height: viewportHeight['pinned'] }">
       <div v-for="(item, idx) in displayPinned" :key="idx" class="display-item">
-        <grid-item :value="item" :draggable="true" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" @moveToFolder="setItemFolder" />
+        <grid-item :loading="loading" :value="item" :draggable="true" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" @moveToFolder="setItemFolder" />
       </div>
     </draggable>
 
@@ -33,7 +33,7 @@
 
     <draggable v-if="!searchItems" v-model="displayItems" :handle="this.$q.platform.is.mobile ? '.handle' : false" :class="'scroll-y column items-' + displayMode" ref="unpinned" v-bind:style="{ height: viewportHeight['unpinned'] }">
       <div v-for="(item, idx) in displayItems" :key="idx" class="display-item">
-        <grid-item :value="item" :draggable="true" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" @moveToFolder="setItemFolder" />
+        <grid-item :loading="loading" :value="item" :draggable="true" :folders="folders" @delete="deleteItem" @change="onEdited" @click="editItem(item)" @share="onShare" @pin="onPin" @moveToFolder="setItemFolder" />
       </div>
     </draggable>
 
@@ -41,7 +41,7 @@
       <q-tooltip :value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
         Tap the button to get started. <q-icon name="east" />
       </q-tooltip>
-      <q-fab icon="edit" color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
+      <q-fab v-if="!loading" icon="edit" color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
         <q-fab-action color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" label-position="left" icon="sticky_note_2" label="Note" @click="createNew('Note')" />
         <q-fab-action color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" label-position="left" icon="fact_check" label="Checklist" @click="createNew('Checklist')" />
       </q-fab>
@@ -109,11 +109,13 @@ export default {
         pinned: '0px'
       },
       showFtueTooltip: false,
-      showIosTooltip: false
+      showIosTooltip: false,
+      loading: false
     }
   },
   methods: {
     async loadItems () {
+      this.loading = true
       const folder = this.folder
 
       await this.db.createIndex({
@@ -166,6 +168,8 @@ export default {
       this.loadFolders()
 
       this.resizeViewports()
+
+      this.loading = false
     },
     async loadFolders () {
       const allFolders = await this.db.find({
