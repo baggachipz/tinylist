@@ -1,5 +1,5 @@
 # develop stage
-FROM node:alpine as build-stage
+FROM node:16-alpine as build-stage
 
 ARG PROD
 ARG DB_URL
