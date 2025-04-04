@@ -83,7 +83,7 @@ export default {
       this.$emit('update:model-value', this.val)
     },
     pinItem (e) {
-      this.$set(this.val, 'pinned', !this.val.pinned)
+      this.val.pinned = !this.val.pinned
       this.emitVal()
       e.stopPropagation()
     },

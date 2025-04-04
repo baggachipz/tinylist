@@ -86,11 +86,11 @@ export default {
   methods: {
     onToggle () {},
     onChecked (val, evt) {
-      this.$set(val.value, 'selected', true)
+      val.value.selected = true
       const that = this
       setTimeout(function () {
         val.value.checked = true
-        that.$emit('change', val.value)
+        that.$emit('change', that.value)
       }, 500)
     },
     onUnChecked (val, evt) {
@@ -102,7 +102,7 @@ export default {
       e.stopPropagation()
       const val = extend({}, this.value)
       val.value.items = val.value.items.filter(item => !item.value.checked)
-      this.$emit('change', val)
+      this.$emit('change', this.value)
     }
   },
   computed: {

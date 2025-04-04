@@ -135,9 +135,7 @@ export default {
 
       // get vars for use in scope below
       const shareDbs = this.shareDbs
-      const sharedItems = this.sharedItems
       const initDbSync = this.initDbSync
-      const $set = this.$set
 
       // set items from result
       this.items = result.docs
@@ -159,7 +157,7 @@ export default {
           doc.sort = item.sort
 
           // set the item in the sharedItems collection
-          $set(sharedItems, item.value, doc)
+          this.sharedItems.item.value = doc
         }
       }
 
@@ -253,7 +251,7 @@ export default {
         }
         const response = await this.shareDbs[doc._id].put(item)
         if (this.editingItem) {
-          this.$set(this.editingItem, '_rev', response.rev)
+          this.editingItem._rev = response.rev
         }
 
         // get and update the parent item with metadata like pinned, modified, etc
@@ -267,7 +265,7 @@ export default {
         doc.modified = Date.now()
         const response = await this.db.put(doc)
         if (this.editingItem) {
-          this.$set(this.editingItem, '_rev', response.rev)
+          this.editingItem._rev = response.rev
         }
       }
 
