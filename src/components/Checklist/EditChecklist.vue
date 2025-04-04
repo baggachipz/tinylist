@@ -19,7 +19,7 @@
           </div>
         </q-item-section>
         <q-item-section>
-          <q-input v-model="newItem" borderless dense deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" :autofocus="$q.platform.is.desktop" />
+          <q-input v-model="newItem" borderless dense deboune="500" placeholder="List item" @keyup.enter="createNewItem" :autofocus="$q.platform.is.desktop" />
         </q-item-section>
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">

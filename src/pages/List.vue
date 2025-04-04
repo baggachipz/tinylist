@@ -194,14 +194,15 @@ export default {
 
       component.$q.dialog({
         component: EditDialog,
-        parent: this,
-        value: {
-          _id: uid(),
-          type: type,
-          value: val,
-          new: true,
-          created: Date.now(),
-          modified: Date.now()
+        componentProps: {
+          modelValue: {
+            _id: uid(),
+            type,
+            value: val,
+            new: true,
+            created: Date.now(),
+            modified: Date.now()
+          }
         }
       }).onOk(component.onCreated)
     },
@@ -463,8 +464,7 @@ export default {
     showHomescreenInstructions () {
       if (this.$q.platform.is.ios) {
         this.$q.dialog({
-          component: IosHomescreenDialog,
-          parent: this
+          component: IosHomescreenDialog
         })
       }
     },

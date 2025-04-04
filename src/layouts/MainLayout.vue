@@ -31,7 +31,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
-      content-class="sidebar"
+      class="sidebar"
     >
       <q-list class="sidebar-menu">
         <q-item clickable @click="support">
@@ -213,8 +213,9 @@ export default {
     editUuid () {
       this.$q.dialog({
         component: ChangeUuidDialog,
-        parent: this,
-        value: this.uuid
+        componentProps: {
+          value: this.uuid
+        }
       }).onOk(uuid => {
         this.uuid = uuid
         localStorage.setItem('uuid', this.uuid)
@@ -223,9 +224,10 @@ export default {
     editDbUrl () {
       this.$q.dialog({
         component: ChangeDburlDialog,
-        parent: this,
-        value: this.dbUrl,
-        uuid: this.uuid
+        componentProps: {
+          value: this.dbUrl,
+          uuid: this.uuid
+        }
       }).onOk(dbUrl => {
         this.dbUrl = dbUrl
         localStorage.setItem('dbUrl', this.dbUrl)
@@ -280,9 +282,10 @@ export default {
             case 'qrcode':
               this.$q.dialog({
                 component: QRCodeDialog,
-                parent: this,
-                code: opts.url,
-                msg: 'Scan this code with your device to link them and sync your data.'
+                componentProps: {
+                  code: opts.url,
+                  msg: 'Scan this code with your device to link them and sync your data.'
+                }
               })
               break
             case 'copy':
@@ -315,8 +318,7 @@ export default {
     showHomescreenInstructions () {
       if (this.$q.platform.is.ios) {
         this.$q.dialog({
-          component: IosHomescreenDialog,
-          parent: this
+          component: IosHomescreenDialog
         })
       }
     },
@@ -328,8 +330,7 @@ export default {
     dataUpload () {
       if (this.exportIsPossible) {
         this.$q.dialog({
-          component: ImportDataDialog,
-          parent: this
+          component: ImportDataDialog
         }).onOk(file => {
           this.$refs.currentPage.importFile(file)
         })
@@ -369,7 +370,7 @@ export default {
     this.$q.iconMapFn = (iconName) => {
       const icon = additionalIcons[iconName]
       if (typeof icon !== 'undefined') {
-        return { icon: icon }
+        return { icon }
       }
     }
 
