@@ -82,6 +82,7 @@ export default {
       checkedExpanded: false
     }
   },
+  emits: ['change'],
   methods: {
     onToggle () {},
     onChecked (val, evt) {

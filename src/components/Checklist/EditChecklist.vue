@@ -76,6 +76,7 @@ export default {
       sort: null
     }
   },
+  emits: ['change'],
   methods: {
     createNewItem (idx, val) {
       if (!val) {

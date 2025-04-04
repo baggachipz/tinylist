@@ -25,6 +25,7 @@ export default {
       importError: false
     }
   },
+  emits: ['ok', 'hide'],
   methods: {
     show () {
       this.$refs.dialog.show()

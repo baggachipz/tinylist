@@ -56,6 +56,7 @@ export default {
       default: false
     }
   },
+  emits: ['delete', 'share', 'moveToFolder', 'pin', 'change', 'click'],
   data () {
     return {
       active: false,

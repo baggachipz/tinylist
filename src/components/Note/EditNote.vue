@@ -35,6 +35,7 @@ export default {
       }
     }
   },
+  emits: ['change'],
   data () {
     return {
       title: this.value.value ? this.value.value.title : null,

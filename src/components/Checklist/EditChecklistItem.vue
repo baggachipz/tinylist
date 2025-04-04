@@ -32,6 +32,7 @@ export default {
       selected: false
     }
   },
+  emits: ['update:model-value', 'enter-pressed', 'delete-pressed', 'delete'],
   methods: {
     focus () {
       this.$refs.input.focus()

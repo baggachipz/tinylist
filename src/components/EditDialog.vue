@@ -51,6 +51,7 @@ export default {
       val: this.modelValue
     }
   },
+  emits: ['ok', 'hide', 'update:model-value', 'cancel', 'moveToFolder'],
   methods: {
     show () {
       // required by name for QDialog plugin

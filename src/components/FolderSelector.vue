@@ -32,6 +32,7 @@ export default {
     },
     currentFolder: undefined
   },
+  emits: ['move', 'not-selecting', 'selecting'],
   data () {
     return {
       newFolderName: ''

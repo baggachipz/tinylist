@@ -113,6 +113,7 @@ export default {
       loading: false
     }
   },
+  emits: ['setFolders', 'share', 'clearsearch', 'setFolder'],
   methods: {
     async loadItems () {
       this.loading = true
