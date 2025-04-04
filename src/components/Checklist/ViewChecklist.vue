@@ -119,21 +119,21 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-  .checked-item
-    color: $grey-7
-    text-decoration: line-through
-  .content
+.checked-item
+  color: $grey-7
+  text-decoration: line-through
+.content
+  padding: 0
+  position: relative
+  .checklist-title
+    margin: 0
+    overflow-wrap: break-word
+  .checklist-item
     padding: 0
-    position: relative
-    .checklist-title
-      margin: 0
-      overflow-wrap: break-word
-    .checklist-item
+    .checklist-side
       padding: 0
-      .checklist-side
-        padding: 0
-    .checked-separator
-      margin: 5px 0
-  .active-buttons
-    padding: 0
+  .checked-separator
+    margin: 5px 0
+.active-buttons
+  padding: 0
 </style>

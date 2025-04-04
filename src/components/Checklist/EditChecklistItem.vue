@@ -114,15 +114,15 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-  .side-icons
-    display: inline-block
-  .drag-inactive
-    float: left
-    color: $grey-5
-    opacity: 0.5
-  .drag-active
-    cursor: move
-    float: left
-    color: $grey-5
-    opacity: 1
+.side-icons
+  display: inline-block
+.drag-inactive
+  float: left
+  color: $grey-5
+  opacity: 0.5
+.drag-active
+  cursor: move
+  float: left
+  color: $grey-5
+  opacity: 1
 </style>

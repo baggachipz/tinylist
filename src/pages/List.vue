@@ -678,75 +678,75 @@ export default {
 
 <style lang="sass" scoped>
 
-  // Masonry (grid) layout
-  .items-grid
-    flex-flow: column wrap
-    overflow-y: visible
-    height: 1000px
+// Masonry (grid) layout
+.items-grid
+  flex-flow: column wrap
+  overflow-y: visible
+  height: 1000px
 
-    @media (max-width: $breakpoint-xs-max)
-      > div
-        &:nth-child(2n + 1)
-          order: 1
-        &:nth-child(2n)
-          order: 2
-
-      &:before
-        content: ''
-        flex: 1 0 100% !important
-        width: 0 !important
+  @media (max-width: $breakpoint-xs-max)
+    > div
+      &:nth-child(2n + 1)
         order: 1
-
-    @media (min-width: $breakpoint-sm-min)
-      > div
-        &:nth-child(3n + 1)
-          order: 1
-        &:nth-child(3n + 2)
-          order: 2
-        &:nth-child(3n)
-          order: 3
-
-      &:before,
-      &:after
-        content: ''
-        flex: 1 0 100% !important
-        width: 0 !important
+      &:nth-child(2n)
         order: 2
 
-    .display-item
-      padding: 5px
-      @media (max-width: $breakpoint-xs-max)
-        width: 50%
-      @media (min-width: $breakpoint-sm-min)
-        width: 33.33%
+    &:before
+      content: ''
+      flex: 1 0 100% !important
+      width: 0 !important
+      order: 1
 
-  // List layout
-  .items-list
-    .display-item
-      width: 100%
-      .q-card
-        margin: 5px auto
-        @media (max-width: $breakpoint-xs-max)
-          width: 100%
-        @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
-          width: 51%
-        @media (min-width: $breakpoint-lg-min)
-          width: 800px
+  @media (min-width: $breakpoint-sm-min)
+    > div
+      &:nth-child(3n + 1)
+        order: 1
+      &:nth-child(3n + 2)
+        order: 2
+      &:nth-child(3n)
+        order: 3
 
-  // Other list page features
-  .top-focus-area
-    margin: 0 auto
+    &:before,
+    &:after
+      content: ''
+      flex: 1 0 100% !important
+      width: 0 !important
+      order: 2
+
+  .display-item
+    padding: 5px
+    @media (max-width: $breakpoint-xs-max)
+      width: 50%
+    @media (min-width: $breakpoint-sm-min)
+      width: 33.33%
+
+// List layout
+.items-list
+  .display-item
     width: 100%
-    @media (min-width: $breakpoint-sm-max)
-      width: 66%
-    @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max)
-      width: 33%
-    @media (min-width: $breakpoint-lg-min)
-      width: 25%
+    .q-card
+      margin: 5px auto
+      @media (max-width: $breakpoint-xs-max)
+        width: 100%
+      @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
+        width: 51%
+      @media (min-width: $breakpoint-lg-min)
+        width: 800px
 
-  // breadcrumbs
-  .folder-breadcrumbs
-    .clickable
-      cursor: pointer
+// Other list page features
+.top-focus-area
+  margin: 0 auto
+  width: 100%
+  @media (min-width: $breakpoint-sm-max)
+    width: 66%
+  @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max)
+    width: 33%
+  @media (min-width: $breakpoint-lg-min)
+    width: 25%
+
+// breadcrumbs
+.folder-breadcrumbs
+  .clickable
+    cursor: pointer
 
 </style>
