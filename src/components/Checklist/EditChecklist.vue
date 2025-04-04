@@ -202,7 +202,7 @@ export default {
       return `${this.checkedItems.length} checked items`
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     if (this.newItem && this.newItem.length) {
       this.createNewItem()
     }
