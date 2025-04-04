@@ -430,12 +430,12 @@ export default {
     resizeViewport (viewport) {
       // create a heights array, the length of which matches the number of columns
       const heights = new Array(this.numberOfColumns).fill(0)
-      const items = this.$refs[viewport] && this.$refs[viewport].$children ? this.$refs[viewport].$children : []
+      const items = this.$refs[viewport] && this.$refs[viewport].getChildrenNodes() ? Array.from(this.$refs[viewport].getChildrenNodes()) : []
 
       // iterate through each of the items in the viewport
       items.forEach((child, idx) => {
         // get the height of that item and add it to the 'column' height
-        const height = getComputedStyle(child.$el).getPropertyValue('height')
+        const height = getComputedStyle(child).getPropertyValue('height')
         heights[idx % this.numberOfColumns] += (parseFloat(height) + 12)
       })
 
