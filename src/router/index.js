@@ -1,9 +1,5 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-
+import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
-
-Vue.use(VueRouter)
 
 /*
  * If not building with SSR mode, you can
@@ -15,16 +11,11 @@ Vue.use(VueRouter)
  */
 
 export default function (/* { store, ssrContext } */) {
-  const Router = new VueRouter({
-    scrollBehavior: () => ({ x: 0, y: 0 }),
+  const router = createRouter({
+    history: createWebHistory(process.env.VUE_ROUTER_BASE), // Use createWebHistory for Vue 3
     routes,
-
-    // Leave these as they are and change in quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
-    mode: process.env.VUE_ROUTER_MODE,
-    base: process.env.VUE_ROUTER_BASE
+    scrollBehavior: () => ({ x: 0, y: 0 })
   })
 
-  return Router
+  return router
 }
