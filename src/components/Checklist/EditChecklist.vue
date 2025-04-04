@@ -42,12 +42,15 @@
   </div>
 </template>
 <script>
-import draggable from 'vuedraggable'
+import { VueDraggableNext } from 'vue-draggable-next'
 import EditChecklistItem from './EditChecklistItem'
 import { uid, extend } from 'quasar'
 export default {
   name: 'EditChecklist',
-  components: { draggable, EditChecklistItem },
+  components: {
+    draggable: VueDraggableNext,
+    EditChecklistItem
+  },
   props: {
     value: {
       _id: {

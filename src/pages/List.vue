@@ -56,7 +56,7 @@
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 import { uid, extend } from 'quasar'
-import draggable from 'vuedraggable'
+import { VueDraggableNext } from 'vue-draggable-next'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { createDatabase, ExportItem, ImportItem } from '../utils'
@@ -75,7 +75,7 @@ export default {
     GridItem,
     QuickAdd,
     EditDialog,
-    draggable
+    draggable: VueDraggableNext
   },
   props: {
     uuid: {
