@@ -7,6 +7,10 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 
+const ESLintPlugin = require('eslint-webpack-plugin')
+const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+
+
 module.exports = function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
@@ -64,13 +68,6 @@ module.exports = function (ctx) {
 
       // https://quasar.dev/quasar-cli/handling-webpack
       extendWebpack (cfg) {
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /node_modules/
-        })
-
         if (cfg.output && cfg.output.path) {
           const CopyWebpackPlugin = require('copy-webpack-plugin')
           cfg.plugins.push(
@@ -83,7 +80,15 @@ module.exports = function (ctx) {
               ]
             })
           )
-        }
+        }        
+        const webpack = require('webpack')
+        cfg.plugins.push(
+          new webpack.DefinePlugin({
+            process: {
+              browser: true
+            }
+          })
+        );
       },
 
       env: {
@@ -91,7 +96,15 @@ module.exports = function (ctx) {
         DB_URL: ctx.dev ? 'http://localhost' : process.env.DB_URL,
         DB_PORT: ctx.dev ? '5984' : process.env.DB_PORT,
         DB_USER: ctx.dev ? 'tinylist' : process.env.DB_USER,
-        DB_PASS: ctx.dev ? 'password' : process.env.DB_PASS
+        DB_PASS: ctx.dev ? 'password' : process.env.DB_PASS,
+      },
+
+      chainWebpack (chain) {
+        chain
+          .plugin('eslint-webpack-plugin')
+          .use(ESLintPlugin, [{ extensions: ['js', 'vue'] }])
+          
+        chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
       }
     },
 
@@ -105,9 +118,12 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
-      lang: 'en-us', // Quasar language pack
+      lang: 'en-US', // Quasar language pack
       config: {
-        dark: 'auto'
+        dark: 'auto',
+        brand: {
+          primary: "#ffb300"
+        }
       },
 
       // Possible values for "importStrategy":
