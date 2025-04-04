@@ -13,7 +13,7 @@
             <q-btn dense flat round icon="archive" @click="archiveItem" v-if="!val.new && !isArchiveItem">
             <q-tooltip>Archive</q-tooltip>
           </q-btn>
-          <folder-selector :folders="folders" :current-folder="value.folder" @move="folderItem" v-if="!val.new" />
+          <folder-selector :folders="folders" :current-folder="modelValue.folder" @move="folderItem" v-if="!val.new" />
             <q-btn flat round icon="delete" @click="deleteItem">
               <q-tooltip>Delete</q-tooltip>
             </q-btn>
@@ -41,14 +41,14 @@ export default {
   name: 'EditDialog',
   components: { EditChecklist, EditNote, FolderSelector },
   props: {
-    value: {},
+    modelValue: {},
     folders: {
       default: () => []
     }
   },
   data () {
     return {
-      val: this.value
+      val: this.modelValue
     }
   },
   methods: {
@@ -60,7 +60,7 @@ export default {
       // required by name for QDialog plugin
       await this.$refs.dialog.hide()
       if (ok) {
-        this.$emit('input', this.val)
+        this.$emit('update:model-value', this.val)
         this.$emit('ok', this.val)
       } else {
         this.$emit('cancel')
@@ -79,7 +79,7 @@ export default {
       this.emitVal()
     },
     emitVal () {
-      this.$emit('input', this.val)
+      this.$emit('update:model-value', this.val)
     },
     pinItem (e) {
       this.$set(this.val, 'pinned', !this.val.pinned)
@@ -95,7 +95,7 @@ export default {
       this.hide()
     },
     folderItem (folder) {
-      this.$emit('moveToFolder', this.value, folder)
+      this.$emit('moveToFolder', this.modelValue, folder)
       this.hide()
     },
     archiveItem (e) {
@@ -106,16 +106,16 @@ export default {
   },
   computed: {
     editType () {
-      return this.value && this.value.type ? `Edit${this.value.type}` : null
+      return this.modelValue && this.modelValue.type ? `Edit${this.modelValue.type}` : null
     },
     isArchiveItem () {
-      return this.value?.folder === String.fromCharCode(0) + 'Archive'
+      return this.modelValue?.folder === String.fromCharCode(0) + 'Archive'
     }
   },
   watch: {
-    value: {
+    modelValue: {
       handler () {
-        this.val = this.value
+        this.val = this.modelValue
       },
       deep: true
     }

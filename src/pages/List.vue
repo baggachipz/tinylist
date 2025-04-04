@@ -27,7 +27,7 @@
     <q-breadcrumbs v-if="folder" class="folder-breadcrumbs">
       <q-breadcrumbs-el icon="home" @click="setFolder(undefined)" class="clickable" label="Main" />
       <q-breadcrumbs-el icon="folder_open" label=" ">
-        <q-select borderless options-dense :options="displayFolders" :value="folder" @input="setFolder" />
+        <q-select borderless options-dense :options="displayFolders" :model-value="folder" @update:model-value="setFolder" />
       </q-breadcrumbs-el>
     </q-breadcrumbs>
 
@@ -38,7 +38,7 @@
     </draggable>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-tooltip :value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
+      <q-tooltip :model-value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
         Tap the button to get started. <q-icon name="east" />
       </q-tooltip>
       <q-fab v-if="!loading" icon="edit" color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
@@ -47,7 +47,7 @@
       </q-fab>
     </q-page-sticky>
 
-    <edit-dialog v-model="editingItem" @input="onEdited" :folders="folders" @moveToFolder="setItemFolder" ref="editDialog" />
+    <edit-dialog v-model="editingItem" @update:model-value="onEdited" :folders="folders" @moveToFolder="setItemFolder" ref="editDialog" />
 
   </q-page>
 </template>

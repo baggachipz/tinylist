@@ -107,8 +107,8 @@
             <q-expansion-item icon="admin_panel_settings" label="Advanced Settings" caption="Here there be dragons">
               <q-card>
                 <q-card-section>
-                  <q-input dense readonly :value="this.uuid" label="My Unique ID" @click="editUuid" />
-                  <q-input dense readonly :value="this.dbUrl" label="Remote Database" @click="editDbUrl" />
+                  <q-input dense readonly :model-value="this.uuid" label="My Unique ID" @click="editUuid" />
+                  <q-input dense readonly :model-value="this.dbUrl" label="Remote Database" @click="editDbUrl" />
                 </q-card-section>
                 <q-card-actions align="right">
                   <q-btn dense flat color="negative" size="sm" class="float-right" icon="delete_forever" to="destroy-database">Delete Database</q-btn>

@@ -7,7 +7,7 @@
       <q-list dense>
         <q-item dense v-for="item in uncheckedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
-            <q-checkbox :value="!!item.value.selected" @input="onChecked(item)" size="xs" />
+            <q-checkbox :model-value="!!item.value.selected" @update:model-value="onChecked(item)" size="xs" />
           </q-item-section>
           <q-item-section>
             <q-item-label>
@@ -27,13 +27,13 @@
         <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length && this.$q.platform.is.desktop" @click.stop="onToggle" dense-toggle switch-toggle-side expand-separator class="q-pa-none" :label="completedItemsLabel">
           <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
             <q-item-section side class="checklist-side">
-              <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
+              <q-checkbox v-model="item.value.checked" @update:model-value="onUnChecked(item)" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
             </q-item-section>
           </q-item>
         </q-expansion-item>
         <!-- <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id" class="checklist-item">
           <q-item-section side class="checklist-side">
-            <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" size="xs" color="grey-7" class="checked-item" />
+            <q-checkbox v-model="item.value.checked" @update:model-value="onUnChecked(item)" size="xs" color="grey-7" class="checked-item" />
           </q-item-section>
           <q-item-section>
             <q-item-label class="checked-item">

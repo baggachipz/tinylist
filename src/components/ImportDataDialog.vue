@@ -3,7 +3,7 @@
     <q-card class="q-dialog-import-data">
       <q-card-section>
         <p>Click below to upload your export file, either from a tinylist export or Keep data from <a href="https://takeout.google.com" target="_blank">Google Takeout</a>:</p>
-        <q-file outlined v-model="importFile" ref="importFile" label="Import File" accept=".zip,.json,.txt,application/zip,application/json,text/plain" @input="importError = false" @rejected="onRejected" :error="importError" error-message="Please select a supported file type.">
+        <q-file outlined v-model="importFile" ref="importFile" label="Import File" accept=".zip,.json,.txt,application/zip,application/json,text/plain" @update:model-value="importError = false" @rejected="onRejected" :error="importError" error-message="Please select a supported file type.">
           <template v-slot:prepend>
             <q-icon name="attach_file" />
           </template>
