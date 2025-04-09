@@ -139,6 +139,7 @@ export default {
 
       // set items from result
       this.items = result.docs
+      const that = this
 
       async function mapShared (item) {
         // if item is shared
@@ -157,7 +158,7 @@ export default {
           doc.sort = item.sort
 
           // set the item in the sharedItems collection
-          this.sharedItems.item.value = doc
+          that.sharedItems[item.value] = doc
         }
       }
 
