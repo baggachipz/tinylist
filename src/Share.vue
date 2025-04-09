@@ -38,7 +38,7 @@ export default {
         emit(doc)
       }
     }).then(function (result) {
-      if (!result.rows) {
+      if (result.rows.length === 0) {
         db.put({
           _id: uid(),
           type: 'Share',
