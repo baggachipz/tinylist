@@ -51,7 +51,7 @@ export default {
       val: this.modelValue
     }
   },
-  emits: ['ok', 'hide', 'update:model-value', 'cancel', 'moveToFolder'],
+  emits: ['ok', 'hide', 'update:model-value', 'cancel', 'moveToFolder', 'delete'],
   methods: {
     show () {
       // required by name for QDialog plugin
@@ -88,7 +88,7 @@ export default {
       e.stopPropagation()
     },
     deleteItem () {
-      this.$parent.$parent.deleteItem(this.val._id)
+      this.$emit('delete', this.val._id)
       this.hide()
     },
     shareItem () {

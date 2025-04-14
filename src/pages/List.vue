@@ -47,7 +47,7 @@
       </q-fab>
     </q-page-sticky>
 
-    <edit-dialog v-model="editingItem" @update:model-value="onEdited" :folders="folders" @moveToFolder="setItemFolder" ref="editDialog" />
+    <edit-dialog v-model="editingItem" @update:model-value="onEdited" :folders="folders" @moveToFolder="setItemFolder" @delete="deleteItem" ref="editDialog" />
 
   </q-page>
 </template>
