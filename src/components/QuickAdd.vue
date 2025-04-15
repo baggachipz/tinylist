@@ -22,6 +22,7 @@ export default {
       value: ''
     }
   },
+  emits: ['input'],
   methods: {
     create (type) {
       this.$emit('input', type)

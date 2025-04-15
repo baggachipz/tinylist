@@ -27,7 +27,7 @@
     <q-breadcrumbs v-if="folder" class="folder-breadcrumbs">
       <q-breadcrumbs-el icon="home" @click="setFolder(undefined)" class="clickable" label="Main" />
       <q-breadcrumbs-el icon="folder_open" label=" ">
-        <q-select borderless options-dense :options="displayFolders" :value="folder" @input="setFolder" />
+        <q-select borderless options-dense :options="displayFolders" :model-value="folder" @update:model-value="setFolder" />
       </q-breadcrumbs-el>
     </q-breadcrumbs>
 
@@ -38,7 +38,7 @@
     </draggable>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-tooltip :value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
+      <q-tooltip :model-value="showFtueTooltip" :delay="2000" anchor="center left" self="center right">
         Tap the button to get started. <q-icon name="east" />
       </q-tooltip>
       <q-fab v-if="!loading" icon="edit" color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" direction="up" vertical-actions-align="right" @show="showFtueTooltip = false">
@@ -47,7 +47,7 @@
       </q-fab>
     </q-page-sticky>
 
-    <edit-dialog v-model="editingItem" @input="onEdited" :folders="folders" @moveToFolder="setItemFolder" ref="editDialog" />
+    <edit-dialog v-model="editingItem" @update:model-value="onEdited" :folders="folders" @moveToFolder="setItemFolder" @delete="deleteItem" ref="editDialog" />
 
   </q-page>
 </template>
@@ -56,7 +56,7 @@
 import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 import { uid, extend } from 'quasar'
-import draggable from 'vuedraggable'
+import { VueDraggableNext } from 'vue-draggable-next'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { createDatabase, ExportItem, ImportItem } from '../utils'
@@ -75,7 +75,7 @@ export default {
     GridItem,
     QuickAdd,
     EditDialog,
-    draggable
+    draggable: VueDraggableNext
   },
   props: {
     uuid: {
@@ -113,6 +113,7 @@ export default {
       loading: false
     }
   },
+  emits: ['setFolders', 'share', 'clearsearch', 'setFolder'],
   methods: {
     async loadItems () {
       this.loading = true
@@ -134,12 +135,11 @@ export default {
 
       // get vars for use in scope below
       const shareDbs = this.shareDbs
-      const sharedItems = this.sharedItems
       const initDbSync = this.initDbSync
-      const $set = this.$set
 
       // set items from result
       this.items = result.docs
+      const that = this
 
       async function mapShared (item) {
         // if item is shared
@@ -158,7 +158,7 @@ export default {
           doc.sort = item.sort
 
           // set the item in the sharedItems collection
-          $set(sharedItems, item.value, doc)
+          that.sharedItems[item.value] = doc
         }
       }
 
@@ -195,14 +195,15 @@ export default {
 
       component.$q.dialog({
         component: EditDialog,
-        parent: this,
-        value: {
-          _id: uid(),
-          type: type,
-          value: val,
-          new: true,
-          created: Date.now(),
-          modified: Date.now()
+        componentProps: {
+          modelValue: {
+            _id: uid(),
+            type,
+            value: val,
+            new: true,
+            created: Date.now(),
+            modified: Date.now()
+          }
         }
       }).onOk(component.onCreated)
     },
@@ -252,7 +253,7 @@ export default {
         }
         const response = await this.shareDbs[doc._id].put(item)
         if (this.editingItem) {
-          this.$set(this.editingItem, '_rev', response.rev)
+          this.editingItem._rev = response.rev
         }
 
         // get and update the parent item with metadata like pinned, modified, etc
@@ -266,7 +267,7 @@ export default {
         doc.modified = Date.now()
         const response = await this.db.put(doc)
         if (this.editingItem) {
-          this.$set(this.editingItem, '_rev', response.rev)
+          this.editingItem._rev = response.rev
         }
       }
 
@@ -430,12 +431,12 @@ export default {
     resizeViewport (viewport) {
       // create a heights array, the length of which matches the number of columns
       const heights = new Array(this.numberOfColumns).fill(0)
-      const items = this.$refs[viewport] && this.$refs[viewport].$children ? this.$refs[viewport].$children : []
+      const items = this.$refs[viewport] && this.$refs[viewport].getChildrenNodes() ? Array.from(this.$refs[viewport].getChildrenNodes()) : []
 
       // iterate through each of the items in the viewport
       items.forEach((child, idx) => {
         // get the height of that item and add it to the 'column' height
-        const height = getComputedStyle(child.$el).getPropertyValue('height')
+        const height = getComputedStyle(child).getPropertyValue('height')
         heights[idx % this.numberOfColumns] += (parseFloat(height) + 12)
       })
 
@@ -464,8 +465,7 @@ export default {
     showHomescreenInstructions () {
       if (this.$q.platform.is.ios) {
         this.$q.dialog({
-          component: IosHomescreenDialog,
-          parent: this
+          component: IosHomescreenDialog
         })
       }
     },
@@ -678,75 +678,75 @@ export default {
 
 <style lang="sass" scoped>
 
-  // Masonry (grid) layout
-  .items-grid
-    flex-flow: column wrap
-    overflow-y: visible
-    height: 1000px
+// Masonry (grid) layout
+.items-grid
+  flex-flow: column wrap
+  overflow-y: visible
+  height: 1000px
 
-    @media (max-width: $breakpoint-xs-max)
-      > div
-        &:nth-child(2n + 1)
-          order: 1
-        &:nth-child(2n)
-          order: 2
-
-      &:before
-        content: ''
-        flex: 1 0 100% !important
-        width: 0 !important
+  @media (max-width: $breakpoint-xs-max)
+    > div
+      &:nth-child(2n + 1)
         order: 1
-
-    @media (min-width: $breakpoint-sm-min)
-      > div
-        &:nth-child(3n + 1)
-          order: 1
-        &:nth-child(3n + 2)
-          order: 2
-        &:nth-child(3n)
-          order: 3
-
-      &:before,
-      &:after
-        content: ''
-        flex: 1 0 100% !important
-        width: 0 !important
+      &:nth-child(2n)
         order: 2
 
-    .display-item
-      padding: 5px
-      @media (max-width: $breakpoint-xs-max)
-        width: 50%
-      @media (min-width: $breakpoint-sm-min)
-        width: 33.33%
+    &:before
+      content: ''
+      flex: 1 0 100% !important
+      width: 0 !important
+      order: 1
 
-  // List layout
-  .items-list
-    .display-item
-      width: 100%
-      .q-card
-        margin: 5px auto
-        @media (max-width: $breakpoint-xs-max)
-          width: 100%
-        @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
-          width: 51%
-        @media (min-width: $breakpoint-lg-min)
-          width: 800px
+  @media (min-width: $breakpoint-sm-min)
+    > div
+      &:nth-child(3n + 1)
+        order: 1
+      &:nth-child(3n + 2)
+        order: 2
+      &:nth-child(3n)
+        order: 3
 
-  // Other list page features
-  .top-focus-area
-    margin: 0 auto
+    &:before,
+    &:after
+      content: ''
+      flex: 1 0 100% !important
+      width: 0 !important
+      order: 2
+
+  .display-item
+    padding: 5px
+    @media (max-width: $breakpoint-xs-max)
+      width: 50%
+    @media (min-width: $breakpoint-sm-min)
+      width: 33.33%
+
+// List layout
+.items-list
+  .display-item
     width: 100%
-    @media (min-width: $breakpoint-sm-max)
-      width: 66%
-    @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max)
-      width: 33%
-    @media (min-width: $breakpoint-lg-min)
-      width: 25%
+    .q-card
+      margin: 5px auto
+      @media (max-width: $breakpoint-xs-max)
+        width: 100%
+      @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-md-max)
+        width: 51%
+      @media (min-width: $breakpoint-lg-min)
+        width: 800px
 
-  // breadcrumbs
-  .folder-breadcrumbs
-    .clickable
-      cursor: pointer
+// Other list page features
+.top-focus-area
+  margin: 0 auto
+  width: 100%
+  @media (min-width: $breakpoint-sm-max)
+    width: 66%
+  @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max)
+    width: 33%
+  @media (min-width: $breakpoint-lg-min)
+    width: 25%
+
+// breadcrumbs
+.folder-breadcrumbs
+  .clickable
+    cursor: pointer
 
 </style>

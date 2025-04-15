@@ -2,29 +2,29 @@
   <div>
     <q-card-section class="section">
       <slot name="top-toolbar-left"></slot>
-      <q-input borderless v-model="title" class="text-h6" @input="onChange" placeholder="Title" />
+      <q-input borderless v-model="title" class="text-h6" @update:model-value="onChange" placeholder="Title" />
       <slot name="top-toolbar-right"></slot>
     </q-card-section>
     <q-card-section class="section input-area">
       <q-list dense ref="ChecklistItems">
         <draggable v-model="uncheckedItems" @change="onOrderChange" handle=".handle">
-          <edit-checklist-item v-for="(item, idx) in uncheckedItems" :key="idx" :_id="item._id" v-model="item.value" @input="onChange" @delete="deleteItem" @enter-pressed="insertNewItemAfter" @delete-pressed="appendToItemBefore" />
+          <edit-checklist-item v-for="(item, idx) in uncheckedItems" :key="idx" :_id="item._id" v-model="item.value" @update:model-value="onChange" @delete="deleteItem" @enter-pressed="insertNewItemAfter" @delete-pressed="appendToItemBefore" />
         </draggable>
       </q-list>
       <q-item dense class="q-pa-none">
         <q-item-section side>
           <div class="side-icons">
             <q-btn flat round dense icon="add" size="sm" @click="createNewItem()" />
-            <q-checkbox dense size="sm" :value="false" class="on-right" disabled />
+            <q-checkbox dense size="sm" :model-value="false" class="on-right" disabled />
           </div>
         </q-item-section>
         <q-item-section>
-          <q-input v-model="newItem" borderless dense deboune="500" size="sm" placeholder="List item" @keyup.enter="createNewItem" :autofocus="$q.platform.is.desktop" />
+          <q-input v-model="newItem" borderless dense deboune="500" placeholder="List item" @keyup.enter="createNewItem" :autofocus="$q.platform.is.desktop" />
         </q-item-section>
       </q-item>
       <q-expansion-item v-model="checkedExpanded" v-if="checkedItems.length" dense-toggle switch-toggle-side expand-separator icon="check_box" class="q-pa-none" :label="completedItemsLabel">
         <q-item dense v-for="item in checkedItems" :key="item._id" :_id="item._id">
-          <q-checkbox v-model="item.value.checked" @input="onUnChecked(item)" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
+          <q-checkbox v-model="item.value.checked" @update:model-value="onUnChecked(item)" :label="item.value.label" size="xs" color="grey-7" class="checked-item" />
         </q-item>
       </q-expansion-item>
     </q-card-section>
@@ -42,12 +42,15 @@
   </div>
 </template>
 <script>
-import draggable from 'vuedraggable'
+import { VueDraggableNext } from 'vue-draggable-next'
 import EditChecklistItem from './EditChecklistItem'
 import { uid, extend } from 'quasar'
 export default {
   name: 'EditChecklist',
-  components: { draggable, EditChecklistItem },
+  components: {
+    draggable: VueDraggableNext,
+    EditChecklistItem
+  },
   props: {
     value: {
       _id: {
@@ -73,6 +76,7 @@ export default {
       sort: null
     }
   },
+  emits: ['change'],
   methods: {
     createNewItem (idx, val) {
       if (!val) {
@@ -198,7 +202,7 @@ export default {
       return `${this.checkedItems.length} checked items`
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     if (this.newItem && this.newItem.length) {
       this.createNewItem()
     }
@@ -206,15 +210,15 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-  .section
-    padding-top: 0
-    padding-bottom: 0
-  .input-area
-    max-height: calc(100vh - 220px)
-    overflow: auto
-  .side-icons
-    display: inline-block
-  .checked-item
-    color: $grey-7
-    text-decoration: line-through
+.section
+  padding-top: 0
+  padding-bottom: 0
+.input-area
+  max-height: calc(100vh - 220px)
+  overflow: auto
+.side-icons
+  display: inline-block
+.checked-item
+  color: $grey-7
+  text-decoration: line-through
 </style>

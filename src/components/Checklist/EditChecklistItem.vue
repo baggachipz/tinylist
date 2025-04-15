@@ -3,11 +3,11 @@
     <q-item-section side>
       <div class="side-icons">
         <q-icon dense name="drag_indicator" size="sm" :class="active ? 'handle drag-active' : 'handle drag-inactive'" />
-        <q-checkbox :value="selected" dense size="sm" @input="changeChecked" class="on-right" />
+        <q-checkbox :model-value="selected" dense size="sm" @update:model-value="changeChecked" class="on-right" />
       </div>
     </q-item-section>
     <q-item-section>
-      <q-input borderless dense autogrow size="xs" :value="label" placeholder="List item" @input="changeLabel" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
+      <q-input borderless dense autogrow size="xs" :model-value="label" placeholder="List item" @update:model-value="changeLabel" @keydown.enter.stop="enterPressed" @keydown.delete="deletePressed" class="q-pa-none" input-class="q-pa-none" ref="input" hide-bottom-space />
     </q-item-section>
     <q-item-section side>
       <q-btn flat round dense icon="clear" size="sm" @click="deleteItem" v-if="active" />
@@ -21,7 +21,7 @@ export default {
     _id: {
       required: true
     },
-    value: {}
+    modelValue: {}
   },
   data () {
     return {
@@ -32,6 +32,7 @@ export default {
       selected: false
     }
   },
+  emits: ['update:model-value', 'enter-pressed', 'delete-pressed', 'delete'],
   methods: {
     focus () {
       this.$refs.input.focus()
@@ -62,7 +63,7 @@ export default {
       this.$refs.input.$refs.input.selectionStart = this.$refs.input.$refs.input.selectionEnd = idx
     },
     onChange () {
-      this.$emit('input', {
+      this.$emit('update:model-value', {
         label: this.label,
         checked: this.checked,
         deleted: this.deleted
@@ -96,17 +97,17 @@ export default {
     }
   },
   created () {
-    this.label = this.value.label
-    this.checked = !!this.value.checked
-    this.deleted = !!this.value.deleted
+    this.label = this.modelValue.label
+    this.checked = !!this.modelValue.checked
+    this.deleted = !!this.modelValue.deleted
   },
   watch: {
-    value: {
+    modelValue: {
       handler: function () {
-        this.label = this.value.label
-        this.checked = this.value.checked
-        this.deleted = this.value.deleted
-        this.selected = this.value.checked
+        this.label = this.modelValue.label
+        this.checked = this.modelValue.checked
+        this.deleted = this.modelValue.deleted
+        this.selected = this.modelValue.checked
       },
       deep: true
     }
@@ -114,15 +115,15 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-  .side-icons
-    display: inline-block
-  .drag-inactive
-    float: left
-    color: $grey-5
-    opacity: 0.5
-  .drag-active
-    cursor: move
-    float: left
-    color: $grey-5
-    opacity: 1
+.side-icons
+  display: inline-block
+.drag-inactive
+  float: left
+  color: $grey-5
+  opacity: 0.5
+.drag-active
+  cursor: move
+  float: left
+  color: $grey-5
+  opacity: 1
 </style>

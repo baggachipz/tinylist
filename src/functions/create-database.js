@@ -36,23 +36,56 @@ exports.handler = function (event, context, callback) {
     }
   }).then(response => {
     if (response.ok) {
-      callback(null, {
+      if (verb === 'DELETE') {
+        return callback(null, {
+          statusCode: 200,
+          body: id
+        })
+      } else {
+        // clear permissions
+        return fetch(`${dbUrl}/_security`, {
+          method: 'PUT',
+          credentials: 'same-origin',
+          redirect: 'follow',
+          agent: null,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: 'Basic ' + bToA(`${dbUser}:${dbPass}`)
+          },
+          body: JSON.stringify({
+            admins: {
+              names: [],
+              roles: []
+            },
+            members: {
+              names: [],
+              roles: []
+            }
+          })
+        }).then(
+          response => {
+            if (!response.ok) {
+              console.log('Could not clear database permissions')
+            }
+
+            return callback(null, {
+              statusCode: 200,
+              body: id
+            })
+          }
+        )
+      }
+    }
+
+    // already created, just return the id
+    if (response.status === 412) {
+      return callback(null, {
         statusCode: 200,
         body: id
       })
     }
-
-    switch (response.status) {
-      case 412:
-        // already created, just return the id
-        callback(null, {
-          statusCode: 200,
-          body: id
-        })
-        break
-      default:
-        callback(response.statusText)
-    }
+    return callback(response.statusText)
   })
 }
 

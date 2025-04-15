@@ -15,6 +15,7 @@
 <script>
 export default {
   name: 'IosHomescreenDialog',
+  emits: ['ok', 'hide'],
   methods: {
     show () {
       this.$refs.dialog.show()

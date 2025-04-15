@@ -2,11 +2,11 @@
   <div>
     <q-card-section class="section">
       <slot name="top-toolbar-left"></slot>
-      <q-input borderless v-model="title" @input="onChange" class="text-h6" placeholder="Title" />
+      <q-input borderless v-model="title" @update:model-value="onChange" class="text-h6" placeholder="Title" />
       <slot name="top-toolbar-right"></slot>
     </q-card-section>
     <q-card-section class="section input-area">
-      <q-input borderless v-model="text" @input="onChange" placeholder="Begin typing..." autofocus autogrow />
+      <q-input borderless v-model="text" @update:model-value="onChange" placeholder="Begin typing..." autofocus autogrow />
     </q-card-section>
     <q-card-actions>
       <slot name="bottom-toolbar-left"></slot>
@@ -35,6 +35,7 @@ export default {
       }
     }
   },
+  emits: ['change'],
   data () {
     return {
       title: this.value.value ? this.value.value.title : null,

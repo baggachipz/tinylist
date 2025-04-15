@@ -11,7 +11,7 @@
               </q-card-section>
               <q-card-section>
                 <p>This operation will delete all of your notes and checklists from this browser and on the database server.</p>
-                <p>It will reset your experience to that of your first visit. <em>This cannot be undone!</em>
+                <p>It will reset your experience to that of your first visit. <em>This cannot be undone!</em></p>
                 <p>If you are certain you wish to delete your database, type "<code>delete</code>" in the box below and click the "Delete" button.</p>
                 <q-input outlined v-model="confirmText" />
               </q-card-section>
@@ -73,16 +73,16 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
-  .msg-bg
-    background: $amber-1
-  .msg
-    color: $grey-7
-    font-size: 2em
-    text-align: center
-    position: absolute
-    top: 50%
-    left: 50%
-    -ms-transform: translateX(-50%) translateY(-50%)
-    -webkit-transform: translate(-50%,-50%)
-    transform: translate(-50%,-50%)
+.msg-bg
+  background: $amber-1
+.msg
+  color: $grey-7
+  font-size: 2em
+  text-align: center
+  position: absolute
+  top: 50%
+  left: 50%
+  -ms-transform: translateX(-50%) translateY(-50%)
+  -webkit-transform: translate(-50%,-50%)
+  transform: translate(-50%,-50%)
 </style>

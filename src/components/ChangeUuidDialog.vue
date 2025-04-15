@@ -29,6 +29,7 @@ export default {
       val: this.value
     }
   },
+  emits: ['ok', 'hide'],
   methods: {
     show () {
       this.$refs.dialog.show()
