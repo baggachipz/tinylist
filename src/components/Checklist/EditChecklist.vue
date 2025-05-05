@@ -168,7 +168,8 @@ export default {
       }
     },
     onUnChecked (item) {
-      item.selected = false
+      item.value.selected = false
+      item.value.checked = false
       this.onChange()
     },
     onChange () {
