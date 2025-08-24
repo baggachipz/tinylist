@@ -45,6 +45,7 @@
         <q-fab-action color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" label-position="left" icon="sticky_note_2" label="Note" @click="createNew('Note')" />
         <q-fab-action color="primary" :text-color="$q.dark.isActive ? 'dark' : ''" label-position="left" icon="fact_check" label="Checklist" @click="createNew('Checklist')" />
       </q-fab>
+      <q-spinner v-if="loading" color="primary" size="4em" />
     </q-page-sticky>
 
     <edit-dialog v-model="editingItem" @update:model-value="onEdited" :folders="folders" @moveToFolder="setItemFolder" @delete="deleteItem" ref="editDialog" />
@@ -116,7 +117,6 @@ export default {
   emits: ['setFolders', 'share', 'clearsearch', 'setFolder'],
   methods: {
     async loadItems () {
-      this.loading = true
       const folder = this.folder
 
       await this.db.createIndex({
@@ -168,8 +168,6 @@ export default {
       this.loadFolders()
 
       this.resizeViewports()
-
-      this.loading = false
     },
     async loadFolders () {
       const allFolders = await this.db.find({
@@ -586,6 +584,7 @@ export default {
     }
   },
   async mounted () {
+    this.loading = true
     this.db = new PouchDB(this.uuid)
     await this.db.createIndex({
       index: {
@@ -635,6 +634,7 @@ export default {
         })
       }
     }
+    this.loading = false
   },
   updated () {
     this.resizeViewports()

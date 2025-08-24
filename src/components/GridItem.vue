@@ -29,7 +29,6 @@
           <q-btn v-if="canEdit && !value.new && active" flat round dense icon="share" @click.prevent="shareItem">
             <q-tooltip>Share</q-tooltip>
           </q-btn>
-          <q-spinner v-if="loading" color="primary" size="2em" />
         </div>
       </template>
     </component>
