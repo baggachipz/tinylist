@@ -3,7 +3,7 @@
     <q-item-section side>
       <div class="side-icons">
         <q-icon dense name="drag_indicator" size="sm" :class="active ? 'handle drag-active' : 'handle drag-inactive'" />
-        <q-checkbox :model-value="selected" dense size="sm" @update:model-value="changeChecked" class="on-right" />
+        <q-checkbox :model-value="selected" dense size="sm" @update:model-value="onChecked" class="on-right" />
       </div>
     </q-item-section>
     <q-item-section>
@@ -49,10 +49,11 @@ export default {
       this.label = val
       this.onChange()
     },
-    changeChecked (val) {
-      this.selected = val
+    onChecked () {
+      this.selected = true
       setTimeout(() => {
-        this.checked = val
+        this.checked = true
+        this.selected = false
         this.onChange()
       }, 500)
     },
