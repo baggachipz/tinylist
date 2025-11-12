@@ -23,7 +23,7 @@ https://tilvids.com/videos/watch/d0760bff-6e2a-4435-b056-766d03c85fe3
 7. ~~Enhance PWA 'add to homescreen' functionality~~
 8. ~~Ability to 'pin' notes/checklists to the top~~
 9. ~~Import/export of data~~
-10. Update to Vue 3 / Quasar 2
+10. ~~Update to Vue 3 / Quasar 2~~
 11. Encrypt individual notes/checklists
 12. Support for image attachments
 13. Labels
